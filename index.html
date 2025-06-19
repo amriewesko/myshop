@@ -4,18 +4,78 @@
   <meta charset="UTF-8">
   <title>สินค้าทั้งหมด</title>
   <style>
-    body { font-family: sans-serif; padding: 2rem; background: #f0f0f0; }
-    .product { background: #fff; margin-bottom: 1rem; padding: 1rem; border-radius: 8px; display: flex; gap: 1rem; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    img { width: 100px; border-radius: 6px; }
-    a { background: #007bff; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; }
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    .admin-btn {
+      background: white;
+      color: #007bff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .admin-btn:hover {
+      background: #e5e5e5;
+    }
+    .product {
+      background: white;
+      margin: 1rem auto;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      display: flex;
+      gap: 1rem;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    a.buy {
+      background: #28a745;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
-  <h1>📦 สินค้าของเรา</h1>
-  <div id="product-list">กำลังโหลด...</div>
+
+  <!-- 🔹 Header -->
+  <header>
+    <h1>🛍️ สินค้าของเรา</h1>
+    <a href="admin.html" class="admin-btn">เข้าสู่ระบบแอดมิน</a>
+  </header>
+
+  <!-- 🔹 สินค้าทั้งหมด -->
+  <div id="product-list" style="padding: 1rem;">กำลังโหลดสินค้า...</div>
 
   <script>
-    fetch("https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d") // <-- เปลี่ยนเป็น URL จริงของคุณ
+    fetch("https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d") // 🔁 เปลี่ยนเป็น API URL ของคุณ
       .then(res => res.json())
       .then(data => {
         const list = document.getElementById('product-list');
@@ -23,15 +83,16 @@
         data.forEach(item => {
           list.innerHTML += `
             <div class="product">
-              <img src="${item['รูปภาพ']}" alt="${item['ชื่อสินค้า']}" />
+              <img src="${item['รูปภาพ']}" alt="${item['ชื่อสินค้า']}">
               <div>
                 <h3>${item['ชื่อสินค้า']}</h3>
-                <a href="${item['ลิงก์']}" target="_blank">🔗 ดูสินค้า</a>
+                <a class="buy" href="${item['ลิงก์']}" target="_blank">ดูสินค้า</a>
               </div>
             </div>
           `;
         });
       });
   </script>
+
 </body>
 </html>
