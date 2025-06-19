@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin เพิ่มสินค้า</title>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; padding: 2rem; }
+    .box { background: #fff; padding: 1rem; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, button { width: 100%; margin: 0.5rem 0; padding: 0.6rem; border-radius: 6px; border: 1px solid #ccc; }
+    #form-section, #add-btn { display: none; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🔐 แอดมินล็อกอิน</h2>
+    <input type="password" id="password" placeholder="รหัสผ่าน" />
+    <button onclick="checkLogin()">เข้าสู่ระบบ</button>
+
+    <button id="add-btn" onclick="showForm()">➕ เพิ่มสินค้า</button>
+
+    <div id="form-section">
+      <h3>📦 รายละเอียดสินค้า</h3>
+      <input type="text" id="name" placeholder="ชื่อสินค้า" />
+      <input type="text" id="img" placeholder="ลิงก์รูปภาพ" />
+      <input type="text" id="link" placeholder="ลิงก์สินค้า" />
+      <button onclick="submitProduct()">📤 บันทึกสินค้า</button>
+    </div>
+  </div>
+
+  <script>
+    const SHEET_URL = "https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d"; // เปลี่ยนตรงนี้
+
+    function checkLogin() {
+      const pw = document.getElementById("password").value;
+      if (pw === "admin123") {
+        alert("✅ เข้าสู่ระบบสำเร็จ");
+        document.getElementById("add-btn").style.display = "block";
+        document.getElementById("password").style.display = "none";
+        event.target.style.display = "none";
+      } else {
+        alert("❌ รหัสผิด");
+      }
+    }
+
+    function showForm() {
+      document.getElementById("form-section").style.display = "block";
+      document.getElementById("add-btn").style.display = "none";
+    }
+
+    function submitProduct() {
+      const name = document.getElementById("name").value;
+      const img = document.getElementById("img").value;
+      const link = document.getElementById("link").value;
+
+      if (!name || !img || !link) {
+        alert("⚠️ กรอกให้ครบทุกช่อง");
+        return;
+      }
+
+      fetch(SHEET_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "ชื่อสินค้า": name,
+          "รูปภาพ": img,
+          "ลิงก์": link
+        })
+      })
+      .then(() => {
+        alert("✅ บันทึกเรียบร้อยแล้ว!");
+        document.getElementById("form-section").style.display = "none";
+        document.getElementById("add-btn").style.display = "block";
+      })
+      .catch(err => {
+        alert("❌ บันทึกล้มเหลว");
+        console.error(err);
+      });
+    }
+  </script>
+</body>
+</html>
