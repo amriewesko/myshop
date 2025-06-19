@@ -6,21 +6,25 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f5f7fa;
-      padding: 40px;
+      background: #f0f2f5;
+      padding: 30px;
+      margin: 0;
     }
+
     .container {
-      max-width: 450px;
+      max-width: 500px;
       margin: auto;
       background: white;
       border-radius: 12px;
       padding: 30px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     }
-    h2 {
+
+    h2, h3 {
       text-align: center;
       color: #333;
     }
+
     input, button {
       width: 100%;
       padding: 12px;
@@ -28,36 +32,75 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
+      box-sizing: border-box;
     }
+
     button {
       background: #007bff;
       color: white;
-      cursor: pointer;
       border: none;
+      cursor: pointer;
     }
+
     button:hover {
       background: #0056b3;
     }
-    #form-section, #add-btn {
+
+    label {
+      display: block;
+      margin-top: 16px;
+      color: #444;
+    }
+
+    #login-form, #add-btn, #form-section, #back-btn {
       display: none;
       margin-top: 20px;
     }
-    label {
-      margin-top: 12px;
-      display: block;
-      color: #444;
+
+    #preview {
+      margin-top: 10px;
+      display: none;
+      width: 100px;
+      border-radius: 6px;
+    }
+
+    .link-btn {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .link-btn a {
+      display: inline-block;
+      padding: 10px 15px;
+      background: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .link-btn a:hover {
+      background: #5a6268;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🔐 เข้าสู่ระบบแอดมิน</h2>
+    <h2>🔒 ระบบแอดมิน</h2>
+
+    <!-- 🔘 ปุ่มเริ่มต้น -->
+    <div id="start-btn">
+      <button onclick="showLogin()">➡ เข้าสู่ระบบแอดมิน</button>
+    </div>
 
     <!-- 🔑 ฟอร์มล็อกอิน -->
     <div id="login-form">
-      <label for="password">รหัสผ่านแอดมิน</label>
-      <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." />
+      <input type="password" id="password" placeholder="กรอกรหัสผ่านแอดมิน..." />
       <button onclick="checkLogin()">เข้าสู่ระบบ</button>
+    </div>
+
+    <!-- 🔙 ปุ่มกลับ -->
+    <div id="back-btn" class="link-btn">
+      <a href="index.html">🔙 ดูสินค้าทั้งหมด</a>
     </div>
 
     <!-- ➕ ปุ่มเพิ่มสินค้า -->
@@ -68,18 +111,31 @@
     <!-- 📦 ฟอร์มเพิ่มสินค้า -->
     <div id="form-section">
       <h3>📦 เพิ่มข้อมูลสินค้า</h3>
+
       <label>ชื่อสินค้า</label>
       <input type="text" id="name" placeholder="ชื่อสินค้า" />
-      <label>ลิงก์รูปภาพ</label>
-      <input type="text" id="img" placeholder="URL ของรูปภาพ" />
+
+      <label>เลือกรูปภาพสินค้า</label>
+      <input type="file" id="imageInput" accept="image/*" onchange="uploadImage()" />
+      <img id="preview" />
+
+      <input type="hidden" id="img" />
+
       <label>ลิงก์สินค้า</label>
-      <input type="text" id="link" placeholder="ลิงก์ไปยังร้านค้า/หน้าเพจ" />
+      <input type="text" id="link" placeholder="ลิงก์ไปยังร้านค้า/เพจ" />
+
       <button onclick="submitProduct()">📤 บันทึกสินค้า</button>
     </div>
   </div>
 
   <script>
     const SHEET_URL = "https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d"; // ✅ เปลี่ยนตรงนี้
+    const IMGBB_API_KEY = "1838933755ecde270eabbf6d57977b80"; // ✅ ใส่ API KEY ของคุณ
+
+    function showLogin() {
+      document.getElementById("start-btn").style.display = "none";
+      document.getElementById("login-form").style.display = "block";
+    }
 
     function checkLogin() {
       const pw = document.getElementById("password").value;
@@ -87,6 +143,7 @@
         alert("✅ เข้าสู่ระบบสำเร็จ");
         document.getElementById("login-form").style.display = "none";
         document.getElementById("add-btn").style.display = "block";
+        document.getElementById("back-btn").style.display = "block";
       } else {
         alert("❌ รหัสผ่านไม่ถูกต้อง");
       }
@@ -97,13 +154,37 @@
       document.getElementById("add-btn").style.display = "none";
     }
 
+    function uploadImage() {
+      const file = document.getElementById("imageInput").files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        const url = data.data.url;
+        document.getElementById("img").value = url;
+        document.getElementById("preview").src = url;
+        document.getElementById("preview").style.display = "block";
+        alert("✅ อัปโหลดรูปภาพสำเร็จแล้ว");
+      })
+      .catch(() => {
+        alert("❌ อัปโหลดรูปภาพล้มเหลว");
+      });
+    }
+
     function submitProduct() {
       const name = document.getElementById("name").value;
       const img = document.getElementById("img").value;
       const link = document.getElementById("link").value;
 
       if (!name || !img || !link) {
-        alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง");
+        alert("⚠️ กรุณากรอกข้อมูลให้ครบ");
         return;
       }
 
@@ -118,9 +199,7 @@
       })
       .then(() => {
         alert("✅ เพิ่มสินค้าเรียบร้อยแล้ว!");
-        document.getElementById("form-section").reset;
-        document.getElementById("form-section").style.display = "none";
-        document.getElementById("add-btn").style.display = "block";
+        window.location.reload(); // รีโหลดหน้า
       })
       .catch(err => {
         alert("❌ บันทึกไม่สำเร็จ");
