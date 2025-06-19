@@ -223,6 +223,23 @@
         color: #004085;
         border: 1px solid #b8daff;
     }
+    /* Style for the new delete image button */
+    #delete-image-btn {
+        background-color: var(--danger-color);
+        color: var(--text-light);
+        padding: 8px 12px;
+        font-size: 0.85em;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        margin-left: 10px; /* Keep some distance from filename */
+        flex-shrink: 0; /* Prevent it from shrinking */
+    }
+    #delete-image-btn:hover {
+        background-color: #b02a37;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(220, 53, 69, 0.4);
+    }
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -295,6 +312,15 @@
             margin: auto;
             max-width: 60px;
         }
+        #preview-container { /* Ensure preview container is flexible */
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #delete-image-btn {
+            margin-left: 0; /* Remove left margin on small screens */
+            width: 100%; /* Full width for button */
+            margin-top: 10px; /* Add some top margin */
+        }
     }
 
     @media (max-width: 480px) {
@@ -330,8 +356,7 @@
 
     <div id="form-section" style="display:none; margin-top:20px;">
         <h3 id="form-title">เพิ่มสินค้าใหม่</h3>
-        <input type="hidden" id="edit-index" value="" />
-        <label for="product-id">ID สินค้า:</label>
+        <input type="hidden" id="edit-sheetbest-id" value="" /> <label for="product-id">ID สินค้า:</label>
         <input type="text" id="product-id" placeholder="ID สินค้า (สร้างอัตโนมัติ)" disabled />
         
         <label for="product-name">ชื่อสินค้า:</label>
@@ -355,6 +380,9 @@
         <div id="preview-container">
             <img id="preview" alt="Preview" />
             <span id="preview-filename" style="font-size: 0.9em; color: var(--text-dark);"></span>
+            <button type="button" id="delete-image-btn" onclick="clearImagePreview()" style="display:none;">
+                <i class="fas fa-trash-alt"></i> ลบรูปภาพ
+            </button>
         </div>
         <input type="hidden" id="product-img-url" />
         
@@ -400,7 +428,7 @@
     const addProductBtn = document.getElementById("add-product-btn");
     const formSection = document.getElementById("form-section");
     const formTitle = document.getElementById("form-title");
-    const editIndexInput = document.getElementById("edit-index");
+    const editSheetbestIdInput = document.getElementById("edit-sheetbest-id"); // เปลี่ยนชื่อตัวแปร
     const productIdInput = document.getElementById("product-id");
     const productNameInput = document.getElementById("product-name");
     const categorySelect = document.getElementById("category-select");
@@ -414,6 +442,7 @@
     const productsSection = document.getElementById("products-section");
     const productsTableBody = document.getElementById("products-table-body");
     const linkBack = document.getElementById("link-back");
+    const deleteImageBtn = document.getElementById("delete-image-btn"); // เพิ่มปุ่มลบรูปภาพ
 
     // ====== ตัวแปร ======
     let products = [];
@@ -484,7 +513,7 @@
         let maxIdNum = 0;
         products.forEach(item => {
             const id = item["ID สินค้า"];
-            if (id && id.startsWith("P-")) {
+            if (id && typeof id === 'string' && id.startsWith("P-")) { // ตรวจสอบว่าเป็น string ด้วย
                 const numPart = parseInt(id.substring(2), 10);
                 if (!isNaN(numPart) && numPart > maxIdNum) {
                     maxIdNum = numPart;
@@ -497,7 +526,7 @@
 
     // ====== แสดงฟอร์มเพิ่ม/แก้ไขสินค้า ======
     async function showForm() {
-        clearForm();
+        clearForm(); // เคลียร์ฟอร์มและซ่อนปุ่มลบรูป
         formTitle.innerText = "เพิ่มสินค้าใหม่";
         formSection.style.display = "block";
         addProductBtn.style.display = "none";
@@ -506,7 +535,7 @@
 
         const newId = await generateProductId();
         productIdInput.value = newId;
-        productIdInput.disabled = true;
+        productIdInput.disabled = true; // ID สินค้า จะถูก disabled เสมอ
         productNameInput.focus();
     }
 
@@ -514,10 +543,7 @@
     async function uploadImage() {
         const file = imageInput.files[0];
         if (!file) {
-            previewImage.style.display = "none";
-            previewImage.src = "";
-            previewFilename.innerText = "";
-            productImgUrlInput.value = "";
+            clearImagePreview(); // ถ้าไม่มีไฟล์ ก็เคลียร์รูปภาพและซ่อนปุ่มลบ
             return;
         }
 
@@ -539,6 +565,7 @@
                 productImgUrlInput.value = data.data.url;
                 previewImage.src = data.data.url;
                 previewImage.style.display = "block";
+                deleteImageBtn.style.display = "inline-block"; // แสดงปุ่มลบเมื่ออัปโหลดสำเร็จ
                 setMessage("อัปโหลดรูปสำเร็จ", "success", 1500);
             } else {
                 throw new Error(data.error?.message || "Unknown ImgBB error");
@@ -546,10 +573,7 @@
         } catch (err) {
             setMessage(`อัปโหลดรูปไม่สำเร็จ: ${err.message}`, "error");
             console.error("Image upload error:", err);
-            previewImage.style.display = "none";
-            previewImage.src = "";
-            previewFilename.innerText = "";
-            productImgUrlInput.value = "";
+            clearImagePreview(); // ถ้าอัปโหลดไม่สำเร็จ ก็เคลียร์รูปภาพและซ่อนปุ่มลบ
         } finally {
             submitProductButton.disabled = false;
         }
@@ -557,8 +581,11 @@
 
     // ====== บันทึกข้อมูลสินค้า (เพิ่มหรือแก้ไข) ======
     async function submitProduct() {
-        const index = editIndexInput.value;
-        const id = productIdInput.value.trim();
+        // editSheetbestIdInput.value จะเก็บ Sheetbest ID (UUID) สำหรับการแก้ไข
+        // ถ้าเป็นค่าว่าง แสดงว่าเป็นการเพิ่มสินค้าใหม่
+        const sheetbestIdToEdit = editSheetbestIdInput.value; 
+
+        const id = productIdInput.value.trim(); // ID สินค้า (P-001) ที่แสดงให้ผู้ใช้เห็น
         const name = productNameInput.value.trim();
         const category = categorySelect.value;
         const img = productImgUrlInput.value.trim();
@@ -586,18 +613,15 @@
 
         try {
             let res;
-            if (index === "") {
+            if (sheetbestIdToEdit === "") { // เพิ่มสินค้าใหม่ (POST)
                 res = await fetch(SHEET_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(productData)
                 });
-            } else {
-                const item = products[parseInt(index)];
-                if (!item || !item.id) {
-                    throw new Error("ไม่พบข้อมูลสินค้าเพื่อแก้ไข (Missing Item ID from Sheetbest)");
-                }
-                const patchURL = `${SHEET_URL}/${item.id}`;
+            } else { // แก้ไขสินค้า (PATCH)
+                // ใช้ Sheetbest ID ที่เก็บไว้ใน editSheetbestIdInput เพื่อระบุแถวที่จะแก้ไข
+                const patchURL = `${SHEET_URL}/${sheetbestIdToEdit}`; 
                 res = await fetch(patchURL, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
@@ -610,11 +634,11 @@
                 throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
             }
 
-            setMessage(index === "" ? "เพิ่มสินค้าเรียบร้อย" : "แก้ไขสินค้าเรียบร้อย", "success", 2000);
+            setMessage(sheetbestIdToEdit === "" ? "เพิ่มสินค้าเรียบร้อย" : "แก้ไขสินค้าเรียบร้อย", "success", 2000);
             cancelForm();
             await loadProducts();
         } catch (err) {
-            setMessage(`${index === "" ? "เพิ่มสินค้า" : "แก้ไขสินค้า"}ไม่สำเร็จ: ${err.message}`, "error");
+            setMessage(`${sheetbestIdToEdit === "" ? "เพิ่มสินค้า" : "แก้ไขสินค้า"}ไม่สำเร็จ: ${err.message}`, "error");
             console.error("Submit product error:", err);
         } finally {
             submitProductButton.disabled = false;
@@ -626,16 +650,29 @@
         const item = products[index];
         if (!item) return;
 
-        editIndexInput.value = index;
+        // เก็บ Sheetbest ID (uuid) ของสินค้าใน hidden input
+        // นี่คือการแก้ไขที่สำคัญเพื่อแก้ปัญหา "Missing Item ID"
+        editSheetbestIdInput.value = item.id; 
+
         productIdInput.value = item["ID สินค้า"] || "-";
-        productIdInput.disabled = true;
+        productIdInput.disabled = true; // ID สินค้ายังคง disabled
         productNameInput.value = item["ชื่อสินค้า"] || "";
         categorySelect.value = item["หมวดหมู่"] || "";
         productImgUrlInput.value = item["รูปภาพ"] || "";
-        previewImage.src = item["รูปภาพ"] || PLACEHOLDER_IMG;
-        previewImage.style.display = "block";
-        previewFilename.innerText = item["รูปภาพ"] ? "รูปภาพปัจจุบัน" : "";
-        imageInput.value = "";
+        
+        // แสดงรูปภาพ Preview และปุ่มลบรูปภาพ
+        if (item["รูปภาพ"]) {
+            previewImage.src = item["รูปภาพ"];
+            previewImage.style.display = "block";
+            previewFilename.innerText = "รูปภาพปัจจุบัน";
+            deleteImageBtn.style.display = "inline-block"; // แสดงปุ่มลบ
+        } else {
+            previewImage.src = "";
+            previewImage.style.display = "none";
+            previewFilename.innerText = "";
+            deleteImageBtn.style.display = "none"; // ซ่อนปุ่มลบ
+        }
+        imageInput.value = ""; // เคลียร์ input type file เสมอ เพื่อให้เลือกไฟล์ใหม่ได้
         productLinkInput.value = item["ลิงก์"] || "";
 
         formTitle.innerText = "แก้ไขสินค้า";
@@ -650,13 +687,13 @@
     async function deleteProduct(index) {
         const item = products[index];
         if (!item || !item.id) {
-            setMessage("ไม่พบข้อมูลสินค้าเพื่อจะลบ (Missing Item ID from Sheetbest)", "error");
+            setMessage("ไม่พบข้อมูลสินค้าเพื่อจะลบ (Missing Item ID from Sheetbest - Try refreshing)", "error");
             return;
         }
 
         if (!confirm(`คุณแน่ใจจะลบสินค้า "${item["ชื่อสินค้า"] || 'นี้'}" หรือไม่?`)) return;
 
-        const delURL = `${SHEET_URL}/${item.id}`;
+        const delURL = `${SHEET_URL}/${item.id}`; // ใช้ item.id โดยตรงในการลบ
 
         setMessage("กำลังลบสินค้า...", "info");
         try {
@@ -678,24 +715,39 @@
         formSection.style.display = "none";
         addProductBtn.style.display = "block";
         productsSection.style.display = "block";
-        clearForm();
+        clearForm(); // เรียกใช้ clearForm เพื่อล้างข้อมูลและซ่อนปุ่มลบรูป
         setMessage("");
     }
 
-    // ====== เคลียร์ข้อมูลฟอร์ม ======
+    // ====== เคลียร์ข้อมูลฟอร์มและรูปภาพ Preview ======
     function clearForm() {
-        editIndexInput.value = "";
+        editSheetbestIdInput.value = ""; // เคลียร์ Sheetbest ID ที่เก็บไว้
         productIdInput.value = "";
         productIdInput.disabled = true;
         productNameInput.value = "";
         categorySelect.value = "";
-        imageInput.value = "";
+        productLinkInput.value = "";
+        
+        // เคลียร์และซ่อนรูปภาพ Preview และปุ่มลบรูปภาพ
+        imageInput.value = ""; 
         productImgUrlInput.value = "";
         previewImage.style.display = "none";
-        previewImage.src = ""; // Clear preview image
-        previewFilename.innerText = ""; // Clear filename
-        productLinkInput.value = "";
+        previewImage.src = ""; 
+        previewFilename.innerText = "";
+        deleteImageBtn.style.display = "none"; // ซ่อนปุ่มลบรูปภาพ
+
         setMessage("");
+    }
+
+    // ====== ฟังก์ชันสำหรับล้างรูปภาพ Preview โดยเฉพาะ (เรียกใช้จากปุ่มลบรูป) ======
+    function clearImagePreview() {
+        imageInput.value = ""; // ล้าง input type file
+        productImgUrlInput.value = ""; // ล้าง URL รูปภาพที่ซ่อนอยู่
+        previewImage.src = "";
+        previewImage.style.display = "none";
+        previewFilename.innerText = "";
+        deleteImageBtn.style.display = "none"; // ซ่อนปุ่มลบรูปภาพหลังจากลบ
+        setMessage("รูปภาพถูกลบแล้ว (ยังไม่ได้บันทึกการเปลี่ยนแปลง)", "info", 1500);
     }
 
     // ====== แสดงข้อความสถานะ ======
