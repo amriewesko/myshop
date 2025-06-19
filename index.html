@@ -20,10 +20,39 @@
   }
   h1 {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     font-size: 2.5em;
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  .top-controls {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .top-controls input, .top-controls select, .top-controls button {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1em;
+  }
+  .top-controls input {
+    flex: 1;
+  }
+  .top-controls select {
+    width: 180px;
+  }
+  .top-controls button {
+    background-color: #6c5ce7;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .top-controls button:hover {
+    background-color: #4b4bb2;
   }
   .product-list {
     display: grid;
@@ -38,9 +67,14 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     overflow: hidden;
     transition: transform 0.3s ease;
+    animation: fadeIn 0.8s ease;
   }
   .product-card:hover {
     transform: translateY(-5px);
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
   }
   .product-card img {
     width: 100%;
@@ -78,37 +112,68 @@
 </head>
 <body>
 <h1>🌟 สินค้าของเรา 🌟</h1>
+<div class="top-controls">
+  <input type="text" id="searchBox" placeholder="ค้นหาสินค้า...">
+  <select id="categoryFilter">
+    <option value="">ทุกหมวดหมู่</option>
+    <option value="รองเท้า">รองเท้า</option>
+    <option value="กระเป๋า">กระเป๋า</option>
+    <option value="เสื้อผ้า">เสื้อผ้า</option>
+  </select>
+  <button onclick="window.location.href='admin.html'">เข้าสู่ระบบแอดมิน</button>
+</div>
+
 <div id="loading">กำลังโหลดสินค้า...</div>
 <div class="product-list" id="product-list"></div>
 
 <script>
   const SHEET_URL = "https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d"; // <-- ใส่ลิงก์ API ของคุณ
+  let products = [];
 
   function loadProducts() {
     fetch(SHEET_URL)
       .then(res => res.json())
       .then(data => {
+        products = data;
         document.getElementById('loading').style.display = 'none';
-        const list = document.getElementById('product-list');
-        if (!data.length) {
-          list.innerHTML = '<p style="color:white; text-align:center">ไม่มีสินค้าในระบบ</p>';
-          return;
-        }
-        list.innerHTML = data.map(item => `
-          <div class="product-card">
-            <img src="${item['รูปภาพ'] || 'https://via.placeholder.com/240'}" alt="รูปสินค้า">
-            <div class="product-content">
-              <div class="product-name">${item['ชื่อสินค้า'] || '-'}</div>
-              <div class="product-link">
-                <a href="${item['ลิงก์'] || '#'}" target="_blank">ดูสินค้า</a>
-              </div>
-            </div>
-          </div>
-        `).join('');
+        renderProducts(products);
       })
       .catch(() => {
         document.getElementById('loading').innerText = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
       });
+  }
+
+  function renderProducts(data) {
+    const list = document.getElementById('product-list');
+    if (!data.length) {
+      list.innerHTML = '<p style="color:white; text-align:center">ไม่มีสินค้าในระบบ</p>';
+      return;
+    }
+    list.innerHTML = data.map(item => `
+      <div class="product-card">
+        <img src="${item['รูปภาพ'] || 'https://via.placeholder.com/240'}" alt="รูปสินค้า">
+        <div class="product-content">
+          <div class="product-name">${item['ชื่อสินค้า'] || '-'}</div>
+          <div class="product-link">
+            <a href="${item['ลิงก์'] || '#'}" target="_blank">ไปยังสินค้า</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('searchBox').addEventListener('input', filterProducts);
+  document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+
+  function filterProducts() {
+    const search = document.getElementById('searchBox').value.toLowerCase();
+    const category = document.getElementById('categoryFilter').value;
+    const filtered = products.filter(item => {
+      const name = (item['ชื่อสินค้า'] || '').toLowerCase();
+      const cat = item['หมวดหมู่'] || '';
+      return name.includes(search) && (!category || cat === category);
+    });
+    renderProducts(filtered);
   }
 
   loadProducts();
