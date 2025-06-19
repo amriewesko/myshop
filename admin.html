@@ -1,193 +1,289 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin | ระบบจัดการสินค้า</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      padding: 30px;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    }
-
-    h2, h3 {
-      text-align: center;
-      color: #333;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    label {
-      display: block;
-      margin-top: 16px;
-      color: #444;
-    }
-
-    #login-form, #add-btn, #form-section, #back-btn {
-      display: none;
-      margin-top: 20px;
-    }
-
-    #preview {
-      margin-top: 10px;
-      display: none;
-      width: 100px;
-      border-radius: 6px;
-    }
-
-    .link-btn {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .link-btn a {
-      display: inline-block;
-      padding: 10px 15px;
-      background: #6c757d;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-    }
-
-    .link-btn a:hover {
-      background: #5a6268;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin ระบบจัดการสินค้า</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    margin: 0; padding: 20px;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgb(0 0 0 / 0.1);
+  }
+  h2, h3 {
+    text-align: center;
+    color: #333;
+  }
+  input[type=text], input[type=password], input[type=url], input[type=file] {
+    width: 100%;
+    padding: 10px 15px;
+    margin: 8px 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  button {
+    cursor: pointer;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  img {
+    max-width: 80px;
+    border-radius: 6px;
+  }
+  .btn-edit {
+    background-color: #ffc107;
+    color: black;
+    margin-right: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+  }
+  .btn-edit:hover {
+    background-color: #e0a800;
+  }
+  .btn-delete {
+    background-color: #dc3545;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+  }
+  .btn-delete:hover {
+    background-color: #b02a37;
+  }
+  .link-back {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .link-back a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .link-back a:hover {
+    text-decoration: underline;
+  }
+  #preview {
+    max-width: 120px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: none;
+  }
+  #message {
+    margin: 15px 0;
+    text-align: center;
+    font-weight: 600;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h2>🔒 ระบบแอดมิน</h2>
+<div class="container">
+  <h2>ระบบแอดมินจัดการสินค้า</h2>
 
-    <!-- 🔘 ปุ่มเริ่มต้น -->
-    <div id="start-btn">
-      <button onclick="showLogin()">➡ เข้าสู่ระบบแอดมิน</button>
-    </div>
-
-    <!-- 🔑 ฟอร์มล็อกอิน -->
-    <div id="login-form">
-      <input type="password" id="password" placeholder="กรอกรหัสผ่านแอดมิน..." />
-      <button onclick="checkLogin()">เข้าสู่ระบบ</button>
-    </div>
-
-    <!-- 🔙 ปุ่มกลับ -->
-    <div id="back-btn" class="link-btn">
-      <a href="index.html">🔙 ดูสินค้าทั้งหมด</a>
-    </div>
-
-    <!-- ➕ ปุ่มเพิ่มสินค้า -->
-    <div id="add-btn">
-      <button onclick="showForm()">➕ เพิ่มสินค้าใหม่</button>
-    </div>
-
-    <!-- 📦 ฟอร์มเพิ่มสินค้า -->
-    <div id="form-section">
-      <h3>📦 เพิ่มข้อมูลสินค้า</h3>
-
-      <label>ชื่อสินค้า</label>
-      <input type="text" id="name" placeholder="ชื่อสินค้า" />
-
-      <label>เลือกรูปภาพสินค้า</label>
-      <input type="file" id="imageInput" accept="image/*" onchange="uploadImage()" />
-      <img id="preview" />
-
-      <input type="hidden" id="img" />
-
-      <label>ลิงก์สินค้า</label>
-      <input type="text" id="link" placeholder="ลิงก์ไปยังร้านค้า/เพจ" />
-
-      <button onclick="submitProduct()">📤 บันทึกสินค้า</button>
-    </div>
+  <!-- ปุ่มย้อนกลับไปดูหน้าเว็บหลัก -->
+  <div class="link-back" id="link-back" style="display:none;">
+    <a href="index.html">🔙 กลับไปดูสินค้าทั้งหมด</a>
   </div>
 
-  <script>
-    const SHEET_URL = "https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d"; // ✅ เปลี่ยนตรงนี้
-    const IMGBB_API_KEY = "1838933755ecde270eabbf6d57977b80"; // ✅ ใส่ API KEY ของคุณ
+  <!-- เริ่มต้นแสดงปุ่มเข้าสู่ระบบ -->
+  <div id="start-section">
+    <button onclick="showLogin()">➡ เข้าสู่ระบบแอดมิน</button>
+  </div>
 
-    function showLogin() {
-      document.getElementById("start-btn").style.display = "none";
-      document.getElementById("login-form").style.display = "block";
+  <!-- ฟอร์มล็อกอิน -->
+  <div id="login-section" style="display:none;">
+    <input type="password" id="password" placeholder="กรอกรหัสผ่านแอดมิน" />
+    <button onclick="login()">เข้าสู่ระบบ</button>
+  </div>
+
+  <!-- ปุ่มเพิ่มสินค้า -->
+  <div id="add-product-btn" style="display:none; margin-top:20px;">
+    <button onclick="showForm()">➕ เพิ่มสินค้าใหม่</button>
+  </div>
+
+  <!-- ฟอร์มเพิ่ม/แก้ไขสินค้า -->
+  <div id="form-section" style="display:none; margin-top:20px;">
+    <h3 id="form-title">เพิ่มสินค้าใหม่</h3>
+    <input type="hidden" id="edit-index" value="" />
+    <label>ชื่อสินค้า</label>
+    <input type="text" id="product-name" placeholder="ชื่อสินค้า" />
+    <label>เลือกรูปภาพ</label>
+    <input type="file" id="imageInput" accept="image/*" onchange="uploadImage()" />
+    <img id="preview" alt="Preview" />
+    <input type="hidden" id="product-img-url" />
+    <label>ลิงก์สินค้า</label>
+    <input type="url" id="product-link" placeholder="URL ของสินค้า" />
+    <button onclick="submitProduct()">บันทึกข้อมูล</button>
+    <button style="background:#6c757d; margin-top:10px;" onclick="cancelForm()">ยกเลิก</button>
+  </div>
+
+  <!-- แสดงข้อความสถานะ -->
+  <div id="message"></div>
+
+  <!-- ตารางรายการสินค้า -->
+  <div id="products-section" style="display:none;">
+    <h3>รายการสินค้า</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ชื่อสินค้า</th>
+          <th>รูปภาพ</th>
+          <th>ลิงก์</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="products-table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ====== CONFIG ======
+  const SHEET_URL = "https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d"; // เปลี่ยนเป็น API URL ของคุณ
+  const IMGBB_API_KEY = "1838933755ecde270eabbf6d57977b80"; // ใส่ API KEY ของ imgbb
+
+  // ====== ตัวแปร ======
+  let products = [];
+
+  // ====== แสดงฟอร์มล็อกอิน ======
+  function showLogin() {
+    document.getElementById("start-section").style.display = "none";
+    document.getElementById("login-section").style.display = "block";
+    document.getElementById("link-back").style.display = "block";
+  }
+
+  // ====== ฟังก์ชันล็อกอินง่ายๆ ======
+  function login() {
+    const pw = document.getElementById("password").value;
+    if (pw === "admin123") {
+      setMessage("เข้าสู่ระบบสำเร็จ", "green");
+      document.getElementById("login-section").style.display = "none";
+      document.getElementById("add-product-btn").style.display = "block";
+      document.getElementById("products-section").style.display = "block";
+      loadProducts();
+    } else {
+      setMessage("รหัสผ่านไม่ถูกต้อง", "red");
     }
+  }
 
-    function checkLogin() {
-      const pw = document.getElementById("password").value;
-      if (pw === "admin123") {
-        alert("✅ เข้าสู่ระบบสำเร็จ");
-        document.getElementById("login-form").style.display = "none";
-        document.getElementById("add-btn").style.display = "block";
-        document.getElementById("back-btn").style.display = "block";
-      } else {
-        alert("❌ รหัสผ่านไม่ถูกต้อง");
-      }
-    }
-
-    function showForm() {
-      document.getElementById("form-section").style.display = "block";
-      document.getElementById("add-btn").style.display = "none";
-    }
-
-    function uploadImage() {
-      const file = document.getElementById("imageInput").files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("image", file);
-
-      fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-        method: "POST",
-        body: formData
-      })
+  // ====== โหลดข้อมูลสินค้าจาก Google Sheets ======
+  function loadProducts() {
+    fetch(SHEET_URL)
       .then(res => res.json())
       .then(data => {
-        const url = data.data.url;
-        document.getElementById("img").value = url;
-        document.getElementById("preview").src = url;
-        document.getElementById("preview").style.display = "block";
-        alert("✅ อัปโหลดรูปภาพสำเร็จแล้ว");
+        products = data;
+        renderProductsTable();
       })
-      .catch(() => {
-        alert("❌ อัปโหลดรูปภาพล้มเหลว");
+      .catch(err => {
+        setMessage("โหลดข้อมูลล้มเหลว โปรดลองใหม่อีกครั้ง", "red");
+        console.error(err);
       });
+  }
+
+  // ====== แสดงตารางสินค้า ======
+  function renderProductsTable() {
+    const tbody = document.getElementById("products-table-body");
+    tbody.innerHTML = "";
+    products.forEach((item, index) => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${item["ชื่อสินค้า"] || ""}</td>
+          <td><img src="${item["รูปภาพ"] || ""}" alt="รูปสินค้า" /></td>
+          <td><a href="${item["ลิงก์"] || "#"}" target="_blank">ลิงก์สินค้า</a></td>
+          <td>
+            <button class="btn-edit" onclick="editProduct(${index})">แก้ไข</button>
+            <button class="btn-delete" onclick="deleteProduct(${index})">ลบ</button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  // ====== แสดงฟอร์มเพิ่มสินค้า ======
+  function showForm() {
+    clearForm();
+    document.getElementById("form-title").innerText = "เพิ่มสินค้าใหม่";
+    document.getElementById("form-section").style.display = "block";
+    document.getElementById("add-product-btn").style.display = "none";
+    document.getElementById("products-section").style.display = "none";
+    setMessage("");
+  }
+
+  // ====== อัปโหลดรูปไป imgbb ======
+  function uploadImage() {
+    const file = document.getElementById("imageInput").files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    setMessage("กำลังอัปโหลดรูป...", "black");
+
+    fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      method: "POST",
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("product-img-url").value = data.data.url;
+          const preview = document.getElementById("preview");
+          preview.src = data.data.url;
+          preview.style.display = "block";
+          setMessage("อัปโหลดรูปสำเร็จ", "green");
+        } else {
+          setMessage("อัปโหลดรูปไม่สำเร็จ", "red");
+        }
+      })
+      .catch(() => setMessage("เกิดข้อผิดพลาดในการอัปโหลดรูป", "red"));
+  }
+
+  // ====== บันทึกข้อมูลสินค้า (เพิ่มหรือแก้ไข) ======
+  function submitProduct() {
+    const index = document.getElementById("edit-index").value;
+    const name = document.getElementById("product-name").value.trim();
+    const img = document.getElementById("product-img-url").value.trim();
+    const link = document.getElementById("product-link").value.trim();
+
+    if (!name || !img || !link) {
+      alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+      return;
     }
 
-    function submitProduct() {
-      const name = document.getElementById("name").value;
-      const img = document.getElementById("img").value;
-      const link = document.getElementById("link").value;
-
-      if (!name || !img || !link) {
-        alert("⚠️ กรุณากรอกข้อมูลให้ครบ");
-        return;
-      }
-
+    if (index === "") {
+      // เพิ่มสินค้าใหม่ (POST)
       fetch(SHEET_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -197,15 +293,100 @@
           "ลิงก์": link
         })
       })
-      .then(() => {
-        alert("✅ เพิ่มสินค้าเรียบร้อยแล้ว!");
-        window.location.reload(); // รีโหลดหน้า
+        .then(() => {
+          setMessage("เพิ่มสินค้าเรียบร้อย", "green");
+          cancelForm();
+          loadProducts();
+        })
+        .catch(() => setMessage("เพิ่มสินค้าไม่สำเร็จ", "red"));
+    } else {
+      // แก้ไขสินค้า (PATCH)
+      const item = products[index];
+      if (!item || !item.id) {
+        alert("ไม่พบข้อมูลสินค้าเพื่อแก้ไข");
+        return;
+      }
+      const patchURL = `${SHEET_URL}/${item.id}`;
+      fetch(patchURL, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "ชื่อสินค้า": name,
+          "รูปภาพ": img,
+          "ลิงก์": link
+        })
       })
-      .catch(err => {
-        alert("❌ บันทึกไม่สำเร็จ");
-        console.error(err);
-      });
+        .then(() => {
+          setMessage("แก้ไขสินค้าเรียบร้อย", "green");
+          cancelForm();
+          loadProducts();
+        })
+        .catch(() => setMessage("แก้ไขสินค้าไม่สำเร็จ", "red"));
     }
-  </script>
+  }
+
+  // ====== แก้ไขข้อมูลสินค้า ======
+  function editProduct(index) {
+    const item = products[index];
+    if (!item) return;
+    document.getElementById("edit-index").value = index;
+    document.getElementById("product-name").value = item["ชื่อสินค้า"] || "";
+    document.getElementById("product-img-url").value = item["รูปภาพ"] || "";
+    const preview = document.getElementById("preview");
+    preview.src = item["รูปภาพ"] || "";
+    preview.style.display = item["รูปภาพ"] ? "block" : "none";
+    document.getElementById("product-link").value = item["ลิงก์"] || "";
+
+    document.getElementById("form-title").innerText = "แก้ไขสินค้า";
+    document.getElementById("form-section").style.display = "block";
+    document.getElementById("add-product-btn").style.display = "none";
+    document.getElementById("products-section").style.display = "none";
+    setMessage("");
+  }
+
+  // ====== ลบสินค้า ======
+  function deleteProduct(index) {
+    if (!confirm("คุณแน่ใจจะลบสินค้านี้หรือไม่?")) return;
+    const item = products[index];
+    if (!item || !item.id) {
+      alert("ไม่พบข้อมูลสินค้าเพื่อจะลบ");
+      return;
+    }
+    const delURL = `${SHEET_URL}/${item.id}`;
+    fetch(delURL, { method: "DELETE" })
+      .then(() => {
+        setMessage("ลบสินค้าเรียบร้อย", "green");
+        loadProducts();
+      })
+      .catch(() => setMessage("ลบสินค้าไม่สำเร็จ", "red"));
+  }
+
+  // ====== ยกเลิกฟอร์ม ======
+  function cancelForm() {
+    document.getElementById("form-section").style.display = "none";
+    document.getElementById("add-product-btn").style.display = "block";
+    document.getElementById("products-section").style.display = "block";
+    clearForm();
+    setMessage("");
+  }
+
+  // ====== เคลียร์ข้อมูลฟอร์ม ======
+  function clearForm() {
+    document.getElementById("edit-index").value = "";
+    document.getElementById("product-name").value = "";
+    document.getElementById("imageInput").value = "";
+    document.getElementById("product-img-url").value = "";
+    document.getElementById("preview").style.display = "none";
+    document.getElementById("preview").src = "";
+    document.getElementById("product-link").value = "";
+  }
+
+  // ====== แสดงข้อความสถานะ ======
+  function setMessage(msg, color = "black") {
+    const el = document.getElementById("message");
+    el.innerText = msg;
+    el.style.color = color;
+  }
+</script>
 </body>
 </html>
