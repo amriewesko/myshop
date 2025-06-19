@@ -68,6 +68,7 @@
         background: rgba(255, 255, 255, 0.9);
         color: var(--text-color-dark);
         width: 100%; /* ให้เต็มความกว้างบนมือถือ */
+        transition: all 0.3s ease; /* เพิ่ม transition สำหรับ hover/focus */
     }
     .top-controls input::placeholder {
         color: #777;
@@ -81,6 +82,7 @@
     .top-controls button {
         background-color: var(--secondary-color);
         color: var(--text-color-light);
+        cursor: pointer; /* เพิ่ม cursor pointer */
     }
     .top-controls button:hover {
         background-color: #4b4bb2;
@@ -107,10 +109,17 @@
         display: flex;
         flex-direction: column;
         height: 100%;
+        cursor: pointer; /* เพิ่ม cursor pointer */
     }
     .product-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    /* เพิ่ม style สำหรับ focus state เพื่อ Accessibility */
+    .product-card:focus {
+        outline: none; /* ลบ outline เริ่มต้น */
+        box-shadow: 0 0 0 4px var(--secondary-color), 0 12px 30px rgba(0,0,0,0.2); /* เพิ่มเงา focus */
+        transform: translateY(-3px);
     }
     @keyframes fadeIn {
         from { opacity: 0; transform: scale(0.98) translateY(10px); }
@@ -144,6 +153,11 @@
         font-size: 1.1em; /* ลดขนาดฟอนต์ */
         margin-bottom: 10px; /* ลดระยะห่าง */
     }
+    .product-code { /* เพิ่ม style สำหรับรหัสสินค้า */
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 10px;
+    }
     .product-link {
         margin-top: auto;
     }
@@ -155,13 +169,18 @@
         padding: 10px 20px; /* ลด padding */
         border-radius: 30px;
         font-weight: 600;
-        transition: background 0.3s ease, transform 0.2s ease;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม box-shadow ใน transition */
         box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);
     }
     .product-link a:hover {
         background-color: #e74c3c;
         transform: translateY(-2px);
         box-shadow: 0 6px 15px rgba(255, 107, 107, 0.6);
+    }
+    /* เพิ่ม focus state สำหรับลิงก์ */
+    .product-link a:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px var(--secondary-color), 0 6px 15px rgba(255, 107, 107, 0.6);
     }
 
     /* --- Status Message --- */
@@ -173,6 +192,7 @@
         padding: 15px; /* ปรับ padding */
         border-radius: 10px;
         background: rgba(0,0,0,0.1);
+        display: none; /* ซ่อนเริ่มต้น */
     }
     #status-message.error {
         color: #ff3b3b;
@@ -245,20 +265,21 @@
 <body>
 <h1>🌟 สินค้าของเรา 🌟</h1>
 <div class="top-controls">
-    <input type="text" id="searchBox" placeholder="ค้นหาสินค้า...">
+    <input type="text" id="searchBox" placeholder="ค้นหาด้วยชื่อหรือรหัสสินค้า...">
     <select id="categoryFilter">
         <option value="">ทุกหมวดหมู่</option>
     </select>
     <button onclick="window.location.href='admin.html'">เข้าสู่ระบบแอดมิน</button>
 </div>
 
-<div id="status-message">กำลังโหลดสินค้า...</div>
+<div id="status-message"></div>
 <div class="product-list" id="product-list"></div>
 
 <script>
     const SHEET_URL = "https://api.sheetbest.com/sheets/83c1f98f-ecd8-49a3-9627-1915f0f8df1f"; // <-- ใส่ลิงก์ API ของคุณ
-    // ปรับ placeholder image ให้มีสัดส่วน 4:3 (เช่น 240x180) เพื่อให้เข้ากับ padding-bottom 75%
-    const PLACEHOLDER_IMG = 'https://via.placeholder.com/240x180?text=No+Image';
+    const PLACEHOLDER_IMG_URL = 'https://via.placeholder.com/240x180?text=ไม่มีรูปภาพ';
+    // ใช้ encodeURIComponent เพื่อให้ URL รูปภาพถูกต้องเมื่อมีอักขระพิเศษ
+    const PLACEHOLDER_IMG = encodeURIComponent(PLACEHOLDER_IMG_URL); 
 
     let products = []; // เก็บข้อมูลสินค้าทั้งหมดที่โหลดมา
 
@@ -267,11 +288,20 @@
     const searchBox = document.getElementById('searchBox');
     const categoryFilter = document.getElementById('categoryFilter');
 
+    /**
+     * แสดงข้อความสถานะบนหน้าเว็บ
+     * @param {string} message - ข้อความที่จะแสดง
+     * @param {boolean} isError - true ถ้าเป็นข้อความผิดพลาด, false ถ้าเป็นข้อความปกติ
+     */
+    function showStatusMessage(message, isError = false) {
+        statusMessageDiv.innerText = message;
+        statusMessageDiv.classList.toggle('error', isError);
+        statusMessageDiv.style.display = 'block';
+    }
+
     // โหลดข้อมูลสินค้า
     async function loadProducts() {
-        statusMessageDiv.innerText = 'กำลังโหลดสินค้า...'; // แสดงข้อความกำลังโหลด
-        statusMessageDiv.classList.remove('error'); // ลบ class error เก่าออก
-        statusMessageDiv.style.display = 'block'; // ให้แน่ใจว่าแสดงอยู่
+        showStatusMessage('กำลังโหลดสินค้า...'); // แสดงข้อความกำลังโหลด
 
         try {
             const res = await fetch(SHEET_URL);
@@ -280,12 +310,17 @@
             }
             const data = await res.json();
             products = data; // เก็บข้อมูลสินค้าทั้งหมดไว้
-            statusMessageDiv.style.display = 'none'; // ซ่อนข้อความโหลดเมื่อเสร็จ
-            populateCategories(products); // สร้าง dropdown หมวดหมู่
-            renderProducts(products); // แสดงสินค้าทั้งหมด
+
+            if (products.length === 0) {
+                showStatusMessage('ไม่พบสินค้าในระบบ');
+                renderProducts([]); // แสดงผลเป็นว่างเปล่า
+            } else {
+                statusMessageDiv.style.display = 'none'; // ซ่อนข้อความโหลดเมื่อเสร็จ
+                populateCategories(products); // สร้าง dropdown หมวดหมู่
+                renderProducts(products); // แสดงสินค้าทั้งหมด
+            }
         } catch (err) {
-            statusMessageDiv.innerText = `เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}`; // แสดงข้อผิดพลาด
-            statusMessageDiv.classList.add('error'); // เพิ่ม class error
+            showStatusMessage(`เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}`, true); // แสดงข้อผิดพลาด
             console.error("Error loading products:", err);
         }
     }
@@ -294,7 +329,8 @@
     function populateCategories(allProducts) {
         const categories = new Set();
         allProducts.forEach(item => {
-            if (item['หมวดหมู่']) { // ตรวจสอบว่ามีคอลัมน์ 'หมวดหมู่' และมีค่า
+            // ตรวจสอบว่า item['หมวดหมู่'] มีค่าและเป็น string ที่ไม่ว่างเปล่า
+            if (item['หมวดหมู่'] && typeof item['หมวดหมู่'] === 'string' && item['หมวดหมู่'].trim() !== '') {
                 categories.add(item['หมวดหมู่'].trim());
             }
         });
@@ -311,42 +347,53 @@
     // แสดงสินค้า
     function renderProducts(data) {
         productListDiv.innerHTML = ''; // เคลียร์ของเก่าก่อน render
+
         if (!data.length) {
-            statusMessageDiv.innerText = 'ไม่พบสินค้าที่ตรงกับการค้นหา/ตัวกรอง'; // ข้อความเมื่อไม่พบสินค้า
-            statusMessageDiv.classList.remove('error');
-            statusMessageDiv.style.display = 'block';
+            showStatusMessage('ไม่พบสินค้าที่ตรงกับการค้นหา/ตัวกรอง', false); // ข้อความเมื่อไม่พบสินค้า
             return;
         }
+
         statusMessageDiv.style.display = 'none'; // ซ่อนข้อความสถานะถ้ามีสินค้า
-        
-        productListDiv.innerHTML = data.map(item => `
-            <div class="product-card">
-                <div class="product-card-img-container"> <img src="${item['รูปภาพ'] || PLACEHOLDER_IMG}" alt="${item['ชื่อสินค้า'] || 'รูปสินค้า'}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';">
-                </div>
-                <div class="product-content">
-                    <div class="product-name">${item['ชื่อสินค้า'] || 'ไม่มีชื่อ'}</div>
-                    <div class="product-link">
-                        <a href="${item['ลิงก์'] || '#'}" target="_blank" rel="noopener noreferrer">ไปยังสินค้า</a>
+           
+        productListDiv.innerHTML = data.map(item => {
+            // ตรวจสอบ URL รูปภาพ: ถ้ามีและเป็น http(s) ให้ใช้, ถ้าไม่ ให้ใช้ placeholder
+            const imageUrl = (item['รูปภาพ'] && (item['รูปภาพ'].startsWith('http://') || item['รูปภาพ'].startsWith('https://'))) 
+                             ? item['รูปภาพ'] 
+                             : decodeURIComponent(PLACEHOLDER_IMG);
+            const productName = item['ชื่อสินค้า'] || 'ไม่มีชื่อสินค้า';
+            const productCode = item['รหัสสินค้า'] || ''; // เพิ่มการดึงรหัสสินค้า
+            const productLink = item['ลิงก์'] || '#';
+
+            return `
+                <div class="product-card" tabindex="0"> <div class="product-card-img-container">
+                        <img src="${imageUrl}" alt="${productName}" onerror="this.onerror=null;this.src='${decodeURIComponent(PLACEHOLDER_IMG)}';">
+                    </div>
+                    <div class="product-content">
+                        <div class="product-name">${productName}</div>
+                        ${productCode ? `<div class="product-code">รหัส: ${productCode}</div>` : ''} <div class="product-link">
+                            <a href="${productLink}" target="_blank" rel="noopener noreferrer">ไปยังสินค้า</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     // กรองและค้นหาสินค้า
     function filterProducts() {
-        const search = searchBox.value.toLowerCase();
-        const category = categoryFilter.value; // ค่าที่เลือกจาก dropdown
+        const searchTerm = searchBox.value.toLowerCase().trim();
+        const selectedCategory = categoryFilter.value.trim();
         
         const filtered = products.filter(item => {
-            const name = (item['ชื่อสินค้า'] || '').toLowerCase();
-            const itemCategory = (item['หมวดหมู่'] || '').trim(); // ดึงหมวดหมู่ของสินค้าและ trim ช่องว่าง
+            const itemName = (item['ชื่อสินค้า'] || '').toLowerCase();
+            const itemCode = (item['รหัสสินค้า'] || '').toLowerCase(); // ดึงรหัสสินค้ามาค้นหา
+            const itemCategory = (item['หมวดหมู่'] || '').trim();
 
-            // ตรวจสอบการค้นหา
-            const matchesSearch = name.includes(search);
+            // ตรวจสอบการค้นหา: ตรงกับชื่อ หรือ รหัส
+            const matchesSearch = itemName.includes(searchTerm) || itemCode.includes(searchTerm);
             
             // ตรวจสอบการกรองหมวดหมู่
-            const matchesCategory = !category || itemCategory === category;
+            const matchesCategory = !selectedCategory || itemCategory === selectedCategory;
 
             return matchesSearch && matchesCategory;
         });
