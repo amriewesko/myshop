@@ -2,43 +2,93 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin เพิ่มสินค้า</title>
+  <title>Admin | ระบบจัดการสินค้า</title>
   <style>
-    body { font-family: sans-serif; background: #f0f0f0; padding: 2rem; }
-    .box { background: #fff; padding: 1rem; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, button { width: 100%; margin: 0.5rem 0; padding: 0.6rem; border-radius: 6px; border: 1px solid #ccc; }
-    #form-section, #add-btn { display: none; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      padding: 40px;
+    }
+    .container {
+      max-width: 450px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #form-section, #add-btn {
+      display: none;
+      margin-top: 20px;
+    }
+    label {
+      margin-top: 12px;
+      display: block;
+      color: #444;
+    }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>🔐 แอดมินล็อกอิน</h2>
-    <input type="password" id="password" placeholder="รหัสผ่าน" />
-    <button onclick="checkLogin()">เข้าสู่ระบบ</button>
+  <div class="container">
+    <h2>🔐 เข้าสู่ระบบแอดมิน</h2>
 
-    <button id="add-btn" onclick="showForm()">➕ เพิ่มสินค้า</button>
+    <!-- 🔑 ฟอร์มล็อกอิน -->
+    <div id="login-form">
+      <label for="password">รหัสผ่านแอดมิน</label>
+      <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." />
+      <button onclick="checkLogin()">เข้าสู่ระบบ</button>
+    </div>
 
+    <!-- ➕ ปุ่มเพิ่มสินค้า -->
+    <div id="add-btn">
+      <button onclick="showForm()">➕ เพิ่มสินค้าใหม่</button>
+    </div>
+
+    <!-- 📦 ฟอร์มเพิ่มสินค้า -->
     <div id="form-section">
-      <h3>📦 รายละเอียดสินค้า</h3>
+      <h3>📦 เพิ่มข้อมูลสินค้า</h3>
+      <label>ชื่อสินค้า</label>
       <input type="text" id="name" placeholder="ชื่อสินค้า" />
-      <input type="text" id="img" placeholder="ลิงก์รูปภาพ" />
-      <input type="text" id="link" placeholder="ลิงก์สินค้า" />
+      <label>ลิงก์รูปภาพ</label>
+      <input type="text" id="img" placeholder="URL ของรูปภาพ" />
+      <label>ลิงก์สินค้า</label>
+      <input type="text" id="link" placeholder="ลิงก์ไปยังร้านค้า/หน้าเพจ" />
       <button onclick="submitProduct()">📤 บันทึกสินค้า</button>
     </div>
   </div>
 
   <script>
-    const SHEET_URL = "https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d"; // เปลี่ยนตรงนี้
+    const SHEET_URL = "https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d"; // ✅ เปลี่ยนตรงนี้
 
     function checkLogin() {
       const pw = document.getElementById("password").value;
       if (pw === "admin123") {
         alert("✅ เข้าสู่ระบบสำเร็จ");
+        document.getElementById("login-form").style.display = "none";
         document.getElementById("add-btn").style.display = "block";
-        document.getElementById("password").style.display = "none";
-        event.target.style.display = "none";
       } else {
-        alert("❌ รหัสผิด");
+        alert("❌ รหัสผ่านไม่ถูกต้อง");
       }
     }
 
@@ -53,7 +103,7 @@
       const link = document.getElementById("link").value;
 
       if (!name || !img || !link) {
-        alert("⚠️ กรอกให้ครบทุกช่อง");
+        alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง");
         return;
       }
 
@@ -67,12 +117,13 @@
         })
       })
       .then(() => {
-        alert("✅ บันทึกเรียบร้อยแล้ว!");
+        alert("✅ เพิ่มสินค้าเรียบร้อยแล้ว!");
+        document.getElementById("form-section").reset;
         document.getElementById("form-section").style.display = "none";
         document.getElementById("add-btn").style.display = "block";
       })
       .catch(err => {
-        alert("❌ บันทึกล้มเหลว");
+        alert("❌ บันทึกไม่สำเร็จ");
         console.error(err);
       });
     }
