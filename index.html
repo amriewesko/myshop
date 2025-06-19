@@ -5,178 +5,218 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>แสดงสินค้า | ร้านของฉัน</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap');
-  * {
-    box-sizing: border-box;
-    font-family: 'Prompt', sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    background: linear-gradient(120deg, #f6d365, #fda085);
-    min-height: 100vh;
-    padding: 30px;
-    color: #333;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 2.5em;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-  }
-  .top-controls {
-    max-width: 1200px;
-    margin: 0 auto 30px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  .top-controls input, .top-controls select, .top-controls button {
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    font-size: 1em;
-  }
-  .top-controls input {
-    flex: 1;
-  }
-  .top-controls select {
-    width: 180px;
-  }
-  .top-controls button {
-    background-color: #6c5ce7;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  .top-controls button:hover {
-    background-color: #4b4bb2;
-  }
-  .product-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 25px;
-    max-width: 1200px;
-    margin: auto;
-  }
-  .product-card {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    overflow: hidden;
-    transition: transform 0.3s ease;
-    animation: fadeIn 0.8s ease;
-  }
-  .product-card:hover {
-    transform: translateY(-5px);
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .product-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-  }
-  .product-content {
-    padding: 20px;
-    text-align: center;
-  }
-  .product-name {
-    font-weight: 600;
-    font-size: 1.2em;
-    margin-bottom: 12px;
-  }
-  .product-link a {
-    text-decoration: none;
-    background-color: #ff6b6b;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-weight: bold;
-    transition: background 0.3s;
-  }
-  .product-link a:hover {
-    background-color: #e74c3c;
-  }
-  #loading {
-    text-align: center;
-    font-size: 1.2em;
-    color: #fff;
-    margin-top: 30px;
-  }
+    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap');
+    * {
+        box-sizing: border-box;
+        font-family: 'Prompt', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background: linear-gradient(120deg, #f6d365, #fda085);
+        min-height: 100vh;
+        padding: 30px;
+        color: #333;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2.5em;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    .top-controls {
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    .top-controls input, .top-controls select, .top-controls button {
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        font-size: 1em;
+    }
+    .top-controls input {
+        flex: 1;
+    }
+    .top-controls select {
+        width: 180px;
+    }
+    .top-controls button {
+        background-color: #6c5ce7;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .top-controls button:hover {
+        background-color: #4b4bb2;
+    }
+    .product-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 25px;
+        max-width: 1200px;
+        margin: auto;
+    }
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        animation: fadeIn 0.8s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .product-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .product-content {
+        padding: 20px;
+        text-align: center;
+    }
+    .product-name {
+        font-weight: 600;
+        font-size: 1.2em;
+        margin-bottom: 12px;
+    }
+    .product-link a {
+        text-decoration: none;
+        background-color: #ff6b6b;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+    .product-link a:hover {
+        background-color: #e74c3c;
+    }
+    #status-message { /* เปลี่ยนจาก loading เป็น status-message */
+        text-align: center;
+        font-size: 1.2em;
+        color: #fff;
+        margin-top: 30px;
+    }
 </style>
 </head>
 <body>
 <h1>🌟 สินค้าของเรา 🌟</h1>
 <div class="top-controls">
-  <input type="text" id="searchBox" placeholder="ค้นหาสินค้า...">
-  <select id="categoryFilter">
-    <option value="">ทุกหมวดหมู่</option>
-    <option value="รองเท้า">รองเท้า</option>
-    <option value="กระเป๋า">กระเป๋า</option>
-    <option value="เสื้อผ้า">เสื้อผ้า</option>
-  </select>
-  <button onclick="window.location.href='admin.html'">เข้าสู่ระบบแอดมิน</button>
+    <input type="text" id="searchBox" placeholder="ค้นหาสินค้า...">
+    <select id="categoryFilter">
+        <option value="">ทุกหมวดหมู่</option>
+        </select>
+    <button onclick="window.location.href='admin.html'">เข้าสู่ระบบแอดมิน</button>
 </div>
 
-<div id="loading">กำลังโหลดสินค้า...</div>
-<div class="product-list" id="product-list"></div>
+<div id="status-message">กำลังโหลดสินค้า...</div> <div class="product-list" id="product-list"></div>
 
 <script>
-  const SHEET_URL = "https://api.sheetbest.com/sheets/83c1f98f-ecd8-49a3-9627-1915f0f8df1f"; // <-- ใส่ลิงก์ API ของคุณ
-  let products = [];
+    const SHEET_URL = "https://api.sheetbest.com/sheets/83c1f98f-ecd8-49a3-9627-1915f0f8df1f"; // <-- ใส่ลิงก์ API ของคุณ
+    const PLACEHOLDER_IMG = 'https://via.placeholder.com/240?text=No+Image'; // เพิ่มรูป Placeholder ที่ชัดเจนขึ้น
+    let products = []; // เก็บข้อมูลสินค้าทั้งหมดที่โหลดมา
 
-  function loadProducts() {
-    fetch(SHEET_URL)
-      .then(res => res.json())
-      .then(data => {
-        products = data;
-        document.getElementById('loading').style.display = 'none';
-        renderProducts(products);
-      })
-      .catch(() => {
-        document.getElementById('loading').innerText = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
-      });
-  }
+    const productListDiv = document.getElementById('product-list');
+    const statusMessageDiv = document.getElementById('status-message');
+    const searchBox = document.getElementById('searchBox');
+    const categoryFilter = document.getElementById('categoryFilter');
 
-  function renderProducts(data) {
-    const list = document.getElementById('product-list');
-    if (!data.length) {
-      list.innerHTML = '<p style="color:white; text-align:center">ไม่มีสินค้าในระบบ</p>';
-      return;
+    // โหลดข้อมูลสินค้า
+    async function loadProducts() {
+        statusMessageDiv.innerText = 'กำลังโหลดสินค้า...'; // แสดงข้อความกำลังโหลด
+        try {
+            const res = await fetch(SHEET_URL);
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            const data = await res.json();
+            products = data; // เก็บข้อมูลสินค้าทั้งหมดไว้
+            statusMessageDiv.style.display = 'none'; // ซ่อนข้อความโหลดเมื่อเสร็จ
+            populateCategories(products); // สร้าง dropdown หมวดหมู่
+            renderProducts(products); // แสดงสินค้าทั้งหมด
+        } catch (err) {
+            statusMessageDiv.innerText = `เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}`; // แสดงข้อผิดพลาด
+            statusMessageDiv.style.color = 'red';
+            console.error("Error loading products:", err);
+        }
     }
-    list.innerHTML = data.map(item => `
-      <div class="product-card">
-        <img src="${item['รูปภาพ'] || 'https://via.placeholder.com/240'}" alt="รูปสินค้า">
-        <div class="product-content">
-          <div class="product-name">${item['ชื่อสินค้า'] || '-'}</div>
-          <div class="product-link">
-            <a href="${item['ลิงก์'] || '#'}" target="_blank">ไปยังสินค้า</a>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
 
-  document.getElementById('searchBox').addEventListener('input', filterProducts);
-  document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+    // สร้างตัวเลือกหมวดหมู่ใน dropdown แบบ dynamic
+    function populateCategories(allProducts) {
+        const categories = new Set();
+        allProducts.forEach(item => {
+            if (item['หมวดหมู่']) { // ตรวจสอบว่ามีคอลัมน์ 'หมวดหมู่' และมีค่า
+                categories.add(item['หมวดหมู่'].trim());
+            }
+        });
 
-  function filterProducts() {
-    const search = document.getElementById('searchBox').value.toLowerCase();
-    const category = document.getElementById('categoryFilter').value;
-    const filtered = products.filter(item => {
-      const name = (item['ชื่อสินค้า'] || '').toLowerCase();
-      const cat = item['หมวดหมู่'] || '';
-      return name.includes(search) && (!category || cat === category);
-    });
-    renderProducts(filtered);
-  }
+        categoryFilter.innerHTML = '<option value="">ทุกหมวดหมู่</option>'; // เพิ่มตัวเลือก "ทุกหมวดหมู่" เสมอ
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.innerText = cat;
+            categoryFilter.appendChild(option);
+        });
+    }
 
-  loadProducts();
+    // แสดงสินค้า
+    function renderProducts(data) {
+        if (!data.length) {
+            productListDiv.innerHTML = '<p style="color:white; text-align:center">ไม่พบสินค้าที่ตรงกับการค้นหา/ตัวกรอง</p>'; // ข้อความเมื่อไม่พบสินค้า
+            return;
+        }
+        productListDiv.innerHTML = data.map(item => `
+            <div class="product-card">
+                <img src="${item['รูปภาพ'] || PLACEHOLDER_IMG}" alt="รูปสินค้า" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';">
+                <div class="product-content">
+                    <div class="product-name">${item['ชื่อสินค้า'] || 'ไม่มีชื่อ'}</div>
+                    <div class="product-link">
+                        <a href="${item['ลิงก์'] || '#'}" target="_blank">ไปยังสินค้า</a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // กรองและค้นหาสินค้า
+    function filterProducts() {
+        const search = searchBox.value.toLowerCase();
+        const category = categoryFilter.value; // ค่าที่เลือกจาก dropdown
+        
+        const filtered = products.filter(item => {
+            const name = (item['ชื่อสินค้า'] || '').toLowerCase();
+            const itemCategory = (item['หมวดหมู่'] || '').trim(); // ดึงหมวดหมู่ของสินค้าและ trim ช่องว่าง
+
+            // ตรวจสอบการค้นหา
+            const matchesSearch = name.includes(search);
+            
+            // ตรวจสอบการกรองหมวดหมู่
+            // ถ้า category เป็นค่าว่าง (เลือก "ทุกหมวดหมู่") หรือ itemCategory ตรงกับ category ที่เลือก
+            const matchesCategory = !category || itemCategory === category;
+
+            return matchesSearch && matchesCategory;
+        });
+        
+        renderProducts(filtered);
+    }
+
+    // เพิ่ม Event Listeners
+    searchBox.addEventListener('input', filterProducts);
+    categoryFilter.addEventListener('change', filterProducts);
+
+    // เริ่มโหลดสินค้าเมื่อหน้าเว็บโหลดเสร็จ
+    loadProducts();
 </script>
 </body>
 </html>
