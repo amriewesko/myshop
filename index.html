@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>เว็บไซต์ของฉัน</title>
+  <meta charset="UTF-8">
+  <title>สินค้าทั้งหมด</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f0f0f0; }
+    .product { background: #fff; margin-bottom: 1rem; padding: 1rem; border-radius: 8px; display: flex; gap: 1rem; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    img { width: 100px; border-radius: 6px; }
+    a { background: #007bff; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; }
+  </style>
 </head>
 <body>
-  <h1>;ว่าไงควย</h1>
-  <p>นี่คือเว็บไซต์แรกของฉันที่ทำบน GitHub Pages</p>
+  <h1>📦 สินค้าของเรา</h1>
+  <div id="product-list">กำลังโหลด...</div>
+
+  <script>
+    fetch("https://api.sheetbest.com/sheets/b5a2f51c-d871-4d3f-b283-4b35853ff50d") // <-- เปลี่ยนเป็น URL จริงของคุณ
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById('product-list');
+        list.innerHTML = '';
+        data.forEach(item => {
+          list.innerHTML += `
+            <div class="product">
+              <img src="${item['รูปภาพ']}" alt="${item['ชื่อสินค้า']}" />
+              <div>
+                <h3>${item['ชื่อสินค้า']}</h3>
+                <a href="${item['ลิงก์']}" target="_blank">🔗 ดูสินค้า</a>
+              </div>
+            </div>
+          `;
+        });
+      });
+  </script>
 </body>
 </html>
