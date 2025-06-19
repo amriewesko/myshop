@@ -314,15 +314,11 @@
 <div class="container">
     <h2><i class="fas fa-tools"></i> ระบบแอดมินจัดการสินค้า</h2>
 
-    <div class="link-back" id="link-back" style="display:none;">
+    <div class="link-back" id="link-back">
         <a href="index.html"><i class="fas fa-arrow-circle-left"></i> กลับไปดูสินค้าทั้งหมด</a>
     </div>
 
-    <div id="start-section" style="text-align:center;">
-        <button onclick="showLogin()"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบแอดมิน</button>
-    </div>
-
-    <div id="login-section" style="display:none; text-align:center;">
+    <div id="login-section" style="text-align:center;">
         <label for="password">รหัสผ่านแอดมิน:</label>
         <input type="password" id="password" placeholder="กรอกรหัสผ่านแอดมิน" />
         <button id="login-button" onclick="login()"><i class="fas fa-unlock-alt"></i> เข้าสู่ระบบ</button>
@@ -344,13 +340,13 @@
         <label for="category-select">หมวดหมู่:</label>
         <select id="category-select">
             <option value="">เลือกหมวดหมู่</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Books">Books</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Home & Garden">Home & Garden</option>
-            <option value="Toys">Toys</option>
-            <option value="Food">Food</option>
-            <option value="Other">Other</option>
+            <option value="Electronics">อิเล็กทรอนิกส์</option>
+            <option value="Books">หนังสือ</option>
+            <option value="Clothing">เสื้อผ้า</option>
+            <option value="Home & Garden">บ้านและสวน</option>
+            <option value="Toys">ของเล่น</option>
+            <option value="Food">อาหาร</option>
+            <option value="Other">อื่นๆ</option>
             </select>
 
         <label for="imageInput">เลือกรูปภาพ:</label>
@@ -378,7 +374,8 @@
                 <tr>
                     <th>ID สินค้า</th>
                     <th>ชื่อสินค้า</th>
-                    <th>หมวดหมู่</th> <th>รูปภาพ</th>
+                    <th>หมวดหมู่</th>
+                    <th>รูปภาพ</th>
                     <th>ลิงก์</th>
                     <th>จัดการ</th>
                 </tr>
@@ -391,11 +388,12 @@
 <script>
     // ====== CONFIG ======
     const SHEET_URL = "https://api.sheetbest.com/sheets/83c1f98f-ecd8-49a3-9627-1915f0f8df1f"; // เปลี่ยนเป็น API URL ของคุณ
+    // *** คำเตือน: การเก็บ ImgBB API Key ใน Client-side ไม่ปลอดภัยอย่างยิ่ง
+    // *** ไม่ควรใช้ในระบบ Production ควรให้ Server-side เป็นคนจัดการการอัปโหลดรูป
     const IMGBB_API_KEY = "1838933755ecde270eabbf6d57977b80"; // ใส่ API KEY ของ imgbb
     const PLACEHOLDER_IMG = 'https://via.placeholder.com/80x80?text=No+Image'; // Placeholder สำหรับรูปภาพ
 
     // ====== ตัวแปร DOM Elements ที่ใช้งานบ่อย ======
-    const startSection = document.getElementById("start-section");
     const loginSection = document.getElementById("login-section");
     const passwordInput = document.getElementById("password");
     const loginButton = document.getElementById("login-button");
@@ -405,10 +403,10 @@
     const editIndexInput = document.getElementById("edit-index");
     const productIdInput = document.getElementById("product-id");
     const productNameInput = document.getElementById("product-name");
-    const categorySelect = document.getElementById("category-select"); // เพิ่ม DOM สำหรับหมวดหมู่
+    const categorySelect = document.getElementById("category-select");
     const imageInput = document.getElementById("imageInput");
     const previewImage = document.getElementById("preview");
-    const previewFilename = document.getElementById("preview-filename"); // แสดงชื่อไฟล์ที่เลือก
+    const previewFilename = document.getElementById("preview-filename");
     const productImgUrlInput = document.getElementById("product-img-url");
     const productLinkInput = document.getElementById("product-link");
     const submitProductButton = document.getElementById("submit-product-button");
@@ -419,28 +417,23 @@
 
     // ====== ตัวแปร ======
     let products = [];
-    const ADMIN_PASSWORD = "admin123"; // **** ไม่แนะนำให้ใช้ใน Production: ควรใช้ Backend เพื่อตรวจสอบรหัสผ่าน ****
-
-    // ====== แสดงฟอร์มล็อกอิน ======
-    function showLogin() {
-        startSection.style.display = "none";
-        loginSection.style.display = "block";
-        linkBack.style.display = "block";
-        passwordInput.focus(); // ให้ cursor ไปที่ช่องรหัสผ่านทันที
-    }
+    // *** คำเตือน: การเก็บรหัสผ่านใน Client-side (JavaScript) ไม่ปลอดภัยอย่างยิ่ง
+    // *** ไม่ควรใช้ในระบบ Production ที่ต้องการความปลอดภัยสูง
+    // *** ควรมีการยืนยันตัวตนผ่าน Server-side เพื่อตรวจสอบรหัสผ่าน
+    const ADMIN_PASSWORD = "admin123";
 
     // ====== ฟังก์ชันล็อกอินง่ายๆ ======
     async function login() {
         const pw = passwordInput.value;
         if (pw === ADMIN_PASSWORD) {
-            setMessage("เข้าสู่ระบบสำเร็จ", "success", 2000); // แสดงข้อความ 2 วินาที
+            setMessage("เข้าสู่ระบบสำเร็จ", "success", 2000);
             loginSection.style.display = "none";
             addProductBtn.style.display = "block";
             productsSection.style.display = "block";
-            await loadProducts(); // ใช้ await เพื่อให้แน่ใจว่าโหลดข้อมูลเสร็จก่อน
+            await loadProducts();
         } else {
-            setMessage("รหัสผ่านไม่ถูกต้อง", "error", 3000); // แสดงข้อความ 3 วินาที
-            passwordInput.value = ""; // ล้างรหัสผ่านเมื่อผิด
+            setMessage("รหัสผ่านไม่ถูกต้อง", "error", 3000);
+            passwordInput.value = "";
             passwordInput.focus();
         }
     }
@@ -466,7 +459,7 @@
     function renderProductsTable() {
         productsTableBody.innerHTML = "";
         if (products.length === 0) {
-            productsTableBody.innerHTML = `<tr><td colspan="6">ไม่มีสินค้าในระบบ</td></tr>`; // แก้ colspan เป็น 6 (เพิ่ม Category)
+            productsTableBody.innerHTML = `<tr><td colspan="6">ไม่มีสินค้าในระบบ</td></tr>`;
             return;
         }
         products.forEach((item, index) => {
@@ -474,7 +467,8 @@
                 <tr>
                     <td data-label="ID สินค้า">${item["ID สินค้า"] || "-"}</td>
                     <td data-label="ชื่อสินค้า">${item["ชื่อสินค้า"] || ""}</td>
-                    <td data-label="หมวดหมู่">${item["หมวดหมู่"] || "-"}</td> <td data-label="รูปภาพ"><img class="product-thumb" src="${item["รูปภาพ"] || PLACEHOLDER_IMG}" alt="รูปสินค้า" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';" /></td>
+                    <td data-label="หมวดหมู่">${item["หมวดหมู่"] || "-"}</td>
+                    <td data-label="รูปภาพ"><img class="product-thumb" src="${item["รูปภาพ"] || PLACEHOLDER_IMG}" alt="รูปสินค้า" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';" /></td>
                     <td data-label="ลิงก์"><a href="${item["ลิงก์"] || "#"}" target="_blank" rel="noopener noreferrer">ลิงก์สินค้า</a></td>
                     <td data-label="จัดการ">
                         <button class="btn-edit" onclick="editProduct(${index})"><i class="fas fa-edit"></i> แก้ไข</button>
@@ -487,19 +481,17 @@
 
     // ====== สร้าง ID สินค้าใหม่ ======
     async function generateProductId() {
-        // หา ID ล่าสุดจากข้อมูลที่มีอยู่
         let maxIdNum = 0;
         products.forEach(item => {
             const id = item["ID สินค้า"];
             if (id && id.startsWith("P-")) {
-                const numPart = parseInt(id.substring(2), 10); // ดึงส่วนที่เป็นตัวเลขออกมา
+                const numPart = parseInt(id.substring(2), 10);
                 if (!isNaN(numPart) && numPart > maxIdNum) {
                     maxIdNum = numPart;
                 }
             }
         });
         const nextIdNum = maxIdNum + 1;
-        // Format ให้เป็น P-001, P-002, ...
         return `P-${String(nextIdNum).padStart(3, '0')}`;
     }
 
@@ -514,7 +506,7 @@
 
         const newId = await generateProductId();
         productIdInput.value = newId;
-        productIdInput.disabled = true; // ให้ input ID เป็น disabled เสมอ
+        productIdInput.disabled = true;
         productNameInput.focus();
     }
 
@@ -523,15 +515,15 @@
         const file = imageInput.files[0];
         if (!file) {
             previewImage.style.display = "none";
-            previewImage.src = ""; // Clear preview image
-            previewFilename.innerText = ""; // Clear filename
-            productImgUrlInput.value = ""; // Clear URL if no file
+            previewImage.src = "";
+            previewFilename.innerText = "";
+            productImgUrlInput.value = "";
             return;
         }
 
-        previewFilename.innerText = file.name; // แสดงชื่อไฟล์
+        previewFilename.innerText = file.name;
         setMessage("กำลังอัปโหลดรูป...", "info");
-        submitProductButton.disabled = true; // ปิดปุ่มบันทึกขณะอัปโหลด
+        submitProductButton.disabled = true;
 
         const formData = new FormData();
         formData.append("image", file);
@@ -557,9 +549,9 @@
             previewImage.style.display = "none";
             previewImage.src = "";
             previewFilename.innerText = "";
-            productImgUrlInput.value = ""; // Clear URL on failure
+            productImgUrlInput.value = "";
         } finally {
-            submitProductButton.disabled = false; // เปิดปุ่มบันทึก
+            submitProductButton.disabled = false;
         }
     }
 
@@ -568,11 +560,11 @@
         const index = editIndexInput.value;
         const id = productIdInput.value.trim();
         const name = productNameInput.value.trim();
-        const category = categorySelect.value; // ดึงค่าหมวดหมู่
+        const category = categorySelect.value;
         const img = productImgUrlInput.value.trim();
         const link = productLinkInput.value.trim();
 
-        if (!name || !img || !link || !category) { // ตรวจสอบหมวดหมู่ด้วย
+        if (!name || !img || !link || !category) {
             setMessage("กรุณากรอกข้อมูล ชื่อสินค้า, หมวดหมู่, รูปภาพ และลิงก์ ให้ครบทุกช่อง", "error");
             return;
         }
@@ -581,13 +573,13 @@
             return;
         }
 
-        submitProductButton.disabled = true; // ปิดปุ่มบันทึกขณะดำเนินการ
+        submitProductButton.disabled = true;
         setMessage("กำลังบันทึกข้อมูล...", "info");
 
         const productData = {
             "ID สินค้า": id,
             "ชื่อสินค้า": name,
-            "หมวดหมู่": category, // เพิ่มหมวดหมู่
+            "หมวดหมู่": category,
             "รูปภาพ": img,
             "ลิงก์": link
         };
@@ -595,16 +587,14 @@
         try {
             let res;
             if (index === "") {
-                // เพิ่มสินค้าใหม่ (POST)
                 res = await fetch(SHEET_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(productData)
                 });
             } else {
-                // แก้ไขสินค้า (PATCH)
                 const item = products[parseInt(index)];
-                if (!item || !item.id) { // Sheetbest ใช้ item.id ในการระบุแถว
+                if (!item || !item.id) {
                     throw new Error("ไม่พบข้อมูลสินค้าเพื่อแก้ไข (Missing Item ID from Sheetbest)");
                 }
                 const patchURL = `${SHEET_URL}/${item.id}`;
@@ -622,12 +612,12 @@
 
             setMessage(index === "" ? "เพิ่มสินค้าเรียบร้อย" : "แก้ไขสินค้าเรียบร้อย", "success", 2000);
             cancelForm();
-            await loadProducts(); // โหลดข้อมูลใหม่ทั้งหมดเพื่อ refresh ตาราง
+            await loadProducts();
         } catch (err) {
             setMessage(`${index === "" ? "เพิ่มสินค้า" : "แก้ไขสินค้า"}ไม่สำเร็จ: ${err.message}`, "error");
             console.error("Submit product error:", err);
         } finally {
-            submitProductButton.disabled = false; // เปิดปุ่มบันทึก
+            submitProductButton.disabled = false;
         }
     }
 
@@ -640,12 +630,12 @@
         productIdInput.value = item["ID สินค้า"] || "-";
         productIdInput.disabled = true;
         productNameInput.value = item["ชื่อสินค้า"] || "";
-        categorySelect.value = item["หมวดหมู่"] || ""; // กำหนดค่าหมวดหมู่
+        categorySelect.value = item["หมวดหมู่"] || "";
         productImgUrlInput.value = item["รูปภาพ"] || "";
         previewImage.src = item["รูปภาพ"] || PLACEHOLDER_IMG;
         previewImage.style.display = "block";
-        previewFilename.innerText = item["รูปภาพ"] ? "รูปภาพปัจจุบัน" : ""; // แสดงข้อความสำหรับรูปภาพเดิม
-        imageInput.value = ""; // Clear file input on edit to prevent accidental re-upload
+        previewFilename.innerText = item["รูปภาพ"] ? "รูปภาพปัจจุบัน" : "";
+        imageInput.value = "";
         productLinkInput.value = item["ลิงก์"] || "";
 
         formTitle.innerText = "แก้ไขสินค้า";
@@ -659,7 +649,7 @@
     // ====== ลบสินค้า ======
     async function deleteProduct(index) {
         const item = products[index];
-        if (!item || !item.id) { // ต้องมี item.id จาก Sheetbest
+        if (!item || !item.id) {
             setMessage("ไม่พบข้อมูลสินค้าเพื่อจะลบ (Missing Item ID from Sheetbest)", "error");
             return;
         }
@@ -698,21 +688,21 @@
         productIdInput.value = "";
         productIdInput.disabled = true;
         productNameInput.value = "";
-        categorySelect.value = ""; // เคลียร์หมวดหมู่
+        categorySelect.value = "";
         imageInput.value = "";
         productImgUrlInput.value = "";
         previewImage.style.display = "none";
-        previewImage.src = "";
-        previewFilename.innerText = "";
+        previewImage.src = ""; // Clear preview image
+        previewFilename.innerText = ""; // Clear filename
         productLinkInput.value = "";
-        setMessage(""); // Clear message when clearing form
+        setMessage("");
     }
 
     // ====== แสดงข้อความสถานะ ======
     let messageTimeout;
-    function setMessage(msg, type = "info", duration = 0) { // เพิ่ม type และ duration
+    function setMessage(msg, type = "info", duration = 0) {
         messageDiv.innerText = msg;
-        messageDiv.className = `message show ${type}`; // เพิ่ม class type
+        messageDiv.className = `message show ${type}`;
 
         if (messageTimeout) {
             clearTimeout(messageTimeout);
@@ -733,6 +723,12 @@
             return false;
         }
     }
+
+    // รันเมื่อโหลดหน้าเสร็จ
+    document.addEventListener('DOMContentLoaded', () => {
+        passwordInput.focus();
+        linkBack.style.display = "block"; // แสดงปุ่มกลับทันทีที่โหลดหน้า Admin
+    });
 </script>
 </body>
 </html>
