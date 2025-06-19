@@ -29,7 +29,7 @@
     body {
         background: linear-gradient(120deg, var(--bg-gradient-start), var(--bg-gradient-end));
         min-height: 100vh;
-        padding: 30px 20px; /* เพิ่ม padding ด้านข้างสำหรับ mobile */
+        padding: 20px 15px; /* ปรับ padding สำหรับมือถือ */
         color: var(--text-color-dark);
         display: flex;
         flex-direction: column;
@@ -37,38 +37,37 @@
     }
     h1 {
         text-align: center;
-        margin-bottom: 30px;
-        font-size: 2.8em; /* ขยายขนาด */
+        margin-bottom: 25px; /* ปรับ margin */
+        font-size: 2.2em; /* ลดขนาดสำหรับมือถือ */
         color: var(--text-color-light);
-        text-shadow: 3px 3px 6px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติ */
-        letter-spacing: 1.5px;
+        text-shadow: 3px 3px 6px var(--shadow-medium);
+        letter-spacing: 1px;
     }
 
     /* --- Top Controls Section --- */
     .top-controls {
         width: 100%;
-        max-width: 1000px; /* ขยายความกว้าง */
-        margin-bottom: 40px; /* เพิ่มระยะห่างด้านล่าง */
+        max-width: 1000px;
+        margin-bottom: 30px; /* ปรับ margin */
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center; /* จัดให้อยู่ตรงกลาง */
-        gap: 15px; /* เพิ่มระยะห่างระหว่าง element */
-        background: rgba(255, 255, 255, 0.2); /* เพิ่มพื้นหลังโปร่งแสง */
-        padding: 20px;
+        flex-direction: column; /* จัดเรียงเป็นคอลัมน์บนมือถือโดยตรง */
+        gap: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px; /* ปรับ padding */
         border-radius: 15px;
         box-shadow: 0 5px 15px var(--shadow-light);
-        backdrop-filter: blur(5px); /* เพิ่มเอฟเฟกต์เบลอ */
+        backdrop-filter: blur(5px);
     }
     .top-controls input,
     .top-controls select,
     .top-controls button {
-        padding: 12px 18px; /* เพิ่ม padding */
-        border-radius: 10px; /* โค้งมนขึ้น */
-        border: 1px solid rgba(255, 255, 255, 0.4); /* เพิ่มขอบโปร่งแสง */
-        font-size: 1.1em; /* ขยายขนาดฟอนต์ */
+        padding: 12px 18px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        font-size: 1em; /* ปรับขนาดฟอนต์ */
         background: rgba(255, 255, 255, 0.9);
         color: var(--text-color-dark);
-        transition: all 0.3s ease;
+        width: 100%; /* ให้เต็มความกว้างบนมือถือ */
     }
     .top-controls input::placeholder {
         color: #777;
@@ -79,152 +78,166 @@
         border-color: var(--secondary-color);
         box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
     }
-    .top-controls input {
-        flex: 2; /* ให้ input กว้างกว่า */
-        min-width: 200px; /* กำหนดขั้นต่ำ */
-    }
-    .top-controls select {
-        flex: 1; /* ให้ select ปรับขนาดได้ */
-        min-width: 150px;
-        cursor: pointer;
-    }
     .top-controls button {
         background-color: var(--secondary-color);
         color: var(--text-color-light);
-        flex: 0 0 auto; /* ไม่ยืดหด */
     }
     .top-controls button:hover {
         background-color: #4b4bb2;
-        transform: translateY(-2px); /* ยกขึ้นเล็กน้อย */
+        transform: translateY(-2px);
         box-shadow: 0 4px 10px var(--shadow-medium);
     }
 
     /* --- Product List --- */
     .product-list {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* ขยายขนาด card */
-        gap: 30px; /* เพิ่มระยะห่าง */
+        grid-template-columns: 1fr; /* 1 คอลัมน์สำหรับมือถือเป็นค่าเริ่มต้น */
+        gap: 20px; /* ปรับระยะห่าง */
         width: 100%;
         max-width: 1200px;
-        margin: 0 auto; /* จัดกลาง */
+        margin: 0 auto;
     }
     .product-card {
         background: var(--card-bg);
-        border-radius: 25px; /* โค้งมนขึ้น */
-        box-shadow: 0 10px 25px var(--shadow-medium); /* เงาเข้มขึ้น */
+        border-radius: 20px;
+        box-shadow: 0 8px 20px var(--shadow-medium);
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         animation: fadeIn 0.8s ease;
         display: flex;
-        flex-direction: column; /* จัดเนื้อหาใน card เป็น column */
-        height: 100%; /* ให้การ์ดสูงเท่ากัน */
+        flex-direction: column;
+        height: 100%;
     }
     .product-card:hover {
-        transform: translateY(-8px); /* ยกขึ้นเยอะขึ้น */
-        box-shadow: 0 15px 35px rgba(0,0,0,0.25); /* เงาเข้มขึ้นเมื่อ hover */
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
     }
     @keyframes fadeIn {
         from { opacity: 0; transform: scale(0.98) translateY(10px); }
         to { opacity: 1; transform: scale(1) translateY(0); }
     }
-    .product-card img {
+    .product-card-img-container { /* เพิ่ม div ครอบรูป */
         width: 100%;
-        height: 220px; /* ขยายความสูงรูป */
-        object-fit: cover;
-        border-bottom: 1px solid #eee; /* เส้นแบ่งรูปกับเนื้อหา */
+        padding-bottom: 75%; /* สัดส่วน 4:3 (height 75% of width) หรือ 56.25% (16:9) ลองเลือกที่ชอบ */
+        position: relative;
+        overflow: hidden; /* ซ่อนส่วนเกินของรูป */
+    }
+    .product-card img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%; /* ทำให้รูปภาพเต็ม container ใหม่ */
+        object-fit: cover; /* ยังคงใช้ cover เพื่อให้รูปไม่เสียสัดส่วน */
+        border-bottom: 1px solid #eee;
     }
     .product-content {
-        padding: 25px; /* เพิ่ม padding */
+        padding: 15px; /* ลด padding */
         text-align: center;
-        flex-grow: 1; /* ให้เนื้อหายืดเต็มพื้นที่ */
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        justify-content: space-between; /* จัดเนื้อหาด้านใน */
+        justify-content: space-between;
     }
     .product-name {
-        font-weight: 700; /* ตัวหนาขึ้น */
-        font-size: 1.35em; /* ขยายขนาด */
-        color: var(--text-color-dark);
-        margin-bottom: 15px; /* เพิ่มระยะห่าง */
+        font-weight: 700;
+        font-size: 1.1em; /* ลดขนาดฟอนต์ */
+        margin-bottom: 10px; /* ลดระยะห่าง */
     }
     .product-link {
-        margin-top: auto; /* ดันลิงก์ลงล่างสุด */
+        margin-top: auto;
     }
     .product-link a {
-        display: inline-block; /* ทำให้ปรับ padding ได้ง่าย */
+        display: inline-block;
         text-decoration: none;
         background-color: var(--primary-color);
         color: var(--text-color-light);
-        padding: 12px 25px; /* เพิ่ม padding */
+        padding: 10px 20px; /* ลด padding */
         border-radius: 30px;
-        font-weight: 600; /* ตัวหนา */
+        font-weight: 600;
         transition: background 0.3s ease, transform 0.2s ease;
-        box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4); /* เพิ่มเงาให้ปุ่ม */
+        box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);
     }
     .product-link a:hover {
         background-color: #e74c3c;
-        transform: translateY(-2px); /* ยกขึ้นเล็กน้อยเมื่อ hover */
+        transform: translateY(-2px);
         box-shadow: 0 6px 15px rgba(255, 107, 107, 0.6);
     }
 
     /* --- Status Message --- */
     #status-message {
         text-align: center;
-        font-size: 1.3em; /* ขยายขนาด */
+        font-size: 1.1em; /* ลดขนาดฟอนต์ */
         color: var(--text-color-light);
-        margin-top: 50px; /* เพิ่มระยะห่าง */
-        padding: 20px;
+        margin-top: 30px; /* ปรับ margin */
+        padding: 15px; /* ปรับ padding */
         border-radius: 10px;
         background: rgba(0,0,0,0.1);
     }
     #status-message.error {
-        color: #ff3b3b; /* สีแดงสำหรับ Error */
+        color: #ff3b3b;
         background: rgba(255,0,0,0.1);
     }
 
-    /* --- Responsive Design --- */
-    @media (max-width: 768px) {
-        h1 {
-            font-size: 2em;
-        }
-        .top-controls {
-            flex-direction: column; /* เรียงเป็นแนวตั้งบนมือถือ */
-            padding: 15px;
-        }
-        .top-controls input,
-        .top-controls select,
-        .top-controls button {
-            width: 100%; /* เต็มความกว้าง */
-            min-width: unset;
-        }
+    /* --- Responsive Adjustments for Larger Screens (Tablet & Desktop) --- */
+    @media (min-width: 480px) { /* สำหรับหน้าจอที่ใหญ่กว่ามือถือเล็กๆ */
         .product-list {
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ลดขนาด card ลงบนมือถือ */
-            gap: 20px;
-            padding: 0 10px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 2 คอลัมน์ขึ้นไป */
+            gap: 25px;
         }
-        .product-card img {
-            height: 160px; /* ลดความสูงรูปบนมือถือ */
-        }
-        .product-content {
-            padding: 15px;
-        }
-        .product-name {
-            font-size: 1.1em;
-        }
-        .product-link a {
-            padding: 8px 15px;
-            font-size: 0.9em;
+        .product-card-img-container {
+            padding-bottom: 75%; /* คงสัดส่วน 4:3 */
         }
     }
-    @media (max-width: 480px) {
+
+    @media (min-width: 768px) { /* สำหรับ Tablet ขึ้นไป */
         body {
-            padding: 20px 10px;
+            padding: 30px 20px; /* คืนค่า padding เดิม */
         }
         h1 {
-            font-size: 1.8em;
+            font-size: 2.8em; /* คืนขนาดเดิม */
+            margin-bottom: 30px;
+        }
+        .top-controls {
+            flex-direction: row; /* กลับเป็นแนวนอน */
+            padding: 20px;
+            gap: 10px; /* ระยะห่างลดลง */
+        }
+        .top-controls input {
+            flex: 2;
+            min-width: 200px;
+        }
+        .top-controls select {
+            flex: 1;
+            min-width: 150px;
+        }
+        .top-controls button {
+            width: auto; /* กลับเป็น auto width */
         }
         .product-list {
-            grid-template-columns: 1fr; /* 1 คอลัมน์บนจอเล็กสุด */
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* 3-4 คอลัมน์ */
+            gap: 30px;
+        }
+        .product-card {
+            border-radius: 25px; /* กลับไปโค้งมนมากขึ้น */
+            box-shadow: 0 10px 25px var(--shadow-medium); /* กลับไปเงาเข้มขึ้น */
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+        .product-card-img-container {
+            padding-bottom: 66.66%; /* สัดส่วน 3:2 (height 66.66% of width) สำหรับ desktop */
+        }
+        .product-content {
+            padding: 25px; /* คืน padding เดิม */
+        }
+        .product-name {
+            font-size: 1.35em; /* คืนขนาดฟอนต์เดิม */
+            margin-bottom: 15px;
+        }
+        .product-link a {
+            padding: 12px 25px; /* คืน padding เดิม */
         }
     }
 </style>
@@ -244,7 +257,8 @@
 
 <script>
     const SHEET_URL = "https://api.sheetbest.com/sheets/83c1f98f-ecd8-49a3-9627-1915f0f8df1f"; // <-- ใส่ลิงก์ API ของคุณ
-    const PLACEHOLDER_IMG = 'https://via.placeholder.com/240x220?text=No+Image'; // ปรับขนาด placeholder ให้ตรงกับรูป
+    // ปรับ placeholder image ให้มีสัดส่วน 4:3 (เช่น 240x180) เพื่อให้เข้ากับ padding-bottom 75%
+    const PLACEHOLDER_IMG = 'https://via.placeholder.com/240x180?text=No+Image';
 
     let products = []; // เก็บข้อมูลสินค้าทั้งหมดที่โหลดมา
 
@@ -307,7 +321,8 @@
         
         productListDiv.innerHTML = data.map(item => `
             <div class="product-card">
-                <img src="${item['รูปภาพ'] || PLACEHOLDER_IMG}" alt="${item['ชื่อสินค้า'] || 'รูปสินค้า'}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';">
+                <div class="product-card-img-container"> <img src="${item['รูปภาพ'] || PLACEHOLDER_IMG}" alt="${item['ชื่อสินค้า'] || 'รูปสินค้า'}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';">
+                </div>
                 <div class="product-content">
                     <div class="product-name">${item['ชื่อสินค้า'] || 'ไม่มีชื่อ'}</div>
                     <div class="product-link">
