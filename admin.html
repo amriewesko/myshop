@@ -1,786 +1,724 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin ระบบจัดการสินค้า</title>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<style>
-    :root {
-        --primary-color: #007bff; /* สีน้ำเงินหลัก */
-        --secondary-color: #6c757d; /* สีเทา */
-        --success-color: #28a745; /* สีเขียว */
-        --warning-color: #ffc107; /* สีเหลือง */
-        --danger-color: #dc3545; /* สีแดง */
-        --text-dark: #343a40;
-        --text-light: #fff;
-        --border-color: #dee2e6;
-        --shadow: rgba(0, 0, 0, 0.1);
-        --bg-light: #f8f9fa;
-        --bg-white: #fff;
-    }
-
-    * {
-        box-sizing: border-box;
-        font-family: 'Prompt', sans-serif;
-    }
-    body {
-        background: var(--bg-light);
-        margin: 0;
-        padding: 20px;
-        color: var(--text-dark);
-        line-height: 1.6;
-    }
-    .container {
-        max-width: 900px; /* เพิ่มความกว้างของ container */
-        margin: auto;
-        background: var(--bg-white);
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px var(--shadow);
-    }
-    h2, h3 {
-        text-align: center;
-        color: var(--primary-color);
-        margin-bottom: 25px;
-        font-weight: 600;
-    }
-    label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 600;
-        color: var(--text-dark);
-        font-size: 0.95em;
-    }
-    input[type=text],
-    input[type=password],
-    input[type=url],
-    input[type=file],
-    select { /* เพิ่ม select */
-        width: 100%;
-        padding: 12px 15px;
-        margin-bottom: 15px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-size: 1em;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        -webkit-appearance: none; /* Remove default styling for select */
-        -moz-appearance: none;
-        appearance: none;
-        background-color: var(--bg-white);
-    }
-    input[type=text]:focus,
-    input[type=password]:focus,
-    input[type=url]:focus,
-    input[type=file]:focus,
-    select:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-    }
-    input[type=file] {
-        padding: 10px; /* Adjust padding for file input */
-        cursor: pointer;
-    }
-    button {
-        cursor: pointer;
-        background-color: var(--primary-color);
-        border: none;
-        color: var(--text-light);
-        padding: 12px 25px;
-        border-radius: 8px;
-        font-size: 1.05em;
-        font-weight: 600;
-        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-        margin-right: 10px; /* เพิ่ม margin-right */
-    }
-    button:last-child {
-        margin-right: 0;
-    }
-    button:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-    }
-    button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-
-    /* Table Styles */
-    table {
-        width: 100%;
-        border-collapse: separate; /* ใช้ separate เพื่อให้ border-radius ทำงาน */
-        border-spacing: 0; /* ลบ spacing */
-        margin-top: 25px;
-        border-radius: 8px;
-        overflow: hidden; /* เพื่อให้ border-radius แสดงผลที่ขอบตาราง */
-        box-shadow: 0 2px 10px var(--shadow);
-    }
-    th, td {
-        border: 1px solid var(--border-color);
-        padding: 12px 10px;
-        text-align: center;
-    }
-    th {
-        background-color: var(--primary-color);
-        color: var(--text-light);
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.9em;
-    }
-    tr:nth-child(even) {
-        background-color: #f2f2f2; /* แถบสีสลับ */
-    }
-    img.product-thumb { /* เปลี่ยนชื่อ class */
-        max-width: 70px; /* ลดขนาดรูปในตาราง */
-        height: auto;
-        border-radius: 6px;
-        vertical-align: middle;
-    }
-    .btn-edit, .btn-delete {
-        padding: 8px 14px;
-        border-radius: 6px;
-        font-size: 0.9em;
-        font-weight: 600;
-        margin-right: 5px; /* ลด margin-right */
-    }
-    .btn-edit {
-        background-color: var(--warning-color);
-        color: var(--text-dark);
-    }
-    .btn-edit:hover {
-        background-color: #e0a800;
-        box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
-    }
-    .btn-delete {
-        background-color: var(--danger-color);
-        color: var(--text-light);
-    }
-    .btn-delete:hover {
-        background-color: #b02a37;
-        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
-    }
-    .link-back {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-    .link-back a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1.1em;
-        transition: color 0.2s ease;
-    }
-    .link-back a:hover {
-        text-decoration: underline;
-        color: #0056b3;
-    }
-    #preview-container { /* เพิ่ม container สำหรับ preview */
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 15px;
-    }
-    #preview {
-        max-width: 100px;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px var(--shadow);
-        display: none;
-    }
-    #message {
-        margin: 20px 0;
-        padding: 10px 15px;
-        text-align: center;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        opacity: 0; /* ซ่อนตอนแรก */
-        visibility: hidden;
-        transform: translateY(10px);
-    }
-    #message.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-    #message.success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    #message.error {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-    #message.info {
-        background-color: #cce5ff;
-        color: #004085;
-        border: 1px solid #b8daff;
-    }
-    /* Style for the new delete image button */
-    #delete-image-btn {
-        background-color: var(--danger-color);
-        color: var(--text-light);
-        padding: 8px 12px;
-        font-size: 0.85em;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        margin-left: 10px; /* Keep some distance from filename */
-        flex-shrink: 0; /* Prevent it from shrinking */
-    }
-    #delete-image-btn:hover {
-        background-color: #b02a37;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 5px rgba(220, 53, 69, 0.4);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบแอดมินจัดการสินค้า</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
         body {
-            padding: 15px;
-        }
-        .container {
-            padding: 20px;
-        }
-        h2, h3 {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-        }
-        input[type=text], input[type=password], input[type=url], input[type=file], select {
-            padding: 10px 12px;
-            font-size: 0.95em;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-            width: 100%; /* ให้ปุ่มเต็มความกว้าง */
-            margin-bottom: 10px; /* เพิ่มระยะห่างระหว่างปุ่ม */
-        }
-        button:last-child {
-            margin-bottom: 0;
-        }
-        .top-buttons { /* สำหรับปุ่มที่อยู่ติดกันบน desktop */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
             display: flex;
             flex-direction: column;
-            gap: 10px; /* เพิ่มระยะห่าง */
+            align-items: center;
+            min-height: 100vh;
         }
-        table, thead, tbody, th, td, tr {
-            display: block; /* ทำให้ตารางเป็นบล็อก เพื่อจัดเรียงใหม่ */
-        }
-        thead tr {
-            position: absolute;
-            top: -9999px; /* ซ่อน header เก่า */
-            left: -9999px;
-        }
-        tr {
-            border: 1px solid var(--border-color);
-            margin-bottom: 15px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        td {
-            border: none; /* ลบเส้นแบ่งของ cell */
-            position: relative;
-            padding-left: 50%; /* เพิ่มพื้นที่สำหรับ Label */
-            text-align: left;
-        }
-        td:before { /* เพิ่ม Label ด้วย pseudo-elements */
-            content: attr(data-label);
-            position: absolute;
-            left: 10px;
-            width: calc(50% - 20px);
-            padding-right: 10px;
-            white-space: nowrap;
-            font-weight: 600;
-            color: var(--primary-color);
-            text-align: left;
-        }
-        td:last-child { /* จัดการปุ่มในแถวสุดท้าย */
-            text-align: center;
-            padding-top: 15px;
-            padding-bottom: 15px;
-        }
-        img.product-thumb {
-            display: block;
-            margin: auto;
-            max-width: 60px;
-        }
-        #preview-container { /* Ensure preview container is flexible */
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        #delete-image-btn {
-            margin-left: 0; /* Remove left margin on small screens */
-            width: 100%; /* Full width for button */
-            margin-top: 10px; /* Add some top margin */
-        }
-    }
 
-    @media (max-width: 480px) {
-        body {
-            padding: 10px;
-        }
         .container {
-            padding: 15px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 30px;
+            margin-bottom: 30px;
         }
-        h2 {
-            font-size: 1.6em;
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
         }
-    }
-</style>
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .message-box {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            display: none; /* Hidden by default */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .message-box.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-box.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message-box.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .auth-section {
+            display: block; /* Show by default */
+            text-align: center;
+            padding: 30px;
+        }
+
+        .auth-section input[type="password"] {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 200px;
+        }
+
+        .auth-section button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .auth-section button:hover {
+            background-color: #0056b3;
+        }
+
+        .admin-content {
+            display: none; /* Hidden by default */
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .button-group .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-group .btn-primary {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .button-group .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        .button-group .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .button-group .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .products-section, .product-form {
+            background-color: #fcfcfc;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-form {
+            display: none; /* Hidden by default */
+        }
+
+        .product-form h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #34495e;
+            text-align: center;
+        }
+
+        .product-form .form-group {
+            margin-bottom: 18px;
+        }
+
+        .product-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .product-form input[type="text"],
+        .product-form select,
+        .product-form input[type="file"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .product-form input[type="file"] {
+            padding: 8px;
+        }
+
+        .product-form .image-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .product-form .image-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+
+        .product-form .image-preview button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .product-form .form-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .product-form .form-buttons button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: background-color 0.3s ease;
+        }
+
+        .product-form .form-buttons .btn-submit {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .product-form .form-buttons .btn-submit:hover {
+            background-color: #0056b3;
+        }
+
+        .product-form .form-buttons .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .product-form .form-buttons .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td img {
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 4px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: #343a40;
+        }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .link-text {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .link-text:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h2><i class="fas fa-tools"></i> ระบบแอดมินจัดการสินค้า</h2>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tools"></i> ระบบแอดมินจัดการสินค้า</h1>
+        </header>
 
-    <div class="link-back" id="link-back">
-        <a href="index.html"><i class="fas fa-arrow-circle-left"></i> กลับไปดูสินค้าทั้งหมด</a>
-    </div>
+        <div id="messageBox" class="message-box"></div>
 
-    <div id="login-section" style="text-align:center;">
-        <label for="password">รหัสผ่านแอดมิน:</label>
-        <input type="password" id="password" placeholder="กรอกรหัสผ่านแอดมิน" />
-        <button id="login-button" onclick="login()"><i class="fas fa-unlock-alt"></i> เข้าสู่ระบบ</button>
-    </div>
-
-    <div id="add-product-btn" style="display:none; text-align:center; margin-top:20px;">
-        <button onclick="showForm()"><i class="fas fa-plus-circle"></i> เพิ่มสินค้าใหม่</button>
-    </div>
-
-    <div id="form-section" style="display:none; margin-top:20px;">
-        <h3 id="form-title">เพิ่มสินค้าใหม่</h3>
-        <input type="hidden" id="edit-sheetbest-id" value="" /> <label for="product-id">ID สินค้า:</label>
-        <input type="text" id="product-id" placeholder="ID สินค้า (สร้างอัตโนมัติ)" disabled />
-        
-        <label for="product-name">ชื่อสินค้า:</label>
-        <input type="text" id="product-name" placeholder="ชื่อสินค้า" />
-        
-        <label for="category-select">หมวดหมู่:</label>
-        <select id="category-select">
-            <option value="">เลือกหมวดหมู่</option>
-            <option value="Electronics">อิเล็กทรอนิกส์</option>
-            <option value="Books">หนังสือ</option>
-            <option value="Clothing">เสื้อผ้า</option>
-            <option value="Home & Garden">บ้านและสวน</option>
-            <option value="Toys">ของเล่น</option>
-            <option value="Food">อาหาร</option>
-            <option value="Other">อื่นๆ</option>
-            </select>
-
-        <label for="imageInput">เลือกรูปภาพ:</label>
-        <input type="file" id="imageInput" accept="image/*" onchange="uploadImage()" />
-        
-        <div id="preview-container">
-            <img id="preview" alt="Preview" />
-            <span id="preview-filename" style="font-size: 0.9em; color: var(--text-dark);"></span>
-            <button type="button" id="delete-image-btn" onclick="clearImagePreview()" style="display:none;">
-                <i class="fas fa-trash-alt"></i> ลบรูปภาพ
-            </button>
+        <div id="authSection" class="auth-section">
+            <label for="password">รหัสผ่าน:</label>
+            <input type="password" id="passwordInput" placeholder="กรอกรหัสผ่าน">
+            <button id="loginButton">เข้าสู่ระบบ</button>
         </div>
-        <input type="hidden" id="product-img-url" />
-        
-        <label for="product-link">ลิงก์สินค้า:</label>
-        <input type="url" id="product-link" placeholder="URL ของสินค้า (http:// หรือ https://)" />
-        
-        <button id="submit-product-button" onclick="submitProduct()"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
-        <button style="background-color:var(--secondary-color);" onclick="cancelForm()"><i class="fas fa-times-circle"></i> ยกเลิก</button>
+
+        <div id="adminContent" class="admin-content">
+            <div class="button-group">
+                <button id="addProductBtn" class="btn btn-primary"><i class="fas fa-plus"></i> เพิ่มสินค้าใหม่</button>
+                <button id="backToProductsBtn" class="btn btn-secondary" style="display:none;"><i class="fas fa-arrow-left"></i> กลับไปดูสินค้าทั้งหมด</button>
+            </div>
+
+            <div id="productsSection" class="products-section">
+                <h2><i class="fas fa-list"></i> รายการสินค้า</h2>
+                <div id="productsTableContainer">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID สินค้า</th>
+                                <th>ชื่อสินค้า</th>
+                                <th>หมวดหมู่</th>
+                                <th>รูปภาพ</th>
+                                <th>ลิงก์</th>
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="productForm" class="product-form">
+                <h2 id="formTitle">เพิ่มสินค้าใหม่</h2>
+                <form id="productFormFields">
+                    <input type="hidden" id="editSheetbestIdInput"> <div class="form-group">
+                        <label for="productId">ID สินค้า:</label>
+                        <input type="text" id="productIdInput" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="productName">ชื่อสินค้า:</label>
+                        <input type="text" id="productNameInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categorySelect">หมวดหมู่:</label>
+                        <select id="categorySelect" required>
+                            <option value="">เลือกหมวดหมู่</option>
+                            <option value="เสื้อ">เสื้อ</option>
+                            <option value="กางเกง">กางเกง</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productImgUrl">URL รูปภาพ:</label>
+                        <input type="text" id="productImgUrlInput" placeholder="ใส่ URL รูปภาพ">
+                        <div class="image-preview">
+                            <img id="previewImage" src="" alt="Image Preview" style="display:none;">
+                            <span id="previewFilename"></span>
+                            <button type="button" id="deleteImageBtn" style="display:none;">ลบรูปภาพ</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="productLink">ลิงก์สินค้า:</label>
+                        <input type="text" id="productLinkInput" placeholder="ใส่ลิงก์สินค้า (เช่น https://shopee.co.th/product)" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" id="submitProductButton" class="btn-submit"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
+                        <button type="button" id="cancelFormButton" class="btn-cancel"><i class="fas fa-times-circle"></i> ยกเลิก</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <div id="message" class="message"></div>
+    <script>
+        // เปลี่ยน URL นี้เป็น Web App URL ที่คุณได้จาก Google Apps Script
+        const SHEET_URL = "https://script.google.com/macros/s/AKfycbyjpSjJlYX4cXxkpyfdp0kg9W-p3icXtGn_wSXIX4jcD4Km6XPvc6vdO2feufEQewNlrw/exec";
 
-    <div id="products-section" style="display:none;">
-        <h3><i class="fas fa-list-alt"></i> รายการสินค้า</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID สินค้า</th>
-                    <th>ชื่อสินค้า</th>
-                    <th>หมวดหมู่</th>
-                    <th>รูปภาพ</th>
-                    <th>ลิงก์</th>
-                    <th>จัดการ</th>
-                </tr>
-            </thead>
-            <tbody id="products-table-body"></tbody>
-        </table>
-    </div>
-</div>
+        const ADMIN_PASSWORD = "admin123"; // รหัสผ่านแอดมิน
 
-<script>
-    // ====== CONFIG ======
-    const SHEET_URL = "https://api.sheetbest.com/sheets/f463d80a-23b2-4bb9-a964-68d11289334c"; // เปลี่ยนเป็น API URL ของคุณ
-    // *** คำเตือน: การเก็บ ImgBB API Key ใน Client-side ไม่ปลอดภัยอย่างยิ่ง
-    // *** ไม่ควรใช้ในระบบ Production ควรให้ Server-side เป็นคนจัดการการอัปโหลดรูป
-    const IMGBB_API_KEY = "1838933755ecde270eabbf6d57977b80"; // ใส่ API KEY ของ imgbb
-    const PLACEHOLDER_IMG = 'https://via.placeholder.com/80x80?text=No+Image'; // Placeholder สำหรับรูปภาพ
+        // Element Selectors
+        const messageBox = document.getElementById("messageBox");
+        const authSection = document.getElementById("authSection");
+        const passwordInput = document.getElementById("passwordInput");
+        const loginButton = document.getElementById("loginButton");
+        const adminContent = document.getElementById("adminContent");
+        const addProductBtn = document.getElementById("addProductBtn");
+        const backToProductsBtn = document.getElementById("backToProductsBtn");
+        const productsSection = document.getElementById("productsSection");
+        const productsTableBody = document.getElementById("productsTableBody");
+        const productForm = document.getElementById("productForm");
+        const formTitle = document.getElementById("formTitle");
+        const productFormFields = document.getElementById("productFormFields");
+        const editSheetbestIdInput = document.getElementById("editSheetbestIdInput"); // สำหรับเก็บ sheetRow
+        const productIdInput = document.getElementById("productIdInput");
+        const productNameInput = document.getElementById("productNameInput");
+        const categorySelect = document.getElementById("categorySelect");
+        const productImgUrlInput = document.getElementById("productImgUrlInput");
+        const previewImage = document.getElementById("previewImage");
+        const previewFilename = document.getElementById("previewFilename");
+        const deleteImageBtn = document.getElementById("deleteImageBtn");
+        const productLinkInput = document.getElementById("productLinkInput");
+        const submitProductButton = document.getElementById("submitProductButton");
+        const cancelFormButton = document.getElementById("cancelFormButton");
 
-    // ====== ตัวแปร DOM Elements ที่ใช้งานบ่อย ======
-    const loginSection = document.getElementById("login-section");
-    const passwordInput = document.getElementById("password");
-    const loginButton = document.getElementById("login-button");
-    const addProductBtn = document.getElementById("add-product-btn");
-    const formSection = document.getElementById("form-section");
-    const formTitle = document.getElementById("form-title");
-    const editSheetbestIdInput = document.getElementById("edit-sheetbest-id"); // เปลี่ยนชื่อตัวแปร
-    const productIdInput = document.getElementById("product-id");
-    const productNameInput = document.getElementById("product-name");
-    const categorySelect = document.getElementById("category-select");
-    const imageInput = document.getElementById("imageInput");
-    const previewImage = document.getElementById("preview");
-    const previewFilename = document.getElementById("preview-filename");
-    const productImgUrlInput = document.getElementById("product-img-url");
-    const productLinkInput = document.getElementById("product-link");
-    const submitProductButton = document.getElementById("submit-product-button");
-    const messageDiv = document.getElementById("message");
-    const productsSection = document.getElementById("products-section");
-    const productsTableBody = document.getElementById("products-table-body");
-    const linkBack = document.getElementById("link-back");
-    const deleteImageBtn = document.getElementById("delete-image-btn"); // เพิ่มปุ่มลบรูปภาพ
+        let products = []; // Array to store product data
 
-    // ====== ตัวแปร ======
-    let products = [];
-    // *** คำเตือน: การเก็บรหัสผ่านใน Client-side (JavaScript) ไม่ปลอดภัยอย่างยิ่ง
-    // *** ไม่ควรใช้ในระบบ Production ที่ต้องการความปลอดภัยสูง
-    // *** ควรมีการยืนยันตัวตนผ่าน Server-side เพื่อตรวจสอบรหัสผ่าน
-    const ADMIN_PASSWORD = "admin123";
-
-    // ====== ฟังก์ชันล็อกอินง่ายๆ ======
-    async function login() {
-        const pw = passwordInput.value;
-        if (pw === ADMIN_PASSWORD) {
-            setMessage("เข้าสู่ระบบสำเร็จ", "success", 2000);
-            loginSection.style.display = "none";
-            addProductBtn.style.display = "block";
-            productsSection.style.display = "block";
-            await loadProducts();
-        } else {
-            setMessage("รหัสผ่านไม่ถูกต้อง", "error", 3000);
-            passwordInput.value = "";
-            passwordInput.focus();
-        }
-    }
-
-    // ====== โหลดข้อมูลสินค้าจาก Google Sheets ======
-    async function loadProducts() {
-        setMessage("กำลังโหลดข้อมูลสินค้า...", "info");
-        try {
-            const res = await fetch(SHEET_URL);
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            products = await res.json();
-            renderProductsTable();
-            setMessage("โหลดข้อมูลสำเร็จ", "success", 1500);
-        } catch (err) {
-            setMessage(`โหลดข้อมูลล้มเหลว: ${err.message}`, "error");
-            console.error("Failed to load products:", err);
-        }
-    }
-
-    // ====== แสดงตารางสินค้า ======
-    function renderProductsTable() {
-        productsTableBody.innerHTML = "";
-        if (products.length === 0) {
-            productsTableBody.innerHTML = `<tr><td colspan="6">ไม่มีสินค้าในระบบ</td></tr>`;
-            return;
-        }
-        products.forEach((item, index) => {
-            productsTableBody.innerHTML += `
-                <tr>
-                    <td data-label="ID สินค้า">${item["ID สินค้า"] || "-"}</td>
-                    <td data-label="ชื่อสินค้า">${item["ชื่อสินค้า"] || ""}</td>
-                    <td data-label="หมวดหมู่">${item["หมวดหมู่"] || "-"}</td>
-                    <td data-label="รูปภาพ"><img class="product-thumb" src="${item["รูปภาพ"] || PLACEHOLDER_IMG}" alt="รูปสินค้า" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';" /></td>
-                    <td data-label="ลิงก์"><a href="${item["ลิงก์"] || "#"}" target="_blank" rel="noopener noreferrer">ลิงก์สินค้า</a></td>
-                    <td data-label="จัดการ">
-                        <button class="btn-edit" onclick="editProduct(${index})"><i class="fas fa-edit"></i> แก้ไข</button>
-                        <button class="btn-delete" onclick="deleteProduct(${index})"><i class="fas fa-trash-alt"></i> ลบ</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    // ====== สร้าง ID สินค้าใหม่ ======
-    async function generateProductId() {
-        let maxIdNum = 0;
-        products.forEach(item => {
-            const id = item["ID สินค้า"];
-            if (id && typeof id === 'string' && id.startsWith("P-")) { // ตรวจสอบว่าเป็น string ด้วย
-                const numPart = parseInt(id.substring(2), 10);
-                if (!isNaN(numPart) && numPart > maxIdNum) {
-                    maxIdNum = numPart;
-                }
-            }
-        });
-        const nextIdNum = maxIdNum + 1;
-        return `P-${String(nextIdNum).padStart(3, '0')}`;
-    }
-
-    // ====== แสดงฟอร์มเพิ่ม/แก้ไขสินค้า ======
-    async function showForm() {
-        clearForm(); // เคลียร์ฟอร์มและซ่อนปุ่มลบรูป
-        formTitle.innerText = "เพิ่มสินค้าใหม่";
-        formSection.style.display = "block";
-        addProductBtn.style.display = "none";
-        productsSection.style.display = "none";
-        setMessage("");
-
-        const newId = await generateProductId();
-        productIdInput.value = newId;
-        productIdInput.disabled = true; // ID สินค้า จะถูก disabled เสมอ
-        productNameInput.focus();
-    }
-
-    // ====== อัปโหลดรูปไป imgbb ======
-    async function uploadImage() {
-        const file = imageInput.files[0];
-        if (!file) {
-            clearImagePreview(); // ถ้าไม่มีไฟล์ ก็เคลียร์รูปภาพและซ่อนปุ่มลบ
-            return;
-        }
-
-        previewFilename.innerText = file.name;
-        setMessage("กำลังอัปโหลดรูป...", "info");
-        submitProductButton.disabled = true;
-
-        const formData = new FormData();
-        formData.append("image", file);
-
-        try {
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: "POST",
-                body: formData
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                productImgUrlInput.value = data.data.url;
-                previewImage.src = data.data.url;
-                previewImage.style.display = "block";
-                deleteImageBtn.style.display = "inline-block"; // แสดงปุ่มลบเมื่ออัปโหลดสำเร็จ
-                setMessage("อัปโหลดรูปสำเร็จ", "success", 1500);
+        // --- Authentication ---
+        loginButton.addEventListener("click", () => {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                authSection.style.display = "none";
+                adminContent.style.display = "block";
+                loadProducts();
+                setMessage("เข้าสู่ระบบสำเร็จ", "success", 2000);
             } else {
-                throw new Error(data.error?.message || "Unknown ImgBB error");
+                setMessage("รหัสผ่านไม่ถูกต้อง", "error");
             }
-        } catch (err) {
-            setMessage(`อัปโหลดรูปไม่สำเร็จ: ${err.message}`, "error");
-            console.error("Image upload error:", err);
-            clearImagePreview(); // ถ้าอัปโหลดไม่สำเร็จ ก็เคลียร์รูปภาพและซ่อนปุ่มลบ
-        } finally {
-            submitProductButton.disabled = false;
-        }
-    }
+        });
 
-    // ====== บันทึกข้อมูลสินค้า (เพิ่มหรือแก้ไข) ======
-    async function submitProduct() {
-        // editSheetbestIdInput.value จะเก็บ Sheetbest ID (UUID) สำหรับการแก้ไข
-        // ถ้าเป็นค่าว่าง แสดงว่าเป็นการเพิ่มสินค้าใหม่
-        const sheetbestIdToEdit = editSheetbestIdInput.value; 
-
-        const id = productIdInput.value.trim(); // ID สินค้า (P-001) ที่แสดงให้ผู้ใช้เห็น
-        const name = productNameInput.value.trim();
-        const category = categorySelect.value;
-        const img = productImgUrlInput.value.trim();
-        const link = productLinkInput.value.trim();
-
-        if (!name || !img || !link || !category) {
-            setMessage("กรุณากรอกข้อมูล ชื่อสินค้า, หมวดหมู่, รูปภาพ และลิงก์ ให้ครบทุกช่อง", "error");
-            return;
-        }
-        if (!isValidUrl(link)) {
-            setMessage("กรุณากรอกลิงก์ให้ถูกต้อง (ต้องมี http:// หรือ https://)", "error");
-            return;
-        }
-
-        submitProductButton.disabled = true;
-        setMessage("กำลังบันทึกข้อมูล...", "info");
-
-        const productData = {
-            "ID สินค้า": id,
-            "ชื่อสินค้า": name,
-            "หมวดหมู่": category,
-            "รูปภาพ": img,
-            "ลิงก์": link
-        };
-
-        try {
-            let res;
-            if (sheetbestIdToEdit === "") { // เพิ่มสินค้าใหม่ (POST)
-                res = await fetch(SHEET_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(productData)
-                });
-            } else { // แก้ไขสินค้า (PATCH)
-                // ใช้ Sheetbest ID ที่เก็บไว้ใน editSheetbestIdInput เพื่อระบุแถวที่จะแก้ไข
-                const patchURL = `${SHEET_URL}/${sheetbestIdToEdit}`; 
-                res = await fetch(patchURL, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(productData)
-                });
+        // --- Message Handling ---
+        function setMessage(msg, type = "info", duration = 0) {
+            messageBox.innerText = msg;
+            messageBox.className = `message-box ${type}`;
+            messageBox.style.display = "block";
+            if (duration > 0) {
+                setTimeout(() => {
+                    messageBox.style.display = "none";
+                }, duration);
             }
-
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
-            }
-
-            setMessage(sheetbestIdToEdit === "" ? "เพิ่มสินค้าเรียบร้อย" : "แก้ไขสินค้าเรียบร้อย", "success", 2000);
-            cancelForm();
-            await loadProducts();
-        } catch (err) {
-            setMessage(`${sheetbestIdToEdit === "" ? "เพิ่มสินค้า" : "แก้ไขสินค้า"}ไม่สำเร็จ: ${err.message}`, "error");
-            console.error("Submit product error:", err);
-        } finally {
-            submitProductButton.disabled = false;
         }
-    }
 
-    // ====== แก้ไขข้อมูลสินค้า ======
-    function editProduct(index) {
-        const item = products[index];
-        if (!item) return;
+        // --- Utility Functions ---
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return string.startsWith('http://') || string.startsWith('https://');
+            } catch (_) {
+                return false;
+            }
+        }
 
-        // เก็บ Sheetbest ID (uuid) ของสินค้าใน hidden input
-        // นี่คือการแก้ไขที่สำคัญเพื่อแก้ปัญหา "Missing Item ID"
-        editSheetbestIdInput.value = item.id; 
+        // --- Image Preview ---
+        productImgUrlInput.addEventListener("input", () => {
+            const url = productImgUrlInput.value.trim();
+            if (isValidUrl(url)) {
+                previewImage.src = url;
+                previewImage.style.display = "block";
+                previewFilename.innerText = "รูปภาพตัวอย่าง";
+                deleteImageBtn.style.display = "inline-block";
+            } else {
+                previewImage.src = "";
+                previewImage.style.display = "none";
+                previewFilename.innerText = "";
+                deleteImageBtn.style.display = "none";
+            }
+        });
 
-        productIdInput.value = item["ID สินค้า"] || "-";
-        productIdInput.disabled = true; // ID สินค้ายังคง disabled
-        productNameInput.value = item["ชื่อสินค้า"] || "";
-        categorySelect.value = item["หมวดหมู่"] || "";
-        productImgUrlInput.value = item["รูปภาพ"] || "";
-        
-        // แสดงรูปภาพ Preview และปุ่มลบรูปภาพ
-        if (item["รูปภาพ"]) {
-            previewImage.src = item["รูปภาพ"];
-            previewImage.style.display = "block";
-            previewFilename.innerText = "รูปภาพปัจจุบัน";
-            deleteImageBtn.style.display = "inline-block"; // แสดงปุ่มลบ
-        } else {
+        deleteImageBtn.addEventListener("click", () => {
+            productImgUrlInput.value = "";
             previewImage.src = "";
             previewImage.style.display = "none";
             previewFilename.innerText = "";
-            deleteImageBtn.style.display = "none"; // ซ่อนปุ่มลบ
-        }
-        imageInput.value = ""; // เคลียร์ input type file เสมอ เพื่อให้เลือกไฟล์ใหม่ได้
-        productLinkInput.value = item["ลิงก์"] || "";
+            deleteImageBtn.style.display = "none";
+        });
 
-        formTitle.innerText = "แก้ไขสินค้า";
-        formSection.style.display = "block";
-        addProductBtn.style.display = "none";
-        productsSection.style.display = "none";
-        setMessage("");
-        productNameInput.focus();
-    }
+        // --- CRUD Operations ---
 
-    // ====== ลบสินค้า ======
-    async function deleteProduct(index) {
-        const item = products[index];
-        if (!item || !item.id) {
-            setMessage("ไม่พบข้อมูลสินค้าเพื่อจะลบ (Missing Item ID from Sheetbest - Try refreshing)", "error");
-            return;
-        }
-
-        if (!confirm(`คุณแน่ใจจะลบสินค้า "${item["ชื่อสินค้า"] || 'นี้'}" หรือไม่?`)) return;
-
-        const delURL = `${SHEET_URL}/${item.id}`; // ใช้ item.id โดยตรงในการลบ
-
-        setMessage("กำลังลบสินค้า...", "info");
-        try {
-            const res = await fetch(delURL, { method: "DELETE" });
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+        // Load Products
+        async function loadProducts() {
+            setMessage("กำลังโหลดข้อมูลสินค้า...", "info");
+            try {
+                // เรียกใช้ GAS Web App สำหรับ GET request
+                const res = await fetch(`${SHEET_URL}?action=get`);
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+                }
+                products = await res.json();
+                renderProductsTable();
+                setMessage("โหลดข้อมูลสำเร็จ", "success", 1500);
+            } catch (err) {
+                setMessage(`โหลดข้อมูลล้มเหลว: ${err.message}`, "error");
+                console.error("Failed to load products:", err);
             }
-            setMessage("ลบสินค้าเรียบร้อย", "success", 2000);
-            await loadProducts();
-        } catch (err) {
-            setMessage(`ลบสินค้าไม่สำเร็จ: ${err.message}`, "error");
-            console.error("Delete product error:", err);
         }
-    }
 
-    // ====== ยกเลิกฟอร์ม ======
-    function cancelForm() {
-        formSection.style.display = "none";
-        addProductBtn.style.display = "block";
-        productsSection.style.display = "block";
-        clearForm(); // เรียกใช้ clearForm เพื่อล้างข้อมูลและซ่อนปุ่มลบรูป
-        setMessage("");
-    }
+        // Render Products Table
+        function renderProductsTable() {
+            productsTableBody.innerHTML = "";
+            if (products.length === 0) {
+                productsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">ไม่พบข้อมูลสินค้า</td></tr>';
+                return;
+            }
 
-    // ====== เคลียร์ข้อมูลฟอร์มและรูปภาพ Preview ======
-    function clearForm() {
-        editSheetbestIdInput.value = ""; // เคลียร์ Sheetbest ID ที่เก็บไว้
-        productIdInput.value = "";
-        productIdInput.disabled = true;
-        productNameInput.value = "";
-        categorySelect.value = "";
-        productLinkInput.value = "";
-        
-        // เคลียร์และซ่อนรูปภาพ Preview และปุ่มลบรูปภาพ
-        imageInput.value = ""; 
-        productImgUrlInput.value = "";
-        previewImage.style.display = "none";
-        previewImage.src = ""; 
-        previewFilename.innerText = "";
-        deleteImageBtn.style.display = "none"; // ซ่อนปุ่มลบรูปภาพ
-
-        setMessage("");
-    }
-
-    // ====== ฟังก์ชันสำหรับล้างรูปภาพ Preview โดยเฉพาะ (เรียกใช้จากปุ่มลบรูป) ======
-    function clearImagePreview() {
-        imageInput.value = ""; // ล้าง input type file
-        productImgUrlInput.value = ""; // ล้าง URL รูปภาพที่ซ่อนอยู่
-        previewImage.src = "";
-        previewImage.style.display = "none";
-        previewFilename.innerText = "";
-        deleteImageBtn.style.display = "none"; // ซ่อนปุ่มลบรูปภาพหลังจากลบ
-        setMessage("รูปภาพถูกลบแล้ว (ยังไม่ได้บันทึกการเปลี่ยนแปลง)", "info", 1500);
-    }
-
-    // ====== แสดงข้อความสถานะ ======
-    let messageTimeout;
-    function setMessage(msg, type = "info", duration = 0) {
-        messageDiv.innerText = msg;
-        messageDiv.className = `message show ${type}`;
-
-        if (messageTimeout) {
-            clearTimeout(messageTimeout);
+            products.forEach(item => {
+                const row = productsTableBody.insertRow();
+                // item.sheetRow คือ Row Number ที่ได้จาก GAS
+                row.innerHTML = `
+                    <td data-label="ID สินค้า">${item["ID สินค้า"] || "-"}</td>
+                    <td data-label="ชื่อสินค้า">${item["ชื่อสินค้า"] || "-"}</td>
+                    <td data-label="หมวดหมู่">${item["หมวดหมู่"] || "-"}</td>
+                    <td data-label="รูปภาพ">
+                        ${item["รูปภาพ"] ? `<img src="${item["รูปภาพ"]}" alt="รูปภาพสินค้า" onerror="this.onerror=null;this.src='https://via.placeholder.com/80?text=No+Image';">` : 'ไม่มีรูป'}
+                    </td>
+                    <td data-label="ลิงก์">
+                        ${item["ลิงก์"] ? `<a href="${item["ลิงก์"]}" target="_blank" class="link-text">ลิงก์สินค้า</a>` : '-'}
+                    </td>
+                    <td data-label="จัดการ">
+                        <button class="btn-edit" onclick="editProduct(${item.sheetRow})"><i class="fas fa-edit"></i> แก้ไข</button>
+                        <button class="btn-delete" onclick="deleteProduct(${item.sheetRow})"><i class="fas fa-trash-alt"></i> ลบ</button>
+                    </td>
+                `;
+            });
         }
-        if (duration > 0) {
-            messageTimeout = setTimeout(() => {
-                messageDiv.classList.remove("show");
-            }, duration);
-        }
-    }
 
-    // ====== ตรวจสอบ URL ที่ถูกต้อง ======
-    function isValidUrl(string) {
-        try {
-            const url = new URL(string);
-            return url.protocol === "http:" || url.protocol === "https:";
-        } catch (e) {
-            return false;
-        }
-    }
+        // Submit Product (Add/Edit)
+        productFormFields.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await submitProduct();
+        });
 
-    // รันเมื่อโหลดหน้าเสร็จ
-    document.addEventListener('DOMContentLoaded', () => {
-        passwordInput.focus();
-        linkBack.style.display = "block"; // แสดงปุ่มกลับทันทีที่โหลดหน้า Admin
-    });
-</script>
+        async function submitProduct() {
+            // sheetRowToEdit จะเก็บ sheetRow หากเป็นการแก้ไข (มาจาก editProduct)
+            const sheetRowToEdit = editSheetbestIdInput.value;
+
+            const id = productIdInput.value.trim(); // ID สินค้า (เช่น P-001)
+            const name = productNameInput.value.trim();
+            const category = categorySelect.value;
+            const img = productImgUrlInput.value.trim();
+            const link = productLinkInput.value.trim();
+
+            if (!name || !img || !link || !category) {
+                setMessage("กรุณากรอกข้อมูล ชื่อสินค้า, หมวดหมู่, รูปภาพ และลิงก์ ให้ครบทุกช่อง", "error");
+                return;
+            }
+            if (!isValidUrl(link)) {
+                setMessage("กรุณากรอกลิงก์ให้ถูกต้อง (ต้องมี http:// หรือ https://)", "error");
+                return;
+            }
+
+            submitProductButton.disabled = true;
+            setMessage("กำลังบันทึกข้อมูล...", "info");
+
+            const productData = {
+                "ID สินค้า": id, // ID สินค้า P-001
+                "ชื่อสินค้า": name,
+                "หมวดหมู่": category,
+                "รูปภาพ": img,
+                "ลิงก์": link
+            };
+
+            try {
+                let res;
+                if (sheetRowToEdit === "") { // เพิ่มสินค้าใหม่ (POST)
+                    res = await fetch(`${SHEET_URL}?action=post`, { // เพิ่ม ?action=post
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(productData)
+                    });
+                } else { // แก้ไขสินค้า (PUT)
+                    // ส่ง sheetRow ใน URL query parameter
+                    const putURL = `${SHEET_URL}?action=put&sheetRow=${sheetRowToEdit}`; // เพิ่ม ?action=put&sheetRow=
+                    res = await fetch(putURL, {
+                        method: "PUT", // ใช้ PUT ตามที่ GAS doPut function รองรับ
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(productData)
+                    });
+                }
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+                }
+
+                setMessage(sheetRowToEdit === "" ? "เพิ่มสินค้าเรียบร้อย" : "แก้ไขสินค้าเรียบร้อย", "success", 2000);
+                cancelForm();
+                await loadProducts(); // โหลดข้อมูลใหม่หลังจากเพิ่ม/แก้ไข
+            } catch (err) {
+                setMessage(`${sheetRowToEdit === "" ? "เพิ่มสินค้า" : "แก้ไขสินค้า"}ไม่สำเร็จ: ${err.message}`, "error");
+                console.error("Submit product error:", err);
+            } finally {
+                submitProductButton.disabled = false;
+            }
+        }
+
+        // Edit Product
+        function editProduct(sheetRow) { // รับ sheetRow มาจากปุ่มแก้ไข
+            const item = products.find(p => p.sheetRow === sheetRow); // ค้นหาสินค้าด้วย sheetRow
+            if (!item) {
+                setMessage("ไม่พบข้อมูลสินค้าเพื่อแก้ไข (ลองรีเฟรชหน้า)", "error", 2000);
+                return;
+            }
+
+            // เก็บ sheetRow ที่ได้มาใน hidden input
+            editSheetbestIdInput.value = item.sheetRow;
+
+            productIdInput.value = item["ID สินค้า"] || "-";
+            productIdInput.disabled = true; // ID สินค้าแก้ไขไม่ได้
+            productNameInput.value = item["ชื่อสินค้า"] || "";
+            categorySelect.value = item["หมวดหมู่"] || "";
+            productImgUrlInput.value = item["รูปภาพ"] || "";
+
+            if (item["รูปภาพ"]) {
+                previewImage.src = item["รูปภาพ"];
+                previewImage.style.display = "block";
+                previewFilename.innerText = "รูปภาพปัจจุบัน";
+                deleteImageBtn.style.display = "inline-block";
+            } else {
+                previewImage.src = "";
+                previewImage.style.display = "none";
+                previewFilename.innerText = "";
+                deleteImageBtn.style.display = "none";
+            }
+            // imageInput.value = ""; // ไม่จำเป็นต้องล้างค่า input type file ถ้าใช้ URL
+            productLinkInput.value = item["ลิงก์"] || "";
+
+            formTitle.innerText = "แก้ไขสินค้า";
+            productForm.style.display = "block";
+            productsSection.style.display = "none";
+            addProductBtn.style.display = "none";
+            backToProductsBtn.style.display = "flex"; // แสดงปุ่มกลับ
+            setMessage("");
+            productNameInput.focus();
+        }
+
+        // Delete Product
+        async function deleteProduct(sheetRow) { // รับ sheetRow มาจากปุ่มลบ
+            const item = products.find(p => p.sheetRow === sheetRow); // ค้นหาสินค้าด้วย sheetRow
+            if (!item) {
+                setMessage("ไม่พบข้อมูลสินค้าเพื่อจะลบ (ลองรีเฟรชหน้า)", "error", 2000);
+                return;
+            }
+
+            if (!confirm(`คุณแน่ใจจะลบสินค้า "${item["ชื่อสินค้า"] || 'นี้'}" หรือไม่?`)) return;
+
+            setMessage("กำลังลบสินค้า...", "info");
+            try {
+                // ส่ง sheetRow ใน URL query parameter
+                const delURL = `${SHEET_URL}?action=delete&sheetRow=${sheetRow}`; // เพิ่ม ?action=delete&sheetRow=
+                const res = await fetch(delURL, { method: "DELETE" }); // ใช้ DELETE method
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+                }
+                setMessage("ลบสินค้าเรียบร้อย", "success", 2000);
+                await loadProducts(); // โหลดข้อมูลใหม่หลังจากลบ
+            } catch (err) {
+                setMessage(`ลบสินค้าไม่สำเร็จ: ${err.message}`, "error");
+                console.error("Delete product error:", err);
+            }
+        }
+
+        // --- Form Controls ---
+        addProductBtn.addEventListener("click", () => {
+            formTitle.innerText = "เพิ่มสินค้าใหม่";
+            productFormFields.reset();
+            editSheetbestIdInput.value = ""; // Clear for new product
+            productIdInput.value = generateNextProductId(); // Generate new ID
+            productIdInput.disabled = false; // Enable ID for new product
+            previewImage.src = "";
+            previewImage.style.display = "none";
+            previewFilename.innerText = "";
+            deleteImageBtn.style.display = "none";
+            productForm.style.display = "block";
+            productsSection.style.display = "none";
+            addProductBtn.style.display = "none";
+            backToProductsBtn.style.display = "flex"; // Show back button
+            setMessage("");
+            productNameInput.focus();
+        });
+
+        cancelFormButton.addEventListener("click", cancelForm);
+        backToProductsBtn.addEventListener("click", cancelForm); // ปุ่มกลับทำงานเหมือนยกเลิกฟอร์ม
+
+        function cancelForm() {
+            productFormFields.reset();
+            productForm.style.display = "none";
+            productsSection.style.display = "block";
+            addProductBtn.style.display = "flex";
+            backToProductsBtn.style.display = "none";
+            setMessage(""); // Clear message
+            loadProducts(); // Reload products to ensure fresh data
+        }
+
+        // Function to generate next P-XXX ID (from your existing logic)
+        function generateNextProductId() {
+            let maxNum = 0;
+            products.forEach(p => {
+                if (p["ID สินค้า"] && p["ID สินค้า"].startsWith("P-")) {
+                    const num = parseInt(p["ID สินค้า"].substring(2), 10);
+                    if (!isNaN(num) && num > maxNum) {
+                        maxNum = num;
+                    }
+                }
+            });
+            return `P-${String(maxNum + 1).padStart(3, '0')}`;
+        }
+
+        // Initial load (if not authenticated, nothing happens until login)
+        // loadProducts(); // This will be called after successful login now
+    </script>
 </body>
 </html>
