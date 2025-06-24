@@ -19,7 +19,7 @@
     <!-- Login Gate: Shown before admin panel, for password authentication -->
     <div id="login-gate" class="d-flex justify-content-center align-items-center vh-100 p-3">
         <div class="card p-4 admin-login-card text-center">
-            <h3 class="mb-4">Admin Login</h3>
+            <h3 class="mb-4 text-color">Admin Login</h3>
             <div class="mb-3">
                 <label for="password-input" class="form-label visually-hidden">ป้อนรหัสผ่าน</label>
                 <input type="password" id="password-input" class="form-control form-control-lg" placeholder="ป้อนรหัสผ่าน" aria-label="Admin password">
@@ -43,19 +43,20 @@
         
         <!-- Admin Content Container -->
         <div class="container mt-4 admin-panel-container">
-            <h3 class="mb-4">จัดการสินค้า</h3>
+            <h3 class="mb-4 text-primary">จัดการสินค้า</h3>
 
             <!-- Product Add/Edit Form Card -->
-            <div class="card mb-4 shadow-sm">
+            <div class="card mb-4 product-management-form">
+                <div class="card-header bg-primary text-white">
+                    <h5 id="form-title" class="mb-0">เพิ่มสินค้าใหม่</h5>
+                </div>
                 <div class="card-body">
-                    <h5 id="form-title" class="card-title mb-3">เพิ่มสินค้าใหม่</h5>
                     <form id="product-form">
                         <input type="hidden" id="product-id"> <!-- Hidden field for product ID (for editing) -->
                         <div class="mb-3">
                             <label for="name" class="form-label">ชื่อสินค้า <span class="text-danger">*</span></label>
                             <input type="text" id="name" class="form-control" required placeholder="ชื่อสินค้า เช่น iPhone 15 Pro, เสื้อยืดลายกราฟิก">
                         </div>
-                        <!-- Removed: Description input field -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="category" class="form-label">หมวดหมู่ <span class="text-danger">*</span></label>
@@ -66,25 +67,25 @@
                                 <input type="number" id="price" class="form-control" required min="0" step="0.01" placeholder="ราคา เช่น 1250.00">
                             </div>
                         </div>
+                        
                         <!-- Input for selecting image file from device -->
                         <div class="mb-3">
-                            <label for="imageFileInput" class="form-label">เลือกรูปภาพสินค้า <span class="text-danger">*</span></label>
+                            <label for="imageFileInput" class="form-label">เลือกรูปภาพสินค้า</label>
                             <input type="file" id="imageFileInput" class="form-control" accept="image/*" multiple>
                             <div class="form-text text-muted">เลือกไฟล์รูปภาพจากอุปกรณ์ของคุณ (สามารถเลือกได้หลายรูป)</div>
-                            <!-- Image preview area -->
-                            <div id="imagePreview" class="d-flex flex-wrap mt-3"></div>
+                            <!-- Image preview area and remove button -->
+                            <div id="imagePreview" class="d-flex flex-wrap mt-3" style="gap: var(--spacing-sm);">
+                                <!-- Image previews will be rendered here by app.js -->
+                            </div>
                         </div>
-                        <!-- Hidden field to store the image URL (populated by JS after upload or for existing products) -->
-                        <!-- IMPORTANT: The ID of this hidden input must match the field name in your Google Sheet (image_url) -->
+                        
+                        <!-- Hidden field to store the image URL(s) (comma-separated) -->
                         <input type="hidden" id="image_url" class="form-control"> 
 
                         <div class="mb-3">
                             <label for="shopeeLink" class="form-label">ลิงก์ Shopee</label>
-                            <!-- IMPORTANT: The ID of this input must match the field name in your Google Sheet (shopee_url) if you want to use it directly -->
-                            <!-- However, app.js currently maps shopeeLink input to shopee_url data field, so this ID is fine. -->
                             <input type="url" id="shopeeLink" class="form-control" placeholder="https://shopee.co.th/product_link_here">
                         </div>
-                        <!-- Removed: Featured (สินค้าแนะนำ/สินค้าเด่น) checkbox as 'สถานะ' is removed -->
                         <button type="submit" class="btn btn-primary me-2">บันทึก</button>
                         <button type="button" id="clear-btn" class="btn btn-secondary">ยกเลิก</button>
                     </form>
@@ -94,7 +95,7 @@
             <hr class="my-5">
 
             <!-- All Products List Section -->
-            <h4 class="mb-4">รายการสินค้าทั้งหมด</h4>
+            <h4 class="mb-4 text-primary">รายการสินค้าทั้งหมด</h4>
             <!-- Admin Search Input for filtering products in the table -->
             <input type="text" id="admin-search-input" class="form-control mb-3" placeholder="ค้นหาสินค้าด้วย ID หรือชื่อ (เช่น P-001, รองเท้า)...">
             
