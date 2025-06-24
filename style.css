@@ -1,0 +1,866 @@
+/* style.css - Complete and Enhanced Version for Competition */
+
+/* --- 1. Global Styles and Variables (Color, Shadow, Spacing Variables for Theme Management) --- */
+:root {
+    /* Color Palette - Modern & Harmonious */
+    --primary-color: #007bff;          /* Blue: Main theme color, used for primary actions/highlights */
+    --primary-hover-color: #0056b3;    /* Darker Blue: For hover states of primary elements */
+    --accent-color: #28a745;           /* Green: For call-to-action buttons (e.g., success states) */
+    --accent-hover-color: #218838;     /* Darker Green */
+    --warning-color: #ffc107;          /* Yellow: For warning messages or prominent elements like stars */
+
+    /* Neutral Colors - For text and backgrounds, ensuring readability */
+    --text-color: #343a40;             /* Dark Gray: Main text color */
+    --light-text-color: #6c757d;       /* Muted Gray: Secondary text, descriptions */
+    --background-color: #f8f9fa;       /* Light Gray: Page background */
+    --card-background: #ffffff;        /* White: Background for cards and containers */
+    --border-color: #e9ecef;           /* Light Border: For input fields, separators */
+    --dark-section-bg: #212529;        /* Dark Gray/Black: For Navbar, Footer, Admin panel elements */
+    --white-color: #ffffff;            /* Pure white */
+    --shopee-red: #ee4d2d;             /* Shopee brand color */
+    --shopee-red-hover: #d13d22;       /* Darker Shopee red for hover */
+
+    /* Mobile Specific Colors - For highlighting featured mobile products with a smooth gradient */
+    --mobile-highlight-color: #ff8c00; /* Deep Orange: Primary color for mobile highlights */
+    --mobile-gradient-start: #ffa726;  /* Lighter Orange for gradient start */
+    --mobile-gradient-end: #fb8c00;    /* Darker Orange for gradient end */
+
+    /* Shadows - Soft and modern shadows for depth and prominence */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08); /* Small, subtle shadow */
+    --shadow-md: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);    /* Medium shadow, common for cards */
+    --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);      /* Large shadow, for prominent elements or hover */
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06); /* Inner shadow for input focus */
+
+    /* Border Radius - Consistent roundness for UI elements */
+    --border-radius-sm: 0.25rem; /* Smallest, for badges/buttons */
+    --border-radius-md: 0.5rem;  /* Medium, for inputs/standard buttons */
+    --border-radius-lg: 0.75rem; /* Larger, for cards/main sections */
+
+    /* Spacing - Standardized spacing for consistent layouts */
+    --spacing-xs: 0.25rem; /* 4px */
+    --spacing-sm: 0.5rem;  /* 8px */
+    --spacing-md: 1rem;    /* 16px */
+    --spacing-lg: 1.5rem;  /* 24px */
+    --spacing-xl: 3rem;    /* 48px */
+}
+
+/* Global Body Styles */
+body {
+    font-family: 'Kanit', sans-serif; /* Use Kanit font as specified */
+    background-color: var(--background-color); /* Apply main background color */
+    color: var(--text-color); /* Apply main text color */
+    line-height: 1.6; /* Standard line height for readability */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent unwanted horizontal scrollbar */
+}
+
+/* Custom Scrollbar Styles for Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+    background-color: var(--background-color); /* Background of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color); /* Color of the scrollbar thumb */
+    border-radius: 4px; /* Rounded corners for the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-hover-color); /* Darker color on hover */
+}
+
+/* --- 2. Typography (Refined Font Usage and Sizes for Modern Look) --- */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700; /* Bold headings for prominence */
+    color: var(--text-color); /* Apply main text color */
+    margin-bottom: var(--spacing-md); /* Consistent bottom margin */
+}
+
+p {
+    margin-bottom: var(--spacing-sm); /* Consistent bottom margin for paragraphs */
+}
+
+a {
+    color: var(--primary-color); /* Link color from primary palette */
+    text-decoration: none; /* Remove underline by default */
+    transition: color 0.3s ease; /* Smooth transition for color changes */
+}
+
+a:hover {
+    color: var(--primary-hover-color); /* Darker color on hover */
+    text-decoration: underline; /* Add underline on hover for clarity */
+}
+
+/* --- 3. Navbar (Clean, Modern, and with Depth) --- */
+.navbar {
+    background-color: var(--dark-section-bg) !important; /* Dark background from variables */
+    box-shadow: var(--shadow-md); /* Add medium shadow for depth */
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.8rem; /* Larger font size for brand logo */
+    color: var(--white-color) !important; /* White color for brand text */
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs); /* Gap between icon and text */
+}
+
+.navbar-brand .fas {
+    color: var(--primary-color); /* Primary color for brand icon */
+}
+
+.navbar .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.4); /* Subtle light border */
+    color: rgba(255, 255, 255, 0.8); /* Slightly muted white text */
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+}
+
+.navbar .btn-outline-light:hover {
+    background-color: var(--primary-color); /* Primary background on hover */
+    border-color: var(--primary-color); /* Primary border on hover */
+    color: var(--white-color); /* White text on hover */
+}
+
+/* --- 4. Hero Section (Captivating and Animated Banner) --- */
+.hero-section {
+    /* Background with a linear gradient overlay for better text contrast */
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url('https://placehold.co/1920x600/333/eee?text=Your+Shop+Banner') center center / cover no-repeat;
+    /* IMPORTANT: Replace placeholder URL with your actual high-quality banner image */
+    min-height: 500px; /* Minimum height for visual impact */
+    display: flex;
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+    color: var(--white-color); /* White text for contrast */
+    text-align: center;
+    position: relative;
+    padding: var(--spacing-xl) 0;
+    overflow: hidden; /* Ensure content stays within bounds */
+}
+
+/* Compact hero section for mobile to show products quickly */
+.hero-section.hero-section-compact-on-mobile {
+    min-height: 250px; /* Reduced height for mobile */
+    padding: var(--spacing-lg) 0;
+}
+.hero-section.hero-section-compact-on-mobile h1 {
+    font-size: 2.5rem; /* Smaller font for mobile hero title */
+}
+.hero-section.hero-section-compact-on-mobile p {
+    font-size: 1.1rem; /* Smaller font for mobile hero description */
+    margin-bottom: var(--spacing-md);
+}
+.hero-section.hero-section-compact-on-mobile .btn-primary {
+    font-size: 1rem;
+    padding: 0.6rem 1.5rem;
+}
+
+.hero-section h1 {
+    font-size: 4.5rem;
+    font-weight: 800; /* Extra bold for main heading */
+    margin-bottom: var(--spacing-md);
+    text-shadow: var(--shadow-md); /* Add shadow to text for depth */
+    /* Animate.css effects are applied directly in index.html for better control */
+}
+
+.hero-section p {
+    font-size: 1.6rem;
+    margin-bottom: var(--spacing-xl);
+    text-shadow: var(--shadow-sm); /* Subtle shadow for supporting text */
+    /* Animate.css effects are applied directly in index.html for better control */
+    opacity: 0; /* Initially hidden for animation via Animate.css forwards */
+}
+
+.hero-section .btn-primary {
+    font-size: 1.2rem;
+    padding: 0.8rem 2rem;
+    border-radius: var(--border-radius-md);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    /* Animate.css effects are applied directly in index.html for better control */
+    opacity: 0; /* Initially hidden for animation via Animate.css forwards */
+}
+
+.hero-section .btn-primary:hover {
+    background-color: var(--primary-hover-color); /* Darker primary on hover */
+    border-color: var(--primary-hover-color);
+    transform: translateY(-3px); /* Lift button slightly on hover */
+    box-shadow: var(--shadow-md); /* Add shadow on hover */
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--white-color);
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    text-shadow: var(--shadow-sm);
+    animation: bounce 2s infinite; /* Animate.css bounce */
+    opacity: 0; /* Initially hidden for animation */
+    animation-delay: 1s; /* Delay to play after other hero animations */
+    animation-fill-mode: forwards; /* Keep final state of animation */
+}
+.scroll-indicator i {
+    font-size: 1.5rem;
+    animation: pulse 1.5s infinite; /* Subtle pulse for the icon */
+}
+
+/* --- 5. Search and Filter Section (Clean, Modern, and Interactive) --- */
+.search-filter-section {
+    background-color: var(--card-background); /* White background from variables */
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg); /* Rounded corners */
+    box-shadow: var(--shadow-md); /* Medium shadow */
+    margin-top: -60px; /* Pulls the section up to overlap the Hero section slightly */
+    position: relative;
+    z-index: 10; /* Ensure it stays above other content */
+}
+
+.search-filter-section .form-control {
+    border-radius: var(--border-radius-md); /* Rounded input corners */
+    border: 1px solid var(--border-color); /* Light border */
+    padding: 0.75rem 1.25rem;
+    box-shadow: var(--shadow-sm); /* Subtle shadow */
+    transition: all 0.3s ease; /* Smooth transition for focus */
+}
+
+.search-filter-section .form-control:focus {
+    border-color: var(--primary-color); /* Primary color border on focus */
+    /* Inner shadow and subtle outline for focus state */
+    box-shadow: var(--shadow-inset), 0 0 0 0.25rem rgba(0, 123, 255, 0.25); 
+}
+
+.search-filter-section .btn-outline-secondary {
+    border-radius: var(--border-radius-md); /* Rounded button corners */
+    border: 1px solid var(--border-color); /* Light border */
+    color: var(--light-text-color); /* Muted text color */
+    transition: all 0.3s ease; /* Smooth transition for hover */
+}
+
+.search-filter-section .btn-outline-secondary:hover {
+    background-color: var(--primary-color); /* Primary background on hover */
+    color: var(--white-color); /* White text on hover */
+    border-color: var(--primary-color); /* Primary border on hover */
+    box-shadow: var(--shadow-sm); /* Subtle shadow on hover */
+}
+
+.search-filter-section .btn-group .btn {
+    border-radius: var(--border-radius-md); /* Rounded button corners */
+    margin-right: var(--spacing-sm); /* Spacing between buttons */
+    border: 1px solid var(--border-color); /* Light border */
+    color: var(--light-text-color); /* Muted text color */
+    transition: all 0.3s ease; /* Smooth transition for hover/active states */
+    font-weight: 500; /* Medium font weight */
+}
+
+.search-filter-section .btn-group .btn:last-child {
+    margin-right: 0; /* No right margin for the last button */
+}
+
+.search-filter-section .btn-group .btn.active {
+    background-color: var(--primary-color); /* Primary background for active button */
+    border-color: var(--primary-color); /* Primary border for active button */
+    color: var(--white-color); /* White text for active button */
+    box-shadow: var(--shadow-sm); /* Subtle shadow for active button */
+}
+
+.search-filter-section .btn-group .btn:hover:not(.active) {
+    background-color: var(--background-color); /* Light background on hover for non-active buttons */
+    color: var(--primary-color); /* Primary text color on hover */
+    border-color: var(--primary-color); /* Primary border on hover */
+}
+
+/* --- 6. Product Card (Enhanced, Visually Appealing, and Interactive) --- */
+.product-card {
+    border: none; /* Remove default Bootstrap border */
+    border-radius: var(--border-radius-lg); /* More rounded corners */
+    box-shadow: var(--shadow-md); /* Medium shadow for depth */
+    overflow: hidden; /* Ensure content stays within rounded corners */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    height: 100%; /* Ensure cards in a row have equal height */
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    position: relative; 
+    background-color: var(--card-background); /* White background for card */
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* Lift card slightly on hover */
+    box-shadow: var(--shadow-lg); /* Darker shadow on hover for prominence */
+}
+
+.product-card img {
+    width: 100%;
+    height: 250px; /* Fixed height for consistent image display */
+    object-fit: cover; /* Cover the area without distortion */
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
+    transition: transform 0.3s ease; /* Smooth zoom on image hover */
+}
+
+.product-card:hover img {
+    transform: scale(1.05); /* Zoom image slightly on hover */
+}
+
+.product-card .card-body {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow card-body to expand and fill available space */
+}
+
+.product-card .card-title {
+    font-size: 1.5rem;
+    font-weight: 600; /* Semi-bold font for title */
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-color);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit product title to 2 lines */
+    -webkit-box-orient: vertical;
+    min-height: 3.9rem; /* Minimum height to prevent layout shifts when titles vary in length */
+}
+
+/* Removed: .product-card .card-text styling as description field is removed */
+
+.product-card .product-price {
+    font-size: 1.8rem;
+    font-weight: 700; /* Bold font for price */
+    color: var(--primary-color); /* Primary color for price */
+    margin-top: auto; /* Push price to the bottom of the card body */
+    margin-bottom: var(--spacing-md);
+}
+
+.product-card .btn-shopee {
+    background-color: var(--shopee-red); /* Shopee brand red */
+    border-color: var(--shopee-red);
+    color: var(--white-color); /* White text */
+    font-weight: 600; /* Semi-bold font */
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius-md);
+    transition: all 0.3s ease; /* Smooth transition for hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs); /* Gap between icon and text */
+}
+
+.product-card .btn-shopee:hover {
+    background-color: var(--shopee-red-hover); /* Darker Shopee red on hover */
+    border-color: var(--shopee-red-hover);
+    transform: translateY(-2px); /* Lift button slightly on hover */
+    box-shadow: var(--shadow-sm); /* Subtle shadow on hover */
+}
+
+/* Removed: Product Badges styling as badge field is removed */
+
+/* Featured Mobile Product Card (Highly Prominent and Animated) */
+.product-card.mobile {
+    border: 3px solid transparent; /* Prepare for gradient border */
+    /* Gradient border using linear-gradient and border-box */
+    background: linear-gradient(to bottom right, var(--mobile-gradient-start), var(--mobile-gradient-end)) border-box; 
+    /* Masking to create the gradient border effect */
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out; /* Webkit specific for mask composition */
+    mask-composite: exclude; /* Exclude the padding-box from the mask */
+    box-shadow: var(--shadow-lg); /* Larger shadow for extra prominence */
+    animation: pulse 2s infinite ease-in-out; /* Continuous pulse animation */
+}
+
+.product-card.mobile .card-title,
+.product-card.mobile .product-price {
+    color: var(--mobile-highlight-color); /* Highlight color for text in featured mobile cards */
+}
+
+.product-card.mobile .product-price {
+    font-size: 2.2rem; /* Larger price for featured mobile cards */
+}
+
+/* Keyframes for the pulse animation (for featured mobile cards) */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: var(--shadow-lg); }
+    50% { transform: scale(1.02); box-shadow: 0 0.5rem 1.5rem rgba(255, 140, 0, 0.3); } /* Enlarged and orange-tinted shadow */
+    100% { transform: scale(1); box-shadow: var(--shadow-lg); }
+}
+
+/* --- 7. Loader and No Results States (Styling for User Feedback) --- */
+#loader .spinner-border {
+    width: 4rem; /* Larger spinner */
+    height: 4rem;
+    color: var(--primary-color) !important; /* Primary color for spinner */
+}
+
+#loader p {
+    font-size: 1.2rem;
+    color: var(--light-text-color); /* Muted text color for loading message */
+}
+
+#no-results {
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    background-color: var(--card-background); /* White background */
+    box-shadow: var(--shadow-md); /* Medium shadow */
+}
+
+#no-results h3 {
+    color: var(--light-text-color); /* Muted text color */
+    font-size: 1.8rem;
+}
+
+#no-results i {
+    color: var(--primary-color); /* Primary color for icon */
+}
+
+#no-results p {
+    font-size: 1.1rem;
+    color: var(--light-text-color); /* Muted text color */
+}
+
+/* --- 8. Footer (Elegant and Informative) --- */
+footer {
+    background-color: var(--dark-section-bg) !important; /* Dark background from variables */
+    color: rgba(255, 255, 255, 0.8) !important; /* Slightly transparent white text */
+    padding: var(--spacing-lg) 0;
+    box-shadow: var(--shadow-sm); /* Subtle shadow for footer */
+}
+
+footer .social-icons a {
+    color: rgba(255, 255, 255, 0.6) !important; /* Muted white for social icons */
+    font-size: 1.5rem;
+    margin: 0 var(--spacing-sm);
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover */
+}
+
+footer .social-icons a:hover {
+    color: var(--primary-color) !important; /* Primary color on hover */
+    transform: translateY(-3px); /* Lift icon slightly on hover */
+}
+
+/* --- 9. Admin Page Specific Styles (Clean and Functional for Admin Interface) --- */
+.admin-login-card {
+    border-radius: var(--border-radius-lg); /* Rounded corners for login card */
+    box-shadow: var(--shadow-lg); /* Larger shadow for prominence */
+    background-color: var(--card-background); /* White background */
+    padding: var(--spacing-xl) !important;
+}
+
+.admin-login-card h3 {
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.admin-panel-container {
+    background-color: var(--card-background); /* White background for admin content area */
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md); /* Medium shadow */
+    margin-bottom: var(--spacing-lg);
+}
+
+.admin-panel .navbar {
+    background-color: var(--dark-section-bg) !important; /* Dark background for admin navbar */
+    color: var(--white-color);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border-radius: 0; /* No border-radius for full width navbar */
+    box-shadow: var(--shadow-md); /* Medium shadow */
+}
+
+.admin-panel .navbar-brand {
+    color: var(--white-color) !important;
+    font-weight: 600;
+}
+
+.admin-panel h4 {
+    color: var(--text-color);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-md);
+    box-shadow: var(--shadow-sm); /* Subtle shadow for table */
+    border-radius: var(--border-radius-md);
+    overflow: hidden; /* Ensure rounded corners apply to table */
+}
+
+.admin-product-table th,
+.admin-product-table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--border-color); /* Light border between rows */
+    text-align: left;
+    vertical-align: middle; /* Align content vertically in middle */
+}
+
+.admin-product-table th {
+    background-color: #f1f3f5; /* Light gray background for table header */
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.admin-product-table tbody tr:hover {
+    background-color: #f8f9fa; /* Slightly lighter background on row hover */
+}
+
+.admin-product-table .btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+    margin-right: var(--spacing-xs);
+    border-radius: var(--border-radius-sm); /* Small rounded corners for action buttons */
+}
+
+/* General Form Styles for Admin (reused from Bootstrap, but with custom variables) */
+.form-label {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.form-control {
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-inset), 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+/* Custom Button Styles (reusing Bootstrap classes but applying variables) */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover-color);
+    border-color: var(--primary-hover-color);
+    transform: translateY(-1px); /* Lift slightly on hover */
+    box-shadow: var(--shadow-sm); /* Subtle shadow on hover */
+}
+
+.btn-secondary {
+    background-color: var(--light-text-color); /* Muted gray for secondary button */
+    border-color: var(--light-text-color);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268; /* Darker gray on hover */
+    border-color: #545b62;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Bootstrap red */
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Darker red on hover */
+    border-color: #bd2130;
+}
+
+.btn-warning { /* Specific style for edit button */
+    background-color: #ffc107; /* Bootstrap yellow */
+    border-color: #ffc107;
+    color: var(--dark-section-bg); /* Dark text for contrast */
+}
+
+.btn-warning:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+    border-color: #d39e00;
+}
+
+
+/* --- 10. Responsive Adjustments (Optimized Media Queries) --- */
+/* For larger desktops and wide screens */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1320px; /* Max width for Bootstrap's extra large breakpoint */
+    }
+}
+
+/* For desktops and large tablets */
+@media (min-width: 992px) {
+    .container {
+        max-width: 1140px; /* Default Bootstrap large breakpoint */
+    }
+    .hero-section h1 {
+        font-size: 4rem; /* Slightly smaller on larger tablets */
+    }
+    .hero-section p {
+        font-size: 1.5rem;
+    }
+}
+
+/* For medium tablets and smaller desktops */
+@media (max-width: 991.98px) {
+    .hero-section h1 {
+        font-size: 3.5rem;
+    }
+    .hero-section p {
+        font-size: 1.4rem;
+    }
+    .input-group-lg .form-control,
+    .input-group-lg .input-group-text {
+        height: 50px;
+        font-size: 1.1rem;
+    }
+    .btn-group .btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+    }
+    .search-filter-section {
+        margin-top: -50px; /* Adjust overlap */
+    }
+}
+
+/* For smaller tablets and large phones */
+@media (max-width: 767.98px) {
+    .hero-section {
+        min-height: 400px;
+        padding: var(--spacing-lg) 0;
+    }
+    .hero-section h1 {
+        font-size: 2.8rem;
+    }
+    .hero-section p {
+        font-size: 1.1rem;
+    }
+    .hero-section .btn-primary {
+        padding: 0.6rem 1.5rem;
+        font-size: 1rem;
+    }
+    .search-filter-section {
+        margin-top: -40px;
+        padding: var(--spacing-md);
+    }
+    /* Ensure search input and filter buttons stack properly */
+    .search-filter-section .row {
+        flex-direction: column; /* Stack vertically */
+    }
+    .col-md-8, .col-md-4 {
+        width: 100%; /* Full width */
+        margin-bottom: var(--spacing-md); /* Add spacing between stacked elements */
+    }
+    .btn-group {
+        width: 100%;
+        justify-content: center; /* Center buttons */
+        flex-wrap: wrap; /* Allow buttons to wrap to next line */
+    }
+    .btn-group .btn {
+        flex: 1 1 auto; /* Allow buttons to grow and shrink */
+        margin-bottom: var(--spacing-sm); /* Add bottom margin when wrapped */
+        margin-right: var(--spacing-sm);
+        min-width: unset; /* Override potential min-width from Bootstrap */
+    }
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+    .product-card img {
+        height: 200px; /* Adjust image height for smaller screens */
+    }
+    .product-card .card-title {
+        font-size: 1.3rem;
+        min-height: unset; /* Allow title to wrap without fixed height */
+    }
+    .product-card .product-price {
+        font-size: 1.6rem;
+    }
+    .product-card .btn-shopee {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+    .admin-product-table th,
+    .admin-product-table td {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.85rem;
+    }
+    .admin-product-table .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+    }
+    .admin-login-card {
+        padding: var(--spacing-lg) !important; /* Adjust padding for smaller screens */
+    }
+}
+
+/* For extra small screens (e.g., iPhone SE) */
+@media (max-width: 575.98px) {
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+    .hero-section p {
+        font-size: 1rem;
+    }
+    .search-filter-section .input-group-lg .form-control {
+        font-size: 1rem;
+        height: 45px;
+    }
+    .search-filter-section .btn-group .btn {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+        margin-bottom: var(--spacing-xs); /* Tighter spacing for very small screens */
+    }
+    .product-card img {
+        height: 180px;
+    }
+    .product-card .card-title {
+        font-size: 1.2rem;
+    }
+    .product-card .product-price {
+        font-size: 1.4rem;
+    }
+    .product-card .btn-shopee {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.8rem;
+    }
+}
+
+/* New: Custom Modal Styles (Essential for app.js custom alerts/confirms) */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Ensure it's above other elements */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for fade in/out */
+}
+
+.custom-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-modal {
+    background-color: var(--card-background); /* White background for modal content */
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg); /* Prominent shadow */
+    width: 90%; /* Responsive width */
+    max-width: 400px; /* Max width for readability */
+    transform: translateY(-50px); /* Start slightly above for entrance animation */
+    transition: transform 0.3s ease; /* Smooth transition for animation */
+}
+
+.custom-modal-overlay.show .custom-modal {
+    transform: translateY(0); /* Animate to center position */
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--background-color); /* Light background for header */
+    border-top-left-radius: var(--border-radius-md);
+    border-top-right-radius: var(--border-radius-md);
+}
+
+.custom-modal-title {
+    margin-bottom: 0;
+    font-size: 1.25rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.custom-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--light-text-color);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+}
+
+.custom-modal-close:hover {
+    opacity: 1;
+}
+
+.custom-modal-body {
+    padding: var(--spacing-md);
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-color); /* Light background for footer */
+    border-bottom-left-radius: var(--border-radius-md);
+    border-bottom-right-radius: var(--border-radius-md);
+}
+
+/* Specific text colors for alert types (used in custom-modal-body p) */
+.custom-modal-body .text-info { color: #17a2b8; } /* Bootstrap info blue */
+.custom-modal-body .text-success { color: var(--accent-color); } /* Green from accent-color */
+.custom-modal-body .text-error { color: var(--danger-color); } /* Red from danger-color */
+.custom-modal-body .text-warning { color: var(--warning-color); } /* Yellow from warning-color */
+
+/* Back to Top Button */
+#back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    /* Animate.css fade in effect is handled by app.js show/hide, animate__fadeInUp is just a baseline */
+}
+#back-to-top:hover {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
