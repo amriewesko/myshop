@@ -14,11 +14,9 @@ const ADMIN_SECRET_KEY = '1234';
 let allProducts = [];
 let currentFilter = 'ทั้งหมด'; // Stores the currently selected category filter
 let currentSearchTerm = ''; // Stores the current search query
-let selectedFileBase64 = []; // Changed to array to store multiple base64 images
-let selectedFileNames = []; // To store file names for display
-let productImages = []; // Stores image URLs when editing a product
-let isEditMode = false; // Flag to indicate if in edit mode
-
+let selectedFileBase64 = []; // Changed to array to store multiple base64 images of newly selected files
+let selectedFileNames = []; // To store file names for newly selected files
+let productImages = []; // Stores the CURRENT image URLs of a product (either existing from sheet or newly uploaded) when editing
 
 // ---- Helper Functions ----
 /**
@@ -45,7 +43,7 @@ const hide = (el) => el && el.classList.add('d-none');
  * This function creates and shows a modal dynamically.
  * @param {string} message - The message to display.
  * @param {string} type - 'info', 'success', 'error', 'warning' (for text color/icon).
- * @param {boolean} isConfirm - If true, shows OK/Cancel buttons.
+ * @param {boolean} [isConfirm=false] - If true, shows OK/Cancel buttons.
  * @returns {Promise<boolean>} Resolves true for OK, false for Cancel (only if isConfirm).
  */
 function showCustomAlert(message, type = 'info', isConfirm = false) {
@@ -64,7 +62,7 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
             <div class="custom-modal">
                 <div class="custom-modal-header">
                     <h5 class="custom-modal-title">${isConfirm ? 'ยืนยันการกระทำ' : 'แจ้งเตือน'}</h5>
-                    <button type="button" class="custom-modal-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    <button type="button" class="custom-modal-close" aria-label="Close">&times;</button>
                 </div>
                 <div class="custom-modal-body">
                     <p class="text-${type}">${message}</p>
@@ -89,15 +87,21 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
         // Function to close the modal and resolve the promise
         const closeModal = (result) => {
             modalInstance.classList.remove('show');
-            setTimeout(() => {
-                modalInstance.remove(); // Remove from DOM after transition
-                resolve(result);
-            }, 300); // Match CSS transition duration
+            // Use animationend event to ensure modal is removed AFTER fadeOutUp animation
+            modalInstance.addEventListener('animationend', () => modalInstance.remove(), { once: true });
+            resolve(result);
         };
 
         okButton && okButton.addEventListener('click', () => closeModal(true));
         cancelButton && cancelButton.addEventListener('click', () => closeModal(false));
         closeButton && closeButton.addEventListener('click', () => closeModal(false));
+
+        // Close when clicking outside modal content
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal(false);
+            }
+        });
 
         // Show the modal
         setTimeout(() => modalInstance.classList.add('show'), 10); // Small delay to trigger transition
@@ -138,8 +142,6 @@ async function sendData(action, data = {}, method = 'POST') {
                 action: action,
                 data: data
             };
-            // Apps Script generally expects text/plain for JSON body
-            // Make sure your Apps Script's doPost handles JSON.parse(e.postData.contents)
         }
 
         const response = await fetch(APPS_SCRIPT_URL, {
@@ -152,7 +154,6 @@ async function sendData(action, data = {}, method = 'POST') {
         });
 
         if (!response.ok) {
-            // Attempt to read response text for more detailed error from Apps Script
             const errorText = await response.text();
             throw new Error(`HTTP error! status: ${response.status}. Response: ${errorText}`);
         }
@@ -173,36 +174,48 @@ async function sendData(action, data = {}, method = 'POST') {
  */
 function renderProducts(products) {
     const productListEl = getEl('product-list');
-    if (!productListEl) return; // Ensure element exists
+    if (!productListEl) return;
 
-    productListEl.innerHTML = ''; // Clear existing products
-    hide(getEl('loader')); // Hide loader
-    hide(getEl('no-results')); // Hide no results message
+    productListEl.innerHTML = '';
+    hide(getEl('loader'));
+    hide(getEl('no-results'));
 
     if (products.length === 0) {
-        show(getEl('no-results')); // Show no results message if no products
+        show(getEl('no-results'));
         return;
     }
 
     products.forEach(product => {
-        // Construct image URL (assuming image_url holds a single URL or comma-separated URLs)
-        const imageUrls = product.image_url ? product.image_url.split(',').map(url => url.trim()) : ['https://placehold.co/400x250?text=No+Image'];
-        const firstImageUrl = imageUrls[0]; // Use the first image for the card
+        // Ensure image_url is an array, convert old formats if necessary
+        let imageUrls = [];
+        if (product.image_url) {
+            imageUrls = String(product.image_url).split(',').map(url => url.trim());
+            // Convert old Google Drive 'uc' URLs to 'lh3' format for display
+            imageUrls = imageUrls.map(url => {
+                if (url.includes('drive.google.com/uc?export=view&id=')) {
+                    const fileIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+                    if (fileIdMatch && fileIdMatch[1]) {
+                        return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                    }
+                }
+                return url;
+            });
+        }
+        const firstImageUrl = imageUrls[0] || 'https://placehold.co/400x250/cccccc/333333?text=No+Image'; // Fallback image
+
 
         // Determine if it's a mobile product (example: based on category containing 'มือถือ' or similar)
-        // You can adjust this logic based on how you define 'featured mobile products'
         const isMobileProduct = product.category && product.category.includes('มือถือ'); // Example condition
         const cardClass = isMobileProduct ? 'product-card mobile' : 'product-card';
-
 
         const productCardHtml = `
             <div class="col animate__animated animate__fadeInUp">
                 <div class="${cardClass}">
-                    <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}">
+                    <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/400x250/cccccc/333333?text=No+Image';">
                     <div class="card-body">
                         <h5 class="card-title">${product.name}</h5>
                         <p class="product-price">฿${parseFloat(product.price).toFixed(2)}</p>
-                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-shopee"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
+                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-shopee" rel="noopener noreferrer"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
                     </div>
                 </div>
             </div>
@@ -217,19 +230,17 @@ function renderProducts(products) {
 function filterAndSearchProducts() {
     let filtered = allProducts;
 
-    // Filter by category
     if (currentFilter !== 'ทั้งหมด') {
         filtered = filtered.filter(product =>
             product.category && product.category.toLowerCase().includes(currentFilter.toLowerCase())
         );
     }
 
-    // Search by term
     if (currentSearchTerm) {
         const lowerCaseSearchTerm = currentSearchTerm.toLowerCase();
         filtered = filtered.filter(product =>
             (product.name && product.name.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (product.id && product.id.toLowerCase().includes(lowerCaseSearchTerm)) || // Search by ID as well
+            (product.id && String(product.id).toLowerCase().includes(lowerCaseSearchTerm)) ||
             (product.category && product.category.toLowerCase().includes(lowerCaseSearchTerm))
         );
     }
@@ -245,92 +256,124 @@ async function loadProducts() {
     const loaderEl = getEl('loader');
     const noResultsEl = getEl('no-results');
 
-    if (productListEl) productListEl.innerHTML = ''; // Clear previous products
-    if (loaderEl) show(loaderEl); // Show loader
-    if (noResultsEl) hide(noResultsEl); // Hide no results initially
+    if (productListEl) productListEl.innerHTML = '';
+    if (loaderEl) show(loaderEl);
+    if (noResultsEl) hide(noResultsEl);
 
     try {
         const response = await sendData('getProducts', {}, 'GET');
         if (response.success && response.data) {
             allProducts = response.data;
-            filterAndSearchProducts(); // Apply initial filter/search after loading
+            filterAndSearchProducts();
         } else {
-            allProducts = []; // Ensure allProducts is empty on failure
-            show(noResultsEl); // Show no results message
+            allProducts = [];
+            show(noResultsEl);
             if (response.message) {
                 console.error("Failed to load products:", response.message);
-                // Optionally show a more specific error alert to the user
-                // showCustomAlert('ไม่สามารถโหลดสินค้าได้: ' + response.message, 'error');
             }
         }
     } catch (error) {
         console.error("Error loading products:", error);
         allProducts = [];
-        show(noResultsEl); // Show no results on network error
-        // showCustomAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
+        show(noResultsEl);
     } finally {
-        if (loaderEl) hide(loaderEl); // Always hide loader
+        if (loaderEl) hide(loaderEl);
     }
 }
 
+/**
+ * Fetches unique categories from Apps Script and renders them as filter buttons.
+ * @param {HTMLElement} containerDiv - The div where category buttons will be appended.
+ */
+async function fetchAndRenderCategories() {
+    const containerDiv = getEl('category-filter-buttons');
+    if (!containerDiv) return;
+
+    // Clear existing buttons first, keep "All" button if it exists
+    containerDiv.innerHTML = ''; // Clear all to avoid duplicates when re-fetching
+    const allButton = document.createElement('button');
+    allButton.type = 'button';
+    allButton.classList.add('btn', 'btn-outline-secondary', 'active');
+    allButton.dataset.category = 'ทั้งหมด';
+    allButton.textContent = 'ทั้งหมด';
+    containerDiv.appendChild(allButton);
+
+    const result = await sendData('getCategories', {}, 'GET');
+    if (result && result.success && result.categories) {
+        result.categories.forEach(category => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.classList.add('btn', 'btn-outline-secondary');
+            button.dataset.category = category;
+            button.textContent = category;
+            containerDiv.appendChild(button);
+        });
+
+        // Add event listeners for all newly created category filter buttons
+        containerDiv.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                containerDiv.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.category;
+                filterAndSearchProducts();
+            });
+        });
+    } else {
+        console.error("Failed to fetch categories:", result ? result.message : "Unknown error");
+    }
+}
+
+
 // --- Event Listeners for index.html ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Load products on page load
-    loadProducts();
+    // Check if the current page is index.html (or not admin.html)
+    const path = window.location.pathname;
+    if (!path.includes('admin.html')) {
+        loadProducts(); // Load products for the main shop page
+        fetchAndRenderCategories(); // Load and render categories
 
-    // Category filter buttons
-    document.querySelectorAll('.search-filter-section .btn-group .btn').forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove 'active' class from all buttons
-            document.querySelectorAll('.search-filter-section .btn-group .btn').forEach(btn => btn.classList.remove('active'));
-            // Add 'active' class to the clicked button
-            this.classList.add('active');
-            currentFilter = this.dataset.category; // Update current filter
-            filterAndSearchProducts(); // Re-filter products
-        });
-    });
+        // Category filter buttons (re-add listener for dynamic buttons)
+        // This part is handled inside fetchAndRenderCategories, so no need here directly
+        // Ensure search input event listener is attached
+        const searchInput = getEl('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                currentSearchTerm = searchInput.value.trim();
+                filterAndSearchProducts();
+            });
+        }
 
-    // Search input
-    const searchInput = getEl('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            currentSearchTerm = searchInput.value.trim(); // Update search term
-            filterAndSearchProducts(); // Re-search products
-        });
-    }
+        // Back to Top button logic
+        const backToTopButton = getEl('back-to-top');
+        if (backToTopButton) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    show(backToTopButton);
+                } else {
+                    hide(backToTopButton);
+                }
+            });
+            backToTopButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
 
-    // Back to Top button logic
-    const backToTopButton = getEl('back-to-top');
-    if (backToTopButton) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) { // Show button after scrolling down 300px
-                show(backToTopButton);
-            } else {
-                hide(backToTopButton);
-            }
-        });
-        backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Smooth scroll to top
-        });
-    }
-
-    // Smooth scroll for Hero section's "ดูสินค้าทั้งหมด" button
-    const heroScrollBtn = document.querySelector('.hero-section .btn-primary');
-    if (heroScrollBtn) {
-        heroScrollBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetEl = document.querySelector(targetId);
-            if (targetEl) {
-                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    }
-
-    // Admin Page Specific Logic (ONLY runs if on admin.html)
-    if (getEl('login-gate') || getEl('admin-panel')) {
-        initAdminPage(); // Call admin specific init function
+        // Smooth scroll for Hero section's "ดูสินค้าทั้งหมด" button
+        const heroScrollBtn = document.querySelector('.hero-section .btn-primary');
+        if (heroScrollBtn) {
+            heroScrollBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetEl = document.querySelector(targetId);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        }
+    } else {
+        // Admin Page Specific Logic (ONLY runs if on admin.html)
+        initAdminPage();
     }
 });
 
@@ -354,7 +397,6 @@ const priceInput = getEl('price');
 const shopeeLinkInput = getEl('shopeeLink');
 const imageFileInput = getEl('imageFileInput'); // File input for new images
 const imagePreviewContainer = getEl('imagePreview'); // Container for image previews
-const imageUrlHiddenInput = getEl('image_url'); // Hidden input to store image URLs (comma-separated)
 
 const formTitle = getEl('form-title');
 const clearBtn = getEl('clear-btn');
@@ -437,37 +479,39 @@ function setupAdminEventListeners() {
         imageFileInput.addEventListener('change', async (event) => {
             const files = event.target.files;
             if (files.length > 0) {
-                // Clear previous base64 data only if new files are selected
-                selectedFileBase64 = [];
+                selectedFileBase64 = []; // Clear previous base64 data
                 selectedFileNames = [];
-                imagePreviewContainer.innerHTML = ''; // Clear existing previews
+                imagePreviewContainer.innerHTML = ''; // Clear existing previews from previous loads
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     if (file.type.startsWith('image/')) {
                         const reader = new FileReader();
                         reader.onload = (e) => {
-                            const base64String = e.target.result.split(',')[1]; // Get base64 part
-                            selectedFileBase64.push(base64String); // Store for upload
+                            const base64Data = e.target.result.split(',')[1]; // Get pure base64 part
+                            selectedFileBase64.push(base64Data); // Store for upload
                             selectedFileNames.push(file.name);
 
-                            // Create image preview element
+                            // Create image preview element for newly selected file
                             const imgDiv = document.createElement('div');
                             imgDiv.classList.add('image-preview-item', 'me-2', 'mb-2');
                             imgDiv.innerHTML = `
                                 <img src="${e.target.result}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-                                <button type="button" class="btn btn-sm btn-danger remove-image-btn" data-index="${selectedFileBase64.length - 1}">&times;</button>
+                                <button type="button" class="btn btn-sm btn-danger remove-new-image-btn" data-index="${selectedFileBase64.length - 1}">&times;</button>
                             `;
                             imagePreviewContainer.appendChild(imgDiv);
 
-                            // Add event listener for remove button
-                            imgDiv.querySelector('.remove-image-btn').addEventListener('click', (e) => {
+                            // Add event listener for remove button of newly selected files
+                            imgDiv.querySelector('.remove-new-image-btn').addEventListener('click', (e) => {
                                 const indexToRemove = parseInt(e.target.dataset.index);
-                                // Remove from arrays
-                                selectedFileBase64.splice(indexToRemove, 1);
-                                selectedFileNames.splice(indexToRemove, 1);
-                                // Re-render previews to update indices
-                                renderImagePreviews(selectedFileBase64.map((b64, idx) => `data:image/jpeg;base64,${b64}`));
+                                showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
+                                    if (confirmed) {
+                                        selectedFileBase64.splice(indexToRemove, 1);
+                                        selectedFileNames.splice(indexToRemove, 1);
+                                        // Re-render only newly selected previews to update indices
+                                        renderNewImagePreviews();
+                                    }
+                                });
                             });
                         };
                         reader.readAsDataURL(file);
@@ -475,9 +519,14 @@ function setupAdminEventListeners() {
                         showCustomAlert('ไฟล์ที่เลือกไม่ใช่รูปภาพ', 'warning');
                     }
                 }
+                // When new files are selected, clear productImages array (existing images)
+                // They will be re-added via upload and then merged.
+                productImages = [];
             } else {
+                // If no files are selected, clear both new and existing image data
                 selectedFileBase64 = [];
                 selectedFileNames = [];
+                productImages = []; // Clear existing images too if file input is cleared
                 imagePreviewContainer.innerHTML = '';
             }
         });
@@ -485,43 +534,103 @@ function setupAdminEventListeners() {
 }
 
 /**
- * Renders image previews in the admin form.
- * This function is crucial for displaying existing images and newly selected ones.
- * @param {Array<string>} imageUrls - Array of image URLs (or base64 strings if newly selected).
+ * Renders previews for newly selected images in the admin form.
+ * Used after removing a newly selected image to re-index buttons.
  */
-function renderImagePreviews(imageUrls) {
-    imagePreviewContainer.innerHTML = ''; // Clear existing previews
-    productImages = imageUrls; // Update global productImages with currently displayed images
+function renderNewImagePreviews() {
+    // Only re-render the "newly selected" part. Existing images should be handled by renderImagePreviews
+    imagePreviewContainer.innerHTML = '';
 
-    imageUrls.forEach((url, index) => {
+    selectedFileBase64.forEach((base64String, index) => {
         const imgDiv = document.createElement('div');
         imgDiv.classList.add('image-preview-item', 'me-2', 'mb-2');
         imgDiv.innerHTML = `
-            <img src="${url}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-            <button type="button" class="btn btn-sm btn-danger remove-image-btn" data-index="${index}">&times;</button>
+            <img src="data:image/jpeg;base64,${base64String}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+            <button type="button" class="btn btn-sm btn-danger remove-new-image-btn" data-index="${index}">&times;</button>
         `;
         imagePreviewContainer.appendChild(imgDiv);
 
-        // Add event listener for remove button
-        imgDiv.querySelector('.remove-image-btn').addEventListener('click', (e) => {
+        imgDiv.querySelector('.remove-new-image-btn').addEventListener('click', (e) => {
             const indexToRemove = parseInt(e.target.dataset.index);
-            const confirmation = showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true);
-            confirmation.then(result => {
-                if (result) {
-                    // Remove the image URL from the productImages array
-                    productImages.splice(indexToRemove, 1);
-                    // Re-render previews to update indices and reflect deletion
-                    renderImagePreviews(productImages);
-                    // Update the hidden image_url input for submission
-                    imageUrlHiddenInput.value = productImages.join(',');
+            showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
+                if (confirmed) {
+                    selectedFileBase64.splice(indexToRemove, 1);
+                    selectedFileNames.splice(indexToRemove, 1);
+                    renderNewImagePreviews();
                 }
             });
         });
     });
 
-    // If no images are left, clear the hidden input
-    if (imageUrls.length === 0) {
-        imageUrlHiddenInput.value = '';
+    // Re-render existing images if they are still in productImages
+    if (productImages.length > 0) {
+        productImages.forEach((url, index) => {
+            const imgDiv = document.createElement('div');
+            imgDiv.classList.add('image-preview-item', 'me-2', 'mb-2');
+            imgDiv.innerHTML = `
+                <img src="${url}" alt="Existing Image" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                <button type="button" class="btn btn-sm btn-danger remove-existing-image-btn" data-index="${index}">&times;</button>
+            `;
+            imagePreviewContainer.appendChild(imgDiv);
+
+            imgDiv.querySelector('.remove-existing-image-btn').addEventListener('click', (e) => {
+                const indexToRemove = parseInt(e.target.dataset.index);
+                showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
+                    if (confirmed) {
+                        productImages.splice(indexToRemove, 1);
+                        renderExistingImagePreviews(); // Re-render only existing images
+                    }
+                });
+            });
+        });
+    }
+}
+
+
+/**
+ * Renders previews for EXISTING image URLs in the admin form.
+ * This is called when loading a product for editing.
+ * @param {Array<string>} imageUrls - Array of existing image URLs from the product.
+ */
+function renderExistingImagePreviews(imageUrls) {
+    imagePreviewContainer.innerHTML = ''; // Clear previous previews
+
+    // Ensure productImages array reflects what's being displayed (and potentially saved)
+    productImages = imageUrls.map(url => {
+        // Convert old Google Drive 'uc' URLs to 'lh3' format for consistency
+        if (url.includes('drive.google.com/uc?export=view&id=')) {
+            const fileIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+            if (fileIdMatch && fileIdMatch[1]) {
+                return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+            }
+        }
+        return url;
+    }).filter(url => url); // Remove any empty/null URLs
+
+    productImages.forEach((url, index) => {
+        const imgDiv = document.createElement('div');
+        imgDiv.classList.add('image-preview-item', 'me-2', 'mb-2');
+        imgDiv.innerHTML = `
+            <img src="${url}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+            <button type="button" class="btn btn-sm btn-danger remove-existing-image-btn" data-index="${index}">&times;</button>
+        `;
+        imagePreviewContainer.appendChild(imgDiv);
+
+        // Add event listener for remove button of existing images
+        imgDiv.querySelector('.remove-existing-image-btn').addEventListener('click', (e) => {
+            const indexToRemove = parseInt(e.target.dataset.index);
+            showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
+                if (confirmed) {
+                    productImages.splice(indexToRemove, 1);
+                    renderExistingImagePreviews(productImages); // Re-render to update indices
+                }
+            });
+        });
+    });
+
+    // If no images are left, ensure productImages is empty and file input is cleared
+    if (productImages.length === 0) {
+        imageFileInput.value = '';
     }
 }
 
@@ -548,8 +657,7 @@ async function handleProductFormSubmit(event) {
         name: name,
         category: category,
         price: price,
-        shopee_url: shopeeLink || '', // Use empty string if no link
-        // image_url will be set after upload or from productImages array
+        shopee_url: shopeeLink || '',
     };
 
     if (productId) {
@@ -559,30 +667,37 @@ async function handleProductFormSubmit(event) {
     show(adminLoader); // Show loader
 
     try {
-        let finalImageUrls = productImages; // Start with existing images
-
+        let uploadedImageUrls = [];
+        // Upload newly selected images first
         if (selectedFileBase64.length > 0) {
-            // Upload new images first
             for (let i = 0; i < selectedFileBase64.length; i++) {
                 const imageData = {
-                    file: selectedFileBase64[i],
-                    name: selectedFileNames[i] || `product_image_${Date.now()}_${i}.png`
+                    imageData: selectedFileBase64[i], // Use the pure base64 string
+                    fileName: selectedFileNames[i] || `product_image_${Date.now()}_${i}.png`,
+                    mimeType: `image/${selectedFileNames[i].split('.').pop()}` // Infer MIME type from extension
                 };
                 const uploadResponse = await sendData('uploadImage', imageData);
                 if (uploadResponse.success && uploadResponse.url) {
-                    finalImageUrls.push(uploadResponse.url); // Add newly uploaded URL
+                    uploadedImageUrls.push(uploadResponse.url); // Add newly uploaded URL
                 } else {
                     showCustomAlert('ไม่สามารถอัปโหลดรูปภาพบางส่วนได้: ' + (uploadResponse.message || 'Unknown error'), 'error');
                     hide(adminLoader);
                     return; // Stop if upload fails
                 }
             }
-            selectedFileBase64 = []; // Clear base64 after upload
-            selectedFileNames = [];
-            imageFileInput.value = ''; // Clear file input
         }
 
+        // Combine existing (and possibly converted) URLs with newly uploaded URLs
+        const finalImageUrls = [...productImages, ...uploadedImageUrls];
         data.image_url = finalImageUrls.join(','); // Join all image URLs for submission
+
+        // If adding a new product and no images at all, prompt for image
+        if (!productId && finalImageUrls.length === 0) {
+            showCustomAlert('กรุณาเลือกรูปภาพสินค้า หรือใส่ลิงก์รูปภาพ', 'warning');
+            hide(adminLoader);
+            return;
+        }
+
 
         const response = await sendData(action, data);
 
@@ -597,7 +712,7 @@ async function handleProductFormSubmit(event) {
         console.error("Error submitting product:", error);
         showCustomAlert('เกิดข้อผิดพลาดในการส่งข้อมูลสินค้า: ' + error.message, 'error');
     } finally {
-        hide(adminLoader); // Hide loader
+        hide(adminLoader);
     }
 }
 
@@ -611,14 +726,12 @@ function clearProductForm() {
     categoryInput.value = '';
     priceInput.value = '';
     shopeeLinkInput.value = '';
-    imageFileInput.value = ''; // Clear selected file
-    imageUrlHiddenInput.value = ''; // Clear hidden image URL
-    imagePreviewContainer.innerHTML = ''; // Clear image preview
-    selectedFileBase64 = []; // Clear base64 data
-    selectedFileNames = [];
-    productImages = []; // Clear product images array
+    imageFileInput.value = ''; // Clear selected file in file input
+    imagePreviewContainer.innerHTML = ''; // Clear image preview area
+    selectedFileBase64 = []; // Clear base64 data for newly selected files
+    selectedFileNames = []; // Clear file names for newly selected files
+    productImages = []; // Clear current product images (existing ones)
     formTitle.textContent = 'เพิ่มสินค้าใหม่';
-    isEditMode = false; // Reset edit mode flag
 }
 
 /**
@@ -626,16 +739,16 @@ function clearProductForm() {
  */
 async function loadAdminProducts() {
     show(adminLoader);
-    hide(adminProductList); // Hide table while loading
+    hide(adminProductList);
 
     try {
-        const response = await sendData('getProducts', {}, 'GET'); // No secretKey for GET on front-end
+        const response = await sendData('getProducts', {}, 'GET');
         if (response.success && response.data) {
-            adminProducts = response.data; // Store for filtering
+            adminProducts = response.data;
             renderAdminProducts(adminProducts);
         } else {
             adminProducts = [];
-            renderAdminProducts([]); // Render empty table
+            renderAdminProducts([]);
             showCustomAlert('ไม่สามารถโหลดรายการสินค้าได้: ' + (response.message || 'Unknown error'), 'error');
         }
     } catch (error) {
@@ -645,7 +758,7 @@ async function loadAdminProducts() {
         showCustomAlert('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อโหลดสินค้า: ' + error.message, 'error');
     } finally {
         hide(adminLoader);
-        show(adminProductList); // Show table area
+        show(adminProductList);
     }
 }
 
@@ -678,13 +791,26 @@ function renderAdminProducts(products) {
         `;
     } else {
         products.forEach(product => {
-            const imageUrls = product.image_url ? product.image_url.split(',').map(url => url.trim()) : ['https://placehold.co/50x50?text=No+Image'];
-            const firstImageUrl = imageUrls[0]; // Display the first image
+            let imageUrls = [];
+            if (product.image_url) {
+                imageUrls = String(product.image_url).split(',').map(url => url.trim());
+                // Convert old Google Drive 'uc' URLs to 'lh3' format for display in table
+                imageUrls = imageUrls.map(url => {
+                    if (url.includes('drive.google.com/uc?export=view&id=')) {
+                        const fileIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+                        if (fileIdMatch && fileIdMatch[1]) {
+                            return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                        }
+                    }
+                    return url;
+                });
+            }
+            const firstImageUrl = imageUrls[0] || 'https://placehold.co/50x50/cccccc/333333?text=NoImg';
 
             tableHtml += `
                 <tr data-id="${product.id}">
                     <td>${product.id}</td>
-                    <td><img src="${firstImageUrl}" alt="${product.name}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;"></td>
+                    <td><img src="${firstImageUrl}" alt="${product.name}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null;this.src='https://placehold.co/50x50/cccccc/333333?text=NoImg';"></td>
                     <td>${product.name}</td>
                     <td>${product.category}</td>
                     <td>฿${parseFloat(product.price).toFixed(2)}</td>
@@ -704,7 +830,6 @@ function renderAdminProducts(products) {
     `;
     adminProductList.innerHTML = tableHtml;
 
-    // Add event listeners for edit and delete buttons after rendering
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', (e) => editProduct(e.target.dataset.id));
     });
@@ -719,12 +844,12 @@ function renderAdminProducts(products) {
 function filterAdminProducts() {
     const searchTerm = adminSearchInput.value.toLowerCase().trim();
     if (searchTerm === '') {
-        renderAdminProducts(adminProducts); // Show all if search term is empty
+        renderAdminProducts(adminProducts);
         return;
     }
 
     const filtered = adminProducts.filter(product =>
-        (product.id && product.id.toLowerCase().includes(searchTerm)) ||
+        (product.id && String(product.id).toLowerCase().includes(searchTerm)) ||
         (product.name && product.name.toLowerCase().includes(searchTerm))
     );
     renderAdminProducts(filtered);
@@ -744,16 +869,29 @@ function editProduct(id) {
         priceInput.value = product.price;
         shopeeLinkInput.value = product.shopee_url || '';
         formTitle.textContent = `แก้ไขสินค้า: ${product.name}`;
-        isEditMode = true; // Set edit mode flag
 
-        // Clear existing file input and base64 data for new uploads
+        // Clear newly selected files and their previews
         imageFileInput.value = '';
         selectedFileBase64 = [];
         selectedFileNames = [];
+        imagePreviewContainer.innerHTML = '';
 
-        // Display existing images for editing
-        const existingImageUrls = product.image_url ? product.image_url.split(',').map(url => url.trim()) : [];
-        renderImagePreviews(existingImageUrls);
+        // Prepare existing image URLs for display and potential re-saving
+        // Convert old Google Drive 'uc' URLs to 'lh3' format here
+        productImages = [];
+        if (product.image_url) {
+            productImages = String(product.image_url).split(',').map(url => url.trim()).map(url => {
+                if (url.includes('drive.google.com/uc?export=view&id=')) {
+                    const fileIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+                    if (fileIdMatch && fileIdMatch[1]) {
+                        return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                    }
+                }
+                return url;
+            }).filter(url => url); // Filter out any empty/null strings
+        }
+        
+        renderExistingImagePreviews(productImages); // Render existing images
 
         // Scroll to form
         productForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -784,7 +922,7 @@ async function deleteProduct(id) {
         const response = await sendData('deleteProduct', { id: id });
         if (response.success) {
             showCustomAlert('สินค้าถูกลบเรียบร้อยแล้ว!', 'success');
-            loadAdminProducts(); // Reload product list
+            loadAdminProducts();
         } else {
             showCustomAlert('เกิดข้อผิดพลาดในการลบสินค้า: ' + (response.message || 'Unknown error'), 'error');
         }
