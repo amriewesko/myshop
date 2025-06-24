@@ -57,13 +57,11 @@
                         <input type="text" class="form-control" id="search-input" placeholder="ค้นหาสินค้า (เช่น รองเท้า, เสื้อยืด, iPhone)..." aria-label="Search products">
                     </div>
                 </div>
-                <!-- Category Filter Buttons -->
+                <!-- Category Filter Buttons - Dynamic buttons will be appended here by app.js -->
                 <div class="col-md-4 text-md-end">
-                    <div class="btn-group" role="group" aria-label="Product Categories">
+                    <div class="btn-group" role="group" aria-label="Product Categories" id="category-filter-buttons">
+                        <!-- Default 'All' button. Other category buttons will be added by app.js -->
                         <button type="button" class="btn btn-outline-secondary active" data-category="ทั้งหมด">ทั้งหมด</button>
-                        <button type="button" class="btn btn-outline-secondary" data-category="รองเท้า">รองเท้า</button>
-                        <button type="button" class="btn btn-outline-secondary" data-category="เสื้อผ้า">เสื้อผ้า</button>
-                        <button type="button" class="btn btn-outline-secondary" data-category="อุปกรณ์อิเล็กทรอนิกส์">มือถือ</button>
                     </div>
                 </div>
             </div>
