@@ -9,12 +9,14 @@
     --primary-dark: #000051;            /* Very Dark Indigo: For hover states or strong emphasis */
     --primary-gradient-start: #3F51B5;  /* Indigo 500 for gradients */
     --primary-gradient-end: #1A237E;    /* Deep Indigo for gradients */
-    --primary-soft-bg: rgba(26, 35, 126, 0.05); /* Very light primary tint for backgrounds */
+    --primary-soft-bg: rgba(26, 35, 126, 0.08); /* Slightly more prominent light primary tint for backgrounds */
+    --primary-glow: rgba(63, 81, 181, 0.4); /* Soft glow for focus states */
 
     /* Accent Colors: Vibrant but balanced greens for positive actions, success, CTAs */
     --accent-color: #4CAF50;            /* Green: For call-to-action buttons (e.g., success states) */
     --accent-hover-color: #388E3C;      /* Darker Green for hover */
     --accent-light: #81C784;            /* Lighter green for subtle highlights */
+    --accent-glow: rgba(76, 175, 80, 0.3); /* Soft glow for accent elements */
 
     /* Warning & Danger: Standard, clear colors for alerts and critical actions */
     --warning-color: #FFC107;           /* Yellow: For warning messages or prominent elements like stars */
@@ -39,9 +41,9 @@
     /* Shadow Palette - Multi-layered, subtle shadows for depth and professionalism */
     --shadow-xs: 0 0.5px 1.5px rgba(0, 0, 0, 0.08); /* Extra small, very subtle */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Small, subtle */
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Medium, general use */
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.08); /* Large, for elevated elements */
-    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.1); /* Extra large, for modals/popups */
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08); /* Medium, general use, slightly more pronounced */
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.1); /* Large, for elevated elements, more depth */
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.15); /* Extra large, for modals/popups, strong depth */
     --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06); /* Inset shadow for depth */
     --shadow-text: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
 
@@ -71,17 +73,23 @@
     --transition-speed-slow: 0.5s;
     --transition-timing: ease-in-out;
     --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55); /* For bouncy effects */
+    --transition-timing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* For smoother, accelerating effects */
 }
 
 /* --- 2. Base Styles (Apply variables to common HTML elements) --- */
 html {
     scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+    /* Add a subtle background pattern for overall page depth */
+    background: radial-gradient(circle at 10% 20%, rgba(0,0,0,0.03) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(0,0,0,0.03) 0%, transparent 50%),
+                var(--background-color);
+    background-attachment: fixed; /* Keep background fixed during scroll */
 }
 
 body {
     font-family: 'Kanit', sans-serif; /* Ensuring Kanit is applied broadly */
     color: var(--text-color);
-    background-color: var(--background-color);
+    background-color: transparent; /* Body background is now transparent to show HTML background */
     line-height: 1.6;
     overflow-x: hidden; /* Prevent horizontal scroll */
     -webkit-font-smoothing: antialiased; /* Smoother font rendering */
@@ -97,6 +105,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: var(--spacing-md);
     font-weight: 700; /* Default bold for headings */
     text-shadow: var(--shadow-text); /* Subtle text shadow for headings */
+    position: relative; /* For potential pseudo-elements for decoration */
 }
 
 h1 { font-size: 2.8rem; font-weight: 800; }
@@ -139,17 +148,41 @@ a:focus {
     border-radius: var(--border-radius-md);
     padding: var(--spacing-sm) var(--spacing-lg); /* Slightly more horizontal padding */
     font-weight: 600; /* Semi-bold for buttons */
-    transition: all var(--transition-speed) var(--transition-timing);
+    transition: all var(--transition-speed) var(--transition-timing-smooth); /* Smoother transition */
     box-shadow: var(--shadow-sm); /* Subtle shadow for all buttons */
     cursor: pointer;
     border: 1px solid transparent; /* Ensure consistent border */
     text-transform: uppercase; /* Uppercase text for professionalism */
     letter-spacing: 0.05em; /* Subtle letter spacing */
+    position: relative; /* For pseudo-element effects */
+    overflow: hidden; /* Hide overflow from pseudo-elements */
+    z-index: 1; /* Ensure button is above other content for z-index issues with pseudo-elements */
+}
+
+/* Ripple/Shine effect for buttons on hover */
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 70%); /* Subtle shine from top-left */
+    transform: scale(0);
+    opacity: 0;
+    transition: transform var(--transition-speed-slow) var(--transition-timing), opacity var(--transition-speed-slow) var(--transition-timing);
+    z-index: -1;
+}
+
+.btn:hover::before {
+    transform: scale(2);
+    opacity: 1;
 }
 
 .btn:active {
-    transform: translateY(1px); /* Slight press effect on active */
+    transform: translateY(2px) scale(0.98); /* More noticeable press effect */
     box-shadow: var(--shadow-xs); /* Smaller shadow when pressed */
+    transition-duration: var(--transition-speed-fast); /* Faster press animation */
 }
 
 .btn-primary {
@@ -165,7 +198,7 @@ a:focus {
     background-color: var(--primary-dark);
     border-color: var(--primary-dark);
     box-shadow: var(--shadow-md); /* Slightly more prominent shadow on hover */
-    transform: translateY(-2px); /* Subtle lift effect */
+    transform: translateY(-3px); /* Slightly more pronounced lift effect */
 }
 
 .btn-outline-primary {
@@ -178,7 +211,7 @@ a:focus {
     background-color: var(--primary-color);
     color: var(--white-color);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 }
 
 .btn-success {
@@ -191,7 +224,7 @@ a:focus {
     background-color: var(--accent-hover-color);
     border-color: var(--accent-hover-color);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 }
 
 .btn-danger {
@@ -204,7 +237,7 @@ a:focus {
     background-color: var(--danger-dark);
     border-color: var(--danger-dark);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 }
 
 .btn-warning {
@@ -217,7 +250,7 @@ a:focus {
     background-color: var(--warning-dark);
     border-color: var(--warning-dark);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 }
 
 .btn-info {
@@ -230,7 +263,7 @@ a:focus {
     background-color: var(--info-dark);
     border-color: var(--info-dark);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 }
 
 /* Button Sizes */
@@ -270,7 +303,7 @@ a:focus {
 
 .form-control:focus {
     border-color: var(--primary-light);
-    box-shadow: 0 0 0 0.25rem rgba(var(--primary-color), 0.25), var(--shadow-inset); /* Bootstrap-like focus ring + inset shadow */
+    box-shadow: 0 0 0 0.25rem var(--primary-glow), var(--shadow-inset); /* More prominent glow on focus */
     background-color: var(--white-color);
 }
 
@@ -362,6 +395,22 @@ textarea.form-control {
     padding-bottom: var(--spacing-sm);
     z-index: 1030; /* Ensure navbar is above other content */
     border-bottom: 3px solid var(--primary-light); /* Accent border at bottom */
+    position: relative; /* For decorative elements */
+    overflow: hidden;
+}
+
+.navbar::after { /* Subtle wave graphic at bottom of navbar */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    clip-path: ellipse(120% 100% at 50% 100%); /* Wave shape */
+    transform: translateY(50%); /* Start below navbar */
+    opacity: 0.7;
+    z-index: -1;
 }
 
 .navbar-brand {
@@ -430,24 +479,32 @@ textarea.form-control {
 }
 
 /* Background graphic element for hero section */
-.hero-section::before {
+.hero-section::before, .hero-section::after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.07) 0%, transparent 50%);
-    opacity: 0.5;
-    transform: rotate(30deg);
-    animation: hero-bg-animation 15s infinite alternate ease-in-out;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    animation: hero-bubble-animation 15s infinite ease-in-out alternate;
     z-index: 0;
 }
+.hero-section::before {
+    width: 300px; height: 300px;
+    top: -100px; left: -100px;
+    animation-delay: 0s;
+}
+.hero-section::after {
+    width: 400px; height: 400px;
+    bottom: -150px; right: -150px;
+    animation-delay: 2s;
+    background: rgba(255,255,255,0.07);
+}
 
-@keyframes hero-bg-animation {
-    from { transform: rotate(30deg) scale(1); }
-    to { transform: rotate(33deg) scale(1.05); }
+@keyframes hero-bubble-animation {
+    0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    25% { transform: translate(20px, -20px) scale(1.05); opacity: 0.8; }
+    50% { transform: translate(0, 20px) scale(1); opacity: 0.7; }
+    75% { transform: translate(-20px, -10px) scale(1.02); opacity: 0.8; }
+    100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
 }
 
 .hero-section > .container {
@@ -476,7 +533,43 @@ textarea.form-control {
 main {
     padding-top: var(--spacing-xl);
     padding-bottom: var(--spacing-xl);
+    position: relative;
+    /* Adding a subtle overlay for main content area to enhance depth */
+    background-image: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)),
+                      url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%239C92AC" fill-opacity="0.1" fill-rule="evenodd"%3E%3Cpath d="M0 0h30v30H0V0zm15 15h15v15H15V15zM0 30h30v30H0V30zm15 15h15v15H15V45z"/%3E%3C/g%3E%3C/svg%3E'); /* Subtle grid pattern */
+    background-repeat: repeat;
+    background-blend-mode: overlay;
+    box-shadow: var(--shadow-lg); /* Shadow for the main content block */
+    border-radius: var(--border-radius-xl);
+    margin-left: auto;
+    margin-right: auto;
 }
+
+
+/* Section Separators */
+section {
+    position: relative;
+    padding-bottom: var(--spacing-xxl); /* Add space for separator */
+    margin-bottom: var(--spacing-xxl);
+}
+section:not(:last-of-type)::after { /* Add decorative separator for sections */
+    content: '';
+    position: absolute;
+    bottom: var(--spacing-lg); /* Position above next section */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 800px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--primary-light) 20%, var(--primary-color) 80%, transparent 100%);
+    border-radius: var(--border-radius-full);
+    box-shadow: var(--shadow-sm);
+}
+/* No separator for the last section before footer */
+footer + section::after {
+    display: none;
+}
+
 
 /* Search Section */
 .search-section {
@@ -556,15 +649,16 @@ main {
     border: none; /* Remove default bootstrap border */
     border-radius: var(--border-radius-xl); /* More rounded cards */
     box-shadow: var(--shadow-md); /* Medium shadow for product cards */
-    transition: transform var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
+    transition: transform var(--transition-speed) var(--transition-timing-smooth), box-shadow var(--transition-speed) var(--transition-timing-smooth);
     overflow: hidden; /* Ensure rounded corners clip content */
     margin-bottom: var(--spacing-lg); /* Spacing between cards */
     display: flex; /* Flexbox for internal layout */
     flex-direction: column;
+    perspective: 1000px; /* For 3D transform */
 }
 
 .product-card:hover {
-    transform: translateY(-8px); /* More pronounced lift effect on hover */
+    transform: translateY(-10px) rotateX(3deg); /* More pronounced lift and subtle 3D tilt on hover */
     box-shadow: var(--shadow-lg); /* More prominent shadow on hover */
 }
 
@@ -574,11 +668,13 @@ main {
     object-fit: cover; /* Ensure images cover the area well */
     height: 220px; /* Slightly increased fixed height for product images */
     width: 100%;
-    transition: transform var(--transition-speed-slow) var(--transition-timing);
+    transition: transform var(--transition-speed-slow) var(--transition-timing-smooth), filter var(--transition-speed-slow) var(--transition-timing-smooth);
+    filter: brightness(1) saturate(1); /* Initial filter state */
 }
 
 .product-card:hover img {
-    transform: scale(1.05); /* Slight zoom on image hover */
+    transform: scale(1.1); /* More zoom on image hover */
+    filter: brightness(0.9) saturate(1.1); /* Subtle desaturation and brightness change */
 }
 
 .product-card .card-body {
@@ -642,6 +738,13 @@ main {
     line-height: 1;
     margin-right: var(--spacing-sm);
     margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-xs); /* Subtle shadow for badges */
+    transition: all var(--transition-speed-fast) var(--transition-timing);
+}
+
+.badge:hover {
+    transform: translateY(-2px) scale(1.05); /* Subtle lift and scale on hover */
+    box-shadow: var(--shadow-sm);
 }
 
 .badge-new { background-color: var(--accent-color); color: var(--white-color); }
@@ -688,7 +791,24 @@ footer {
     box-shadow: var(--shadow-md); /* Add shadow to footer */
     margin-top: var(--spacing-xxl); /* More space above footer */
     border-top: 3px solid var(--primary-light); /* Accent border at top */
+    position: relative;
+    overflow: hidden;
 }
+
+footer::before { /* Subtle wave graphic at top of footer */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    clip-path: ellipse(120% 100% at 50% 0%); /* Inverted wave shape */
+    transform: translateY(-50%); /* Start above footer */
+    opacity: 0.7;
+    z-index: -1;
+}
+
 
 footer .container {
     display: flex;
@@ -834,23 +954,30 @@ footer .social-icons a:hover {
 }
 
 /* Subtle background pattern for login gate */
-#login-gate::before {
+#login-gate::before, #login-gate::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.05) 0%, transparent 40%),
-                      radial-gradient(circle at 0% 100%, rgba(255,255,255,0.05) 0%, transparent 40%);
+    background-image: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.05) 0%, transparent 40%);
     background-size: 400px 400px;
     opacity: 0.7;
     animation: login-bg-pattern 20s linear infinite;
 }
 
+#login-gate::before {
+    top: 0;
+    left: 0;
+}
+#login-gate::after {
+    bottom: 0;
+    right: 0;
+    animation-delay: 5s; /* Stagger the animation */
+    transform: rotate(180deg);
+}
+
+
 @keyframes login-bg-pattern {
-    from { background-position: 0 0, 0 0; }
-    to { background-position: 400px 400px, -400px -400px; }
+    from { background-position: 0 0; }
+    to { background-position: 400px 400px; }
 }
 
 #login-gate .card {
@@ -978,7 +1105,7 @@ footer .social-icons a:hover {
 }
 
 .admin-form-section .img-preview:hover {
-    transform: scale(1.05);
+    transform: scale(1.08); /* More zoom on hover */
     box-shadow: var(--shadow-md);
 }
 
@@ -1008,7 +1135,7 @@ footer .social-icons a:hover {
 
 .admin-form-section .remove-img-btn:hover {
     background-color: var(--danger-dark);
-    transform: scale(1.2); /* More pronounced scale on hover */
+    transform: scale(1.25); /* More pronounced scale on hover */
     box-shadow: var(--shadow-md);
 }
 
@@ -1028,9 +1155,9 @@ footer .social-icons a:hover {
 
 #loader .spinner-border, #admin-loader .spinner-border {
     color: var(--primary-color) !important;
-    width: 3rem; /* Larger spinner */
-    height: 3rem;
-    border-width: 0.3em; /* Thicker spinner border */
+    width: 3.5rem; /* Even larger spinner */
+    height: 3.5rem;
+    border-width: 0.4em; /* Thicker spinner border */
     animation: spin 1s linear infinite; /* Add a simple spin animation */
 }
 
@@ -1053,14 +1180,14 @@ footer .social-icons a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for strong focus */
+    background-color: rgba(0, 0, 0, 0.75); /* Even darker overlay for stronger focus */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1050; /* Above Bootstrap modals */
     opacity: 0;
     visibility: hidden;
-    transition: opacity var(--transition-speed-slow) var(--transition-timing);
+    transition: opacity var(--transition-speed-slow) var(--transition-timing-smooth); /* Smoother fade */
 }
 
 .custom-modal-overlay.show {
@@ -1070,19 +1197,27 @@ footer .social-icons a:hover {
 
 .custom-modal-content {
     background-color: var(--card-background);
-    border-radius: var(--border-radius-lg); /* Rounded corners for modal */
+    border-radius: var(--border-radius-xl); /* More rounded modal corners */
     box-shadow: var(--shadow-xl); /* Stronger shadow for modal */
     padding: 0; /* Remove default padding for internal structure */
     width: 90%;
-    max-width: 550px; /* Slightly wider modal */
-    transform: translateY(-50px); /* Initial slight lift */
+    max-width: 600px; /* Wider modal for better content display */
+    transform: translateY(-70px); /* More pronounced initial lift */
     transition: transform var(--transition-speed-slow) var(--transition-timing-bounce); /* Bouncy transition */
-    border: 1px solid var(--border-color); /* Subtle border for definition */
+    border: 2px solid var(--primary-light); /* More prominent border for definition */
 }
 
 .custom-modal-overlay.show .custom-modal-content {
-    transform: translateY(0); /* Slide in effect */
+    transform: translateY(0) scale(1); /* Slide in and slightly scale up effect */
+    animation: modal-pop-in var(--transition-speed-slow) var(--transition-timing-bounce) forwards;
 }
+
+@keyframes modal-pop-in {
+    0% { transform: translateY(-70px) scale(0.9); opacity: 0; }
+    80% { transform: translateY(10px) scale(1.02); opacity: 1; }
+    100% { transform: translateY(0) scale(1); }
+}
+
 
 .custom-modal-header {
     display: flex;
@@ -1092,29 +1227,30 @@ footer .social-icons a:hover {
     border-bottom: 1px solid var(--border-color);
     background-color: var(--primary-light); /* Header background with primary light */
     color: var(--white-color);
-    border-top-left-radius: var(--border-radius-lg);
-    border-top-right-radius: var(--border-radius-lg);
+    border-top-left-radius: var(--border-radius-xl); /* Match content radius */
+    border-top-right-radius: var(--border-radius-xl); /* Match content radius */
     position: relative;
     overflow: hidden; /* For header graphic */
 }
 
-.custom-modal-header::before {
+.custom-modal-header::before { /* More defined top-right graphic */
     content: '';
     position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-full);
+    top: -50%;
+    right: -50%;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
     transform: rotate(45deg);
+    opacity: 0.8;
 }
 
 .custom-modal-header h5 {
     margin-bottom: 0;
     font-weight: 700;
     color: inherit; /* Inherit color from parent */
-    font-size: 1.4rem;
+    font-size: 1.5rem; /* Larger header title */
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -1129,7 +1265,7 @@ footer .social-icons a:hover {
 .custom-modal-header .close-button {
     background: none;
     border: none;
-    font-size: 1.8rem; /* Larger close button */
+    font-size: 2rem; /* Even larger close button */
     color: var(--white-color);
     cursor: pointer;
     transition: transform var(--transition-speed-fast) var(--transition-timing), color var(--transition-speed-fast) var(--transition-timing);
@@ -1137,8 +1273,8 @@ footer .social-icons a:hover {
 }
 
 .custom-modal-header .close-button:hover {
-    transform: rotate(90deg); /* Spin on hover */
-    color: rgba(255, 255, 255, 0.8);
+    transform: rotate(180deg) scale(1.1); /* Full spin on hover */
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .custom-modal-body {
@@ -1166,13 +1302,13 @@ footer .social-icons a:hover {
     padding: var(--spacing-lg); /* More padding */
     border-top: 1px solid var(--border-color);
     background-color: var(--background-color); /* Light background for footer */
-    border-bottom-left-radius: var(--border-radius-lg); /* Match header's radius */
-    border-bottom-right-radius: var(--border-radius-lg); /* Match header's radius */
+    border-bottom-left-radius: var(--border-radius-xl); /* Match content radius */
+    border-bottom-right-radius: var(--border-radius-xl); /* Match content radius */
     gap: var(--spacing-md); /* Space between buttons */
 }
 
 .custom-modal-footer .btn {
-    min-width: 100px; /* Ensure buttons have minimum width */
+    min-width: 120px; /* Ensure buttons have minimum width */
 }
 
 /* Back to Top Button */
@@ -1183,29 +1319,37 @@ footer .social-icons a:hover {
     background-color: var(--primary-color);
     color: var(--white-color);
     border-radius: var(--border-radius-full);
-    width: 55px; /* Slightly larger button */
-    height: 55px;
+    width: 60px; /* Even larger button */
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.7rem; /* Larger icon */
+    font-size: 1.8rem; /* Even larger icon */
     box-shadow: var(--shadow-md);
-    transition: all var(--transition-speed) var(--transition-timing);
+    transition: all var(--transition-speed) var(--transition-timing-smooth); /* Smoother transition */
     z-index: 1000;
-    border: 3px solid var(--white-color); /* White border for emphasis */
+    border: 4px solid var(--white-color); /* Thicker white border for emphasis */
+    animation: pulse-border 2s infinite ease-in-out; /* Add a pulsating border */
+}
+
+@keyframes pulse-border {
+    0% { border-color: var(--white-color); box-shadow: var(--shadow-md); }
+    50% { border-color: var(--primary-light); box-shadow: var(--shadow-lg); }
+    100% { border-color: var(--white-color); box-shadow: var(--shadow-md); }
 }
 
 #back-to-top:hover {
     background-color: var(--primary-dark);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-5px) scale(1.05); /* More pronounced lift and scale */
+    box-shadow: var(--shadow-xl); /* More prominent shadow on hover */
+    transform: translateY(-7px) scale(1.1); /* More pronounced lift and scale */
     border-color: var(--primary-light); /* Change border color on hover */
+    animation: none; /* Stop pulse animation on hover */
 }
 
 /* Scrollbar styling for Webkit browsers (Chrome, Safari) for a custom look */
 ::-webkit-scrollbar {
-    width: 10px; /* width of the entire scrollbar */
-    height: 10px; /* height of horizontal scrollbar */
+    width: 12px; /* width of the entire scrollbar */
+    height: 12px; /* height of horizontal scrollbar */
 }
 
 ::-webkit-scrollbar-track {
@@ -1214,13 +1358,13 @@ footer .social-icons a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--primary-light); /* color of the scroll thumb */
+    background-color: var(--primary-color); /* color of the scroll thumb */
     border-radius: var(--border-radius-full); /* roundness of the scroll thumb */
-    border: 2px solid var(--background-color); /* creates padding around scroll thumb */
+    border: 3px solid var(--background-color); /* creates padding around scroll thumb */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary-color); /* color of scroll thumb on hover */
+    background-color: var(--primary-dark); /* color of scroll thumb on hover */
 }
 
 
@@ -1290,7 +1434,6 @@ footer .social-icons a:hover {
 .py-xxs { padding-top: var(--spacing-xxs) !important; padding-bottom: var(--spacing-xxs) !important; }
 
 /* And so on for all spacing variables (sm, md, lg, xl, xxl, xxxl, jumbo) */
-/* This section would typically be generated by a CSS preprocessor or framework, but for demonstration: */
 .mt-xxl { margin-top: var(--spacing-xxl) !important; }
 .mb-xxl { margin-bottom: var(--spacing-xxl) !important; }
 .mt-xxxl { margin-top: var(--spacing-xxxl) !important; }
@@ -1324,7 +1467,7 @@ footer .social-icons a:hover {
     animation-fill-mode: both;
 }
 
-/* Scale and slight bounce for clickable elements */
+/* Scale and slight bounce for clickable elements (Pop In) */
 @keyframes popIn {
     0% { opacity: 0; transform: scale(0.8); }
     70% { opacity: 1; transform: scale(1.05); }
