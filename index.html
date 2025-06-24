@@ -12,132 +12,103 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <!-- Animate.css for subtle entrance animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <!-- Custom Stylesheet (ensure this is loaded last to override Bootstrap defaults) -->
+    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Navbar: Top navigation bar for brand and admin link -->
-    <!-- Added animation class 'animate__animated animate__fadeInDown' for subtle entry effect. -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm animate__animated animate__fadeInDown">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
         <div class="container">
-            <!-- Brand Logo and Name: Added Font Awesome icon for professionalism. -->
-            <a class="navbar-brand" href="index.html">
+            <!-- Brand Logo and Name -->
+            <a class="navbar-brand d-flex align-items-center" href="#">
                 <i class="fas fa-store me-2"></i> My Shop
             </a>
-            <!-- Navbar Toggler for mobile responsiveness -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!-- Navbar Links -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">หน้าแรก</a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- Link to products section, changed from '#' to '#products-section' for smooth scrolling. -->
-                        <a class="nav-link" href="#products-section">สินค้า</a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- Reverted to '#' as there are no 'About Us' section in original HTML. -->
-                        <a class="nav-link" href="#">เกี่ยวกับเรา</a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- Reverted to '#' as there are no 'Contact' section in original HTML. -->
-                        <a class="nav-link" href="#">ติดต่อ</a>
-                    </li>
-                    <li class="nav-item">
-                        <!-- Added 'btn btn-outline-primary' classes for a more prominent and styled Admin Panel link. -->
-                        <a class="nav-link btn btn-outline-primary ms-lg-3" href="admin.html">
-                            <i class="fas fa-user-cog me-1"></i> Admin Panel
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <!-- Admin Panel Link -->
+            <a href="admin.html" class="btn btn-outline-light btn-sm ms-auto">
+                <i class="fas fa-user-shield me-2"></i> Admin Panel
+            </a>
         </div>
     </nav>
 
-    <!-- Header/Hero Section (Minimal visual hero, not a new functional section) -->
-    <!-- This section provides visual impact without adding new functional content. -->
-    <header class="hero-section text-center py-5 animate__animated animate__fadeIn">
-        <div class="container">
-            <h1 class="display-4 fw-bold animate__animated animate__fadeInUp">
-                <i class="fas fa-gem me-3"></i> ยินดีต้อนรับสู่ My Shop
-            </h1>
-            <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">
-                แหล่งรวมสินค้าคุณภาพที่คัดสรรมาเพื่อคุณโดยเฉพาะ
-            </p>
-        </div>
-    </header>
+    <main>
+        <!-- Hero Section: Main banner with captivating text and call-to-action -->
+        <!-- Added 'hero-section-compact-on-mobile' class for responsive adjustments via CSS -->
+        <section class="hero-section hero-section-compact-on-mobile">
+            <div class="container text-center">
+                <h1 class="animate__animated animate__fadeInDown">สินค้าคุณภาพ ราคาโดนใจ</h1>
+                <p class="animate__animated animate__fadeInUp animate__delay-0-3s">พบกับสินค้าหลากหลายหมวดหมู่ ส่งตรงถึงมือคุณ</p>
+                <!-- Scroll to product section on click -->
+                <a href="#product-section" class="btn btn-primary animate__animated animate__zoomIn animate__delay-0-6s">ดูสินค้าทั้งหมด <i class="fas fa-arrow-down ms-2"></i></a>
+            </div>
+            <!-- Optional: Scroll indicator for more playfulness -->
+            <div class="scroll-indicator animate__animated animate__bounce animate__infinite animate__delay-1s">
+                <span>เลื่อนลง</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
 
-    <!-- Main Content Area -->
-    <main class="container my-5">
-        <!-- Search and Filter Section -->
-        <!-- Added 'search-section' class and 'animate__animated animate__fadeInUp' for styling and animation. -->
-        <section class="search-section mb-5 animate__animated animate__fadeInUp" id="search-filter-section">
-            <!-- Added a clear heading for the search section, using primary color and bold font. -->
-            <h2 class="text-center mb-4 text-primary fw-bold">ค้นหาสินค้าที่คุณต้องการ</h2>
-            <div class="row g-4 align-items-center">
-                <div class="col-md-8">
-                    <!-- Added 'input-group', 'shadow-sm', 'rounded-full' for styling. -->
-                    <div class="input-group shadow-sm rounded-full">
-                        <input type="text" id="search-input" class="form-control" placeholder="ค้นหาสินค้า (เช่น รองเท้า, เสื้อ, กระเป๋า)..." aria-label="ค้นหาสินค้า">
-                        <!-- Added 'input-group-text' with Font Awesome icon for visual appeal. -->
-                        <span class="input-group-text">
-                            <i class="fas fa-search"></i>
-                        </span>
+        <!-- Search and Filter Section: Overlapping the hero, for product discovery -->
+        <section class="container my-5 search-filter-section">
+            <div class="row align-items-center mb-4">
+                <!-- Search Input Field -->
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="search-input" placeholder="ค้นหาสินค้า (เช่น รองเท้า, เสื้อยืด, iPhone)..." aria-label="Search products">
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <!-- Added 'shadow-sm', 'rounded-md' for styling. -->
-                    <select id="category-select" class="form-select shadow-sm rounded-md">
-                        <option value="ทั้งหมด">หมวดหมู่ทั้งหมด</option>
-                        <option value="เสื้อผ้า">เสื้อผ้า</option>
-                        <option value="รองเท้า">รองเท้า</option>
-                        <option value="เครื่องประดับ">เครื่องประดับ</option>
-                        <option value="อิเล็กทรอนิกส์">อิเล็กทรอนิกส์</option>
-                        <option value="ของใช้ในบ้าน">ของใช้ในบ้าน</option>
-                    </select>
+                <!-- Category Filter Buttons - Dynamic buttons will be appended here by app.js -->
+                <div class="col-md-4 text-md-end">
+                    <div class="btn-group" role="group" aria-label="Product Categories" id="category-filter-buttons">
+                        <!-- Default 'All' button. Other category buttons will be added by app.js -->
+                        <button type="button" class="btn btn-outline-secondary active" data-category="ทั้งหมด">ทั้งหมด</button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Product Listing Section -->
-        <!-- Renamed ID from 'product-list-section' to 'products-section' for consistency with Navbar link. -->
-        <!-- Added 'animate__animated animate__fadeInUp' for animation. -->
-        <section id="products-section" class="mb-5 animate__animated animate__fadeInUp">
-            <!-- Added a clear heading for the product listing section. -->
-            <h2 class="text-center mb-5 text-primary fw-bold">สินค้าของเรา</h2>
-            <div id="product-list-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                <!-- Product cards will be dynamically loaded here by app.js (NO PLACEHOLDER CARDS). -->
-                <!-- This div will be shown if no products match the search/filter. -->
-                <!-- Added 'animate__animated animate__fadeIn' for animation. -->
-                <div id="no-products-found" class="col-12 text-center my-5 d-none animate__animated animate__fadeIn">
-                    <h3 class="text-muted"><i class="fas fa-box-open me-2"></i>ไม่พบสินค้าที่ตรงกับการค้นหา</h3>
-                    <p class="text-muted">ลองใช้คำค้นหาอื่น หรือเลือกหมวดหมู่ใหม่</p>
+        <!-- Product Listing Section: Dynamically populated product cards -->
+        <section class="container mb-5" id="product-section">
+            <h2 class="text-center mb-4 section-title animate__animated animate__fadeInUp">
+                <i class="fas fa-star text-warning me-2"></i>
+                <i class="fas fa-star text-warning me-1"></i>
+                สินค้าแนะนำ
+                <i class="fas fa-star text-warning ms-1"></i>
+                <i class="fas fa-star text-warning ms-2"></i>
+            </h2>
+            <!-- This div will be populated by app.js with product cards -->
+            <div id="product-list" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            </div>
+
+            <!-- Loader Spinner: Shown while products are being fetched -->
+            <div id="loader" class="text-center my-5 d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
+                <p class="mt-2 text-muted">กำลังโหลดสินค้า...</p>
+            </div>
+
+            <!-- No Results Message: Shown when no products match search/filter -->
+            <div id="no-results" class="text-center my-5 d-none">
+                <h3 class="text-muted"><i class="fas fa-box-open me-2"></i>ไม่พบสินค้าที่ตรงกับการค้นหา</h3>
+                <p class="text-muted">ลองใช้คำค้นหาอื่น หรือเลือกหมวดหมู่ใหม่</p>
             </div>
         </section>
     </main>
 
     <!-- Back to Top Button -->
-    <!-- Maintained original href='#', as style.css handles smooth scroll behavior. -->
     <a href="#" id="back-to-top" class="btn btn-primary rounded-circle shadow-lg d-none animate__animated animate__fadeInUp" aria-label="Back to top">
         <i class="fas fa-arrow-up"></i>
     </a>
 
     <!-- Footer: Site information and social media links -->
-    <!-- Removed 'bg-dark' as its styling is now handled by 'style.css' for consistency. -->
-    <footer class="text-white text-center py-4 mt-5">
+    <footer class="bg-dark text-white text-center py-4 mt-5">
         <div class="container">
             <p class="mb-0">&copy; 2025 My Shop. All rights reserved.</p>
-            <div class="social-icons mt-3"> <!-- Increased top margin for better spacing. -->
-                <!-- Used 'fab fa-facebook-f' for consistency with modern Font Awesome usage. -->
-                <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
+            <div class="social-icons mt-2">
+                <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
                 <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
                 <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter fa-lg"></i></a>
-                <!-- Added LinkedIn icon for a more professional and global presence. -->
-                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in fa-lg"></i></a>
             </div>
         </div>
     </footer>
