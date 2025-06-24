@@ -3,766 +3,1064 @@
 /* --- 1. Global Styles and Variables (Color, Shadow, Spacing Variables for Theme Management) --- */
 :root {
     /* Color Palette - Modern & Harmonious */
-    --primary-color: #007bff;          /* Blue: Main theme color, used for primary actions/highlights */
-    --primary-hover-color: #0056b3;    /* Darker Blue: For hover states of primary elements */
-    --accent-color: #28a745;           /* Green: For call-to-action buttons (e.g., success states) */
-    --accent-hover-color: #218838;     /* Darker Green */
-    --warning-color: #ffc107;          /* Yellow: For warning messages or prominent elements like stars */
+    /* Primary Colors: Deeper, more sophisticated blues for main actions and branding */
+    --primary-color: #1A237E;           /* Deep Indigo: Main theme color, strong and professional */
+    --primary-light: #5C6BC0;           /* Lighter Indigo: For subtle accents or lighter primary elements */
+    --primary-dark: #000051;            /* Very Dark Indigo: For hover states or strong emphasis */
+    --primary-gradient-start: #3F51B5;  /* Indigo 500 for gradients */
+    --primary-gradient-end: #1A237E;    /* Deep Indigo for gradients */
+    --primary-soft-bg: rgba(26, 35, 126, 0.05); /* Very light primary tint for backgrounds */
 
-    /* Neutral Colors - For text and backgrounds, ensuring readability */
-    --text-color: #343a40;             /* Dark Gray: Main text color */
-    --light-text-color: #6c757d;       /* Muted Gray: Secondary text, descriptions */
-    --background-color: #f8f9fa;       /* Light Gray: Page background */
-    --card-background: #ffffff;        /* White: Background for cards and containers */
-    --border-color: #e9ecef;           /* Light Border: For input fields, separators */
-    --dark-section-bg: #212529;        /* Dark Gray/Black: For Navbar, Footer, Admin panel elements */
-    --white-color: #ffffff;            /* Pure white */
-    --shopee-red: #ee4d2d;             /* Shopee brand color */
-    --shopee-red-hover: #d13d22;       /* Darker Shopee red for hover */
+    /* Accent Colors: Vibrant but balanced greens for positive actions, success, CTAs */
+    --accent-color: #4CAF50;            /* Green: For call-to-action buttons (e.g., success states) */
+    --accent-hover-color: #388E3C;      /* Darker Green for hover */
+    --accent-light: #81C784;            /* Lighter green for subtle highlights */
 
-    /* Mobile Specific Colors - For highlighting featured mobile products with a smooth gradient */
-    --mobile-highlight-color: #ff8c00; /* Deep Orange: Primary color for mobile highlights */
-    --mobile-gradient-start: #ffa726;  /* Lighter Orange for gradient start */
-    --mobile-gradient-end: #fb8c00;    /* Darker Orange for gradient end */
+    /* Warning & Danger: Standard, clear colors for alerts and critical actions */
+    --warning-color: #FFC107;           /* Yellow: For warning messages or prominent elements like stars */
+    --warning-dark: #FFA000;            /* Darker yellow for warning hover */
+    --danger-color: #DC3545;            /* Red: For error messages or destructive actions */
+    --danger-dark: #C82333;             /* Darker red for danger hover */
+    --info-color: #17A2B8;              /* Teal/Cyan: For informational messages */
+    --info-dark: #117A8B;               /* Darker teal for info hover */
 
-    /* Shadows - Soft and modern shadows for depth and prominence */
-    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08); /* Small, subtle shadow */
-    --shadow-md: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);    /* Medium shadow, common for cards */
-    --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);      /* Large shadow, for prominent elements or hover */
-    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06); /* Inner shadow for input focus */
+    /* Neutral Colors - For text and backgrounds, ensuring readability and modern feel */
+    --text-color: #212121;              /* Dark Gray: Main text color, strong contrast */
+    --light-text-color: #616161;        /* Muted Gray: Secondary text, descriptions, softer look */
+    --placeholder-color: #9E9E9E;       /* Placeholder text color */
+    --background-color: #F5F5F5;        /* Very Light Gray: Page background, clean and airy */
+    --secondary-background: #EEEEEE;    /* Slightly darker background for alternating sections */
+    --card-background: #FFFFFF;         /* White: Background for cards and containers, pure and clean */
+    --border-color: #E0E0E0;            /* Light Gray: For input fields, separators, subtle definition */
+    --dark-section-bg: #263238;         /* Dark Blue-Gray: For Navbar, Footer, Admin panel elements, premium feel */
+    --white-color: #FFFFFF;             /* Pure White */
+    --black-color: #000000;             /* Pure Black */
 
-    /* Border Radius - Consistent roundness for UI elements */
-    --border-radius-sm: 0.25rem; /* Smallest, for badges/buttons */
-    --border-radius-md: 0.5rem;  /* Medium, for inputs/standard buttons */
-    --border-radius-lg: 0.75rem; /* Larger, for cards/main sections */
+    /* Shadow Palette - Multi-layered, subtle shadows for depth and professionalism */
+    --shadow-xs: 0 0.5px 1.5px rgba(0, 0, 0, 0.08); /* Extra small, very subtle */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Small, subtle */
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Medium, general use */
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.08); /* Large, for elevated elements */
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.1); /* Extra large, for modals/popups */
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06); /* Inset shadow for depth */
+    --shadow-text: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
 
-    /* Spacing - Standardized spacing for consistent layouts */
-    --spacing-xs: 0.25rem; /* 4px */
-    --spacing-sm: 0.5rem;  /* 8px */
-    --spacing-md: 1rem;    /* 16px */
-    --spacing-lg: 1.5rem;  /* 24px */
-    --spacing-xl: 3rem;    /* 48px */
+    /* Spacing System - Consistent and scalable */
+    --spacing-xxs: 2px;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-xxl: 48px;
+    --spacing-xxxl: 64px;
+    --spacing-jumbo: 96px;
+
+    /* Border Radius - Soft and modern edges */
+    --border-radius-none: 0;
+    --border-radius-xs: 2px;
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+    --border-radius-full: 9999px; /* For pills, circles */
+
+    /* Transition - Smooth visual changes */
+    --transition-speed-fast: 0.15s;
+    --transition-speed: 0.3s;
+    --transition-speed-slow: 0.5s;
+    --transition-timing: ease-in-out;
+    --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55); /* For bouncy effects */
 }
 
-/* Global Body Styles */
+/* --- 2. Base Styles (Apply variables to common HTML elements) --- */
+html {
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+}
+
 body {
-    font-family: 'Kanit', sans-serif; /* Use Kanit font as specified */
-    background-color: var(--background-color); /* Apply main background color */
-    color: var(--text-color); /* Apply main text color */
-    line-height: 1.6; /* Standard line height for readability */
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden; /* Prevent unwanted horizontal scrollbar */
+    font-family: 'Kanit', sans-serif; /* Ensuring Kanit is applied broadly */
+    color: var(--text-color);
+    background-color: var(--background-color);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+    -moz-osx-font-smoothing: grayscale; /* Smoother font rendering */
 }
 
-/* Custom Scrollbar Styles for Webkit browsers (Chrome, Safari) */
-::-webkit-scrollbar {
-    width: 8px; /* Width of the scrollbar */
-    background-color: var(--background-color); /* Background of the scrollbar track */
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color); /* Color of the scrollbar thumb */
-    border-radius: 4px; /* Rounded corners for the thumb */
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary-hover-color); /* Darker color on hover */
-}
-
-/* --- 2. Typography (Refined Font Usage and Sizes for Modern Look) --- */
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 700; /* Bold headings for prominence */
-    color: var(--text-color); /* Apply main text color */
-    margin-bottom: var(--spacing-md); /* Consistent bottom margin */
+    font-family: 'Kanit', sans-serif;
+    color: var(--text-color);
+    line-height: 1.2;
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    font-weight: 700; /* Default bold for headings */
+    text-shadow: var(--shadow-text); /* Subtle text shadow for headings */
 }
+
+h1 { font-size: 2.8rem; font-weight: 800; }
+h2 { font-size: 2.2rem; }
+h3 { font-size: 1.8rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
 
 p {
-    margin-bottom: var(--spacing-sm); /* Consistent bottom margin for paragraphs */
+    margin-bottom: var(--spacing-md);
+    font-size: 1rem;
+    line-height: 1.7;
 }
 
+strong {
+    font-weight: 600; /* Semi-bold for strong text */
+}
+
+/* Links */
 a {
-    color: var(--primary-color); /* Link color from primary palette */
-    text-decoration: none; /* Remove underline by default */
-    transition: color 0.3s ease; /* Smooth transition for color changes */
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--transition-speed) var(--transition-timing);
+    outline: none; /* Remove default outline */
 }
 
 a:hover {
-    color: var(--primary-hover-color); /* Darker color on hover */
-    text-decoration: underline; /* Add underline on hover for clarity */
+    color: var(--primary-dark);
+    text-decoration: underline; /* Underline on hover for better UX */
 }
 
-/* --- 3. Navbar (Clean, Modern, and with Depth) --- */
-.navbar {
-    background-color: var(--dark-section-bg) !important; /* Dark background from variables */
-    box-shadow: var(--shadow-md); /* Add medium shadow for depth */
-    padding-top: var(--spacing-sm);
-    padding-bottom: var(--spacing-sm);
+a:focus {
+    outline: 2px solid var(--primary-light); /* Clear focus indicator */
+    outline-offset: 2px;
 }
 
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.8rem; /* Larger font size for brand logo */
-    color: var(--white-color) !important; /* White color for brand text */
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs); /* Gap between icon and text */
-}
-
-.navbar-brand .fas {
-    color: var(--primary-color); /* Primary color for brand icon */
-}
-
-.navbar .btn-outline-light {
-    border-color: rgba(255, 255, 255, 0.4); /* Subtle light border */
-    color: rgba(255, 255, 255, 0.8); /* Slightly muted white text */
-    transition: all 0.3s ease; /* Smooth transition for all properties */
-}
-
-.navbar .btn-outline-light:hover {
-    background-color: var(--primary-color); /* Primary background on hover */
-    border-color: var(--primary-color); /* Primary border on hover */
-    color: var(--white-color); /* White text on hover */
-}
-
-/* --- 4. Hero Section (Captivating and Animated Banner) --- */
-.hero-section {
-    /* Background with a linear gradient overlay for better text contrast */
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                url('https://placehold.co/1920x600/333/eee?text=Your+Shop+Banner') center center / cover no-repeat;
-    /* IMPORTANT: Replace placeholder URL with your actual high-quality banner image */
-    min-height: 500px; /* Minimum height for visual impact */
-    display: flex;
-    align-items: center; /* Vertically center content */
-    justify-content: center; /* Horizontally center content */
-    color: var(--white-color); /* White text for contrast */
-    text-align: center;
-    position: relative;
-    padding: var(--spacing-xl) 0;
-    overflow: hidden; /* Ensure content stays within bounds */
-}
-
-/* Compact hero section for mobile to show products quickly */
-.hero-section.hero-section-compact-on-mobile {
-    min-height: 250px; /* Reduced height for mobile */
-    padding: var(--spacing-lg) 0;
-}
-.hero-section.hero-section-compact-on-mobile h1 {
-    font-size: 2.5rem; /* Smaller font for mobile hero title */
-}
-.hero-section.hero-section-compact-on-mobile p {
-    font-size: 1.1rem; /* Smaller font for mobile hero description */
-    margin-bottom: var(--spacing-md);
-}
-.hero-section.hero-section-compact-on-mobile .btn-primary {
-    font-size: 1rem;
-    padding: 0.6rem 1.5rem;
-}
-
-.hero-section h1 {
-    font-size: 4.5rem;
-    font-weight: 800; /* Extra bold for main heading */
-    margin-bottom: var(--spacing-md);
-    text-shadow: var(--shadow-md); /* Add shadow to text for depth */
-    /* Animate.css effects are applied directly in index.html for better control */
-}
-
-.hero-section p {
-    font-size: 1.6rem;
-    margin-bottom: var(--spacing-xl);
-    text-shadow: var(--shadow-sm); /* Subtle shadow for supporting text */
-    /* Animate.css effects are applied directly in index.html for better control */
-    opacity: 0; /* Initially hidden for animation via Animate.css forwards */
-}
-
-.hero-section .btn-primary {
-    font-size: 1.2rem;
-    padding: 0.8rem 2rem;
+/* Global button styles for consistency and advanced effects */
+.btn {
     border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) var(--spacing-lg); /* Slightly more horizontal padding */
+    font-weight: 600; /* Semi-bold for buttons */
+    transition: all var(--transition-speed) var(--transition-timing);
+    box-shadow: var(--shadow-sm); /* Subtle shadow for all buttons */
+    cursor: pointer;
+    border: 1px solid transparent; /* Ensure consistent border */
+    text-transform: uppercase; /* Uppercase text for professionalism */
+    letter-spacing: 0.05em; /* Subtle letter spacing */
+}
+
+.btn:active {
+    transform: translateY(1px); /* Slight press effect on active */
+    box-shadow: var(--shadow-xs); /* Smaller shadow when pressed */
+}
+
+.btn-primary {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
-    /* Animate.css effects are applied directly in index.html for better control */
-    opacity: 0; /* Initially hidden for animation via Animate.css forwards */
-}
-
-.hero-section .btn-primary:hover {
-    background-color: var(--primary-hover-color); /* Darker primary on hover */
-    border-color: var(--primary-hover-color);
-    transform: translateY(-3px); /* Lift button slightly on hover */
-    box-shadow: var(--shadow-md); /* Add shadow on hover */
-}
-
-/* Scroll Indicator */
-.scroll-indicator {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     color: var(--white-color);
-    font-size: 0.9rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    text-shadow: var(--shadow-sm);
-    animation: bounce 2s infinite; /* Animate.css bounce */
-    opacity: 0; /* Initially hidden for animation */
-    animation-delay: 1s; /* Delay to play after other hero animations */
-    animation-fill-mode: forwards; /* Keep final state of animation */
-}
-.scroll-indicator i {
-    font-size: 1.5rem;
-    animation: pulse 1.5s infinite; /* Subtle pulse for the icon */
+    background-image: linear-gradient(to right, var(--primary-gradient-start), var(--primary-gradient-end));
+    background-size: 200% auto; /* For gradient animation */
 }
 
-/* --- 5. Search and Filter Section (Clean, Modern, and Interactive) --- */
-.search-filter-section {
-    background-color: var(--card-background); /* White background from variables */
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg); /* Rounded corners */
-    box-shadow: var(--shadow-md); /* Medium shadow */
-    margin-top: -60px; /* Pulls the section up to overlap the Hero section slightly */
-    position: relative;
-    z-index: 10; /* Ensure it stays above other content */
+.btn-primary:hover {
+    background-position: right center; /* Move gradient on hover */
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow on hover */
+    transform: translateY(-2px); /* Subtle lift effect */
 }
 
-.search-filter-section .form-control {
-    border-radius: var(--border-radius-md); /* Rounded input corners */
-    border: 1px solid var(--border-color); /* Light border */
-    padding: 0.75rem 1.25rem;
-    box-shadow: var(--shadow-sm); /* Subtle shadow */
-    transition: all 0.3s ease; /* Smooth transition for focus */
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background-color: transparent;
 }
 
-.search-filter-section .form-control:focus {
-    border-color: var(--primary-color); /* Primary color border on focus */
-    /* Inner shadow and subtle outline for focus state */
-    box-shadow: var(--shadow-inset), 0 0 0 0.25rem rgba(0, 123, 255, 0.25); 
-}
-
-.search-filter-section .btn-outline-secondary {
-    border-radius: var(--border-radius-md); /* Rounded button corners */
-    border: 1px solid var(--border-color); /* Light border */
-    color: var(--light-text-color); /* Muted text color */
-    transition: all 0.3s ease; /* Smooth transition for hover */
-}
-
-.search-filter-section .btn-outline-secondary:hover {
-    background-color: var(--primary-color); /* Primary background on hover */
-    color: var(--white-color); /* White text on hover */
-    border-color: var(--primary-color); /* Primary border on hover */
-    box-shadow: var(--shadow-sm); /* Subtle shadow on hover */
-}
-
-.search-filter-section .btn-group .btn {
-    border-radius: var(--border-radius-md); /* Rounded button corners */
-    margin-right: var(--spacing-sm); /* Spacing between buttons */
-    border: 1px solid var(--border-color); /* Light border */
-    color: var(--light-text-color); /* Muted text color */
-    transition: all 0.3s ease; /* Smooth transition for hover/active states */
-    font-weight: 500; /* Medium font weight */
-}
-
-.search-filter-section .btn-group .btn:last-child {
-    margin-right: 0; /* No right margin for the last button */
-}
-
-.search-filter-section .btn-group .btn.active {
-    background-color: var(--primary-color); /* Primary background for active button */
-    border-color: var(--primary-color); /* Primary border for active button */
-    color: var(--white-color); /* White text for active button */
-    box-shadow: var(--shadow-sm); /* Subtle shadow for active button */
-}
-
-.search-filter-section .btn-group .btn:hover:not(.active) {
-    background-color: var(--background-color); /* Light background on hover for non-active buttons */
-    color: var(--primary-color); /* Primary text color on hover */
-    border-color: var(--primary-color); /* Primary border on hover */
-}
-
-/* --- 6. Product Card (Enhanced, Visually Appealing, and Interactive) --- */
-.product-card {
-    border: none; /* Remove default Bootstrap border */
-    border-radius: var(--border-radius-lg); /* More rounded corners */
-    box-shadow: var(--shadow-md); /* Medium shadow for depth */
-    overflow: hidden; /* Ensure content stays within rounded corners */
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
-    height: 100%; /* Ensure cards in a row have equal height */
-    display: flex;
-    flex-direction: column; /* Stack content vertically */
-    position: relative; 
-    background-color: var(--card-background); /* White background for card */
-}
-
-.product-card:hover {
-    transform: translateY(-5px); /* Lift card slightly on hover */
-    box-shadow: var(--shadow-lg); /* Darker shadow on hover for prominence */
-}
-
-.product-card img {
-    width: 100%;
-    height: 250px; /* Fixed height for consistent image display */
-    object-fit: cover; /* Cover the area without distortion */
-    border-top-left-radius: var(--border-radius-lg);
-    border-top-right-radius: var(--border-radius-lg);
-    transition: transform 0.3s ease; /* Smooth zoom on image hover */
-}
-
-.product-card:hover img {
-    transform: scale(1.05); /* Zoom image slightly on hover */
-}
-
-.product-card .card-body {
-    padding: var(--spacing-md);
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; /* Allow card-body to expand and fill available space */
-}
-
-.product-card .card-title {
-    font-size: 1.5rem;
-    font-weight: 600; /* Semi-bold font for title */
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-color);
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limit product title to 2 lines */
-    -webkit-box-orient: vertical;
-    min-height: 3.9rem; /* Minimum height to prevent layout shifts when titles vary in length */
-}
-
-/* Removed: .product-card .card-text styling as description field is removed */
-
-.product-card .product-price {
-    font-size: 1.8rem;
-    font-weight: 700; /* Bold font for price */
-    color: var(--primary-color); /* Primary color for price */
-    margin-top: auto; /* Push price to the bottom of the card body */
-    margin-bottom: var(--spacing-md);
-}
-
-.product-card .btn-shopee {
-    background-color: var(--shopee-red); /* Shopee brand red */
-    border-color: var(--shopee-red);
-    color: var(--white-color); /* White text */
-    font-weight: 600; /* Semi-bold font */
-    padding: 0.75rem 1.25rem;
-    border-radius: var(--border-radius-md);
-    transition: all 0.3s ease; /* Smooth transition for hover */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xs); /* Gap between icon and text */
-}
-
-.product-card .btn-shopee:hover {
-    background-color: var(--shopee-red-hover); /* Darker Shopee red on hover */
-    border-color: var(--shopee-red-hover);
-    transform: translateY(-2px); /* Lift button slightly on hover */
-    box-shadow: var(--shadow-sm); /* Subtle shadow on hover */
-}
-
-/* Removed: Product Badges styling as badge field is removed */
-
-/* Featured Mobile Product Card (Highly Prominent and Animated) */
-.product-card.mobile {
-    border: 3px solid transparent; /* Prepare for gradient border */
-    /* Gradient border using linear-gradient and border-box */
-    background: linear-gradient(to bottom right, var(--mobile-gradient-start), var(--mobile-gradient-end)) border-box; 
-    /* Masking to create the gradient border effect */
-    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out; /* Webkit specific for mask composition */
-    mask-composite: exclude; /* Exclude the padding-box from the mask */
-    box-shadow: var(--shadow-lg); /* Larger shadow for extra prominence */
-    animation: pulse 2s infinite ease-in-out; /* Continuous pulse animation */
-}
-
-.product-card.mobile .card-title,
-.product-card.mobile .product-price {
-    color: var(--mobile-highlight-color); /* Highlight color for text in featured mobile cards */
-}
-
-.product-card.mobile .product-price {
-    font-size: 2.2rem; /* Larger price for featured mobile cards */
-}
-
-/* Keyframes for the pulse animation (for featured mobile cards) */
-@keyframes pulse {
-    0% { transform: scale(1); box-shadow: var(--shadow-lg); }
-    50% { transform: scale(1.02); box-shadow: 0 0.5rem 1.5rem rgba(255, 140, 0, 0.3); } /* Enlarged and orange-tinted shadow */
-    100% { transform: scale(1); box-shadow: var(--shadow-lg); }
-}
-
-/* --- 7. Loader and No Results States (Styling for User Feedback) --- */
-#loader .spinner-border {
-    width: 4rem; /* Larger spinner */
-    height: 4rem;
-    color: var(--primary-color) !important; /* Primary color for spinner */
-}
-
-#loader p {
-    font-size: 1.2rem;
-    color: var(--light-text-color); /* Muted text color for loading message */
-}
-
-#no-results {
-    padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    background-color: var(--card-background); /* White background */
-    box-shadow: var(--shadow-md); /* Medium shadow */
-}
-
-#no-results h3 {
-    color: var(--light-text-color); /* Muted text color */
-    font-size: 1.8rem;
-}
-
-#no-results i {
-    color: var(--primary-color); /* Primary color for icon */
-}
-
-#no-results p {
-    font-size: 1.1rem;
-    color: var(--light-text-color); /* Muted text color */
-}
-
-/* --- 8. Footer (Elegant and Informative) --- */
-footer {
-    background-color: var(--dark-section-bg) !important; /* Dark background from variables */
-    color: rgba(255, 255, 255, 0.8) !important; /* Slightly transparent white text */
-    padding: var(--spacing-lg) 0;
-    box-shadow: var(--shadow-sm); /* Subtle shadow for footer */
-}
-
-footer .social-icons a {
-    color: rgba(255, 255, 255, 0.6) !important; /* Muted white for social icons */
-    font-size: 1.5rem;
-    margin: 0 var(--spacing-sm);
-    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover */
-}
-
-footer .social-icons a:hover {
-    color: var(--primary-color) !important; /* Primary color on hover */
-    transform: translateY(-3px); /* Lift icon slightly on hover */
-}
-
-/* --- 9. Admin Page Specific Styles (Clean and Functional for Admin Interface) --- */
-.admin-login-card {
-    border-radius: var(--border-radius-lg); /* Rounded corners for login card */
-    box-shadow: var(--shadow-lg); /* Larger shadow for prominence */
-    background-color: var(--card-background); /* White background */
-    padding: var(--spacing-xl) !important;
-}
-
-.admin-login-card h3 {
-    color: var(--text-color);
-    font-weight: 700;
-}
-
-.admin-panel-container {
-    background-color: var(--card-background); /* White background for admin content area */
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md); /* Medium shadow */
-    margin-bottom: var(--spacing-lg);
-}
-
-.admin-panel .navbar {
-    background-color: var(--dark-section-bg) !important; /* Dark background for admin navbar */
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
     color: var(--white-color);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-    border-radius: 0; /* No border-radius for full width navbar */
-    box-shadow: var(--shadow-md); /* Medium shadow */
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
-.admin-panel .navbar-brand {
-    color: var(--white-color) !important;
-    font-weight: 600;
+.btn-success {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--white-color);
 }
 
-.admin-panel h4 {
-    color: var(--text-color);
-    margin-top: var(--spacing-lg);
-    margin-bottom: var(--spacing-md);
+.btn-success:hover {
+    background-color: var(--accent-hover-color);
+    border-color: var(--accent-hover-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
-.admin-product-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: var(--spacing-md);
-    box-shadow: var(--shadow-sm); /* Subtle shadow for table */
-    border-radius: var(--border-radius-md);
-    overflow: hidden; /* Ensure rounded corners apply to table */
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--white-color);
 }
 
-.admin-product-table th,
-.admin-product-table td {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-bottom: 1px solid var(--border-color); /* Light border between rows */
-    text-align: left;
-    vertical-align: middle; /* Align content vertically in middle */
+.btn-danger:hover {
+    background-color: var(--danger-dark);
+    border-color: var(--danger-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
-.admin-product-table th {
-    background-color: #f1f3f5; /* Light gray background for table header */
-    font-weight: 600;
-    color: var(--text-color);
-    font-size: 0.95rem;
+.btn-warning {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: var(--text-color); /* Text color for warning button */
 }
 
-.admin-product-table tbody tr:hover {
-    background-color: #f8f9fa; /* Slightly lighter background on row hover */
+.btn-warning:hover {
+    background-color: var(--warning-dark);
+    border-color: var(--warning-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
-.admin-product-table .btn-sm {
-    padding: 0.3rem 0.6rem;
+.btn-info {
+    background-color: var(--info-color);
+    border-color: var(--info-color);
+    color: var(--white-color);
+}
+
+.btn-info:hover {
+    background-color: var(--info-dark);
+    border-color: var(--info-dark);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: var(--spacing-xs) var(--spacing-md);
     font-size: 0.85rem;
-    margin-right: var(--spacing-xs);
-    border-radius: var(--border-radius-sm); /* Small rounded corners for action buttons */
 }
 
-/* General Form Styles for Admin (reused from Bootstrap, but with custom variables) */
+.btn-lg {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.15rem;
+}
+
+/* Disabled Buttons */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Form controls refinement and states */
+.form-control {
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color); /* Explicit border */
+    padding: var(--spacing-sm) var(--spacing-md);
+    box-shadow: var(--shadow-inset); /* Inset shadow for depth */
+    transition: border-color var(--transition-speed-fast) var(--transition-timing), box-shadow var(--transition-speed-fast) var(--transition-timing);
+    background-color: var(--card-background);
+    color: var(--text-color);
+}
+
+.form-control::placeholder {
+    color: var(--placeholder-color);
+    opacity: 1; /* Ensure placeholder is visible */
+}
+
+.form-control:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-color), 0.25), var(--shadow-inset); /* Bootstrap-like focus ring + inset shadow */
+    background-color: var(--white-color);
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: var(--background-color);
+    opacity: 0.8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical; /* Allow vertical resizing */
+}
+
+/* Custom checkbox and radio styling (more visual control than default Bootstrap) */
+.form-check-input {
+    appearance: none; /* Hide default checkbox */
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-xs);
+    display: inline-block;
+    position: relative;
+    top: 3px; /* Align with text */
+    cursor: pointer;
+    margin-right: var(--spacing-xs);
+    transition: all var(--transition-speed-fast) var(--transition-timing);
+    box-shadow: var(--shadow-xs);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.form-check-input:checked::before {
+    content: "\f00c"; /* Font Awesome check icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--white-color);
+    font-size: 0.75rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-check-input[type="radio"] {
+    border-radius: var(--border-radius-full); /* Make radio buttons round */
+}
+
+.form-check-input[type="radio"]:checked::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--white-color);
+    border-radius: var(--border-radius-full);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .form-label {
     font-weight: 600;
     color: var(--text-color);
     margin-bottom: var(--spacing-xs);
 }
 
-.form-control {
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color);
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+.input-group .form-control {
+    border-radius: var(--border-radius-md) !important; /* Ensure rounded corners within input groups */
 }
 
-.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-inset), 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+/* --- 3. Layout and Section Specific Styles --- */
+.container {
+    max-width: 1200px; /* Max width for content */
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
 }
 
-/* Custom Button Styles (reusing Bootstrap classes but applying variables) */
-.btn-primary {
+/* Navbar */
+.navbar {
+    background-color: var(--dark-section-bg) !important; /* Darker, premium look for navbar */
+    box-shadow: var(--shadow-md); /* Add shadow to navbar */
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    z-index: 1030; /* Ensure navbar is above other content */
+    border-bottom: 3px solid var(--primary-light); /* Accent border at bottom */
+}
+
+.navbar-brand {
+    font-weight: 700; /* Bold for brand name */
+    color: var(--white-color) !important;
+    font-size: 1.75rem; /* Slightly larger brand font */
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.navbar-brand i {
+    color: var(--primary-light); /* Icon in light primary color */
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: var(--white-color) !important;
+    font-weight: 500;
+    margin-left: var(--spacing-lg); /* Increased margin for better spacing */
+    position: relative; /* For underline effect */
+    padding: var(--spacing-xs) 0; /* Vertical padding for click area */
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 3px; /* Thicker underline */
+    bottom: -5px; /* Position slightly below text */
+    left: 0;
+    background-color: var(--primary-light);
+    transition: width var(--transition-speed) var(--transition-timing);
+    border-radius: var(--border-radius-full); /* Rounded underline */
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+    width: 100%;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.2) !important; /* Lighter toggler border */
+    transition: all var(--transition-speed) var(--transition-timing);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-light), 0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Header/Hero Section */
+.hero-section {
+    background: linear-gradient(45deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    color: var(--white-color);
+    padding: var(--spacing-jumbo) 0; /* More generous padding for a grander feel */
+    border-radius: var(--border-radius-xl); /* More rounded hero */
+    margin-bottom: var(--spacing-xxl);
+    box-shadow: var(--shadow-xl); /* Stronger shadow for hero section */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background graphic element for hero section */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.07) 0%, transparent 50%);
+    opacity: 0.5;
+    transform: rotate(30deg);
+    animation: hero-bg-animation 15s infinite alternate ease-in-out;
+    z-index: 0;
+}
+
+@keyframes hero-bg-animation {
+    from { transform: rotate(30deg) scale(1); }
+    to { transform: rotate(33deg) scale(1.05); }
+}
+
+.hero-section > .container {
+    position: relative;
+    z-index: 1; /* Ensure content is above background graphic */
+}
+
+.hero-section h1 {
+    font-weight: 800; /* Extra bold for headings */
+    font-size: 4rem; /* Even larger font size for impact */
+    margin-bottom: var(--spacing-md);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3); /* Stronger text shadow */
+    letter-spacing: -0.05em; /* Tighter letter spacing for large titles */
+}
+
+.hero-section p {
+    font-size: 1.5rem; /* Larger font for hero description */
+    font-weight: 300; /* Lighter weight for body text in hero */
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content Area */
+main {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+}
+
+/* Search Section */
+.search-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.search-section .form-control {
+    font-size: 1.1rem;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius-full); /* Pill-shaped search bar */
+    box-shadow: var(--shadow-sm);
+    border: 2px solid var(--border-color); /* Thicker border for prominence */
+}
+
+.search-section .input-group-text {
     background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    border-radius: var(--border-radius-md);
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover-color);
-    border-color: var(--primary-hover-color);
-    transform: translateY(-1px); /* Lift slightly on hover */
-    box-shadow: var(--shadow-sm); /* Subtle shadow on hover */
-}
-
-.btn-secondary {
-    background-color: var(--light-text-color); /* Muted gray for secondary button */
-    border-color: var(--light-text-color);
-    border-radius: var(--border-radius-md);
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268; /* Darker gray on hover */
-    border-color: #545b62;
-    transform: translateY(-1px);
+    color: var(--white-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius-full) !important;
+    padding: var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-speed) var(--transition-timing);
     box-shadow: var(--shadow-sm);
 }
 
-.btn-danger {
-    background-color: #dc3545; /* Bootstrap red */
-    border-color: #dc3545;
+.search-section .input-group-text:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    box-shadow: var(--shadow-md);
 }
 
-.btn-danger:hover {
-    background-color: #c82333; /* Darker red on hover */
-    border-color: #bd2130;
+/* Category Filter */
+#category-filter {
+    padding: var(--spacing-md);
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md); /* Shadow for category filter box */
+    margin-bottom: var(--spacing-xl);
 }
 
-.btn-warning { /* Specific style for edit button */
-    background-color: #ffc107; /* Bootstrap yellow */
-    border-color: #ffc107;
-    color: var(--dark-section-bg); /* Dark text for contrast */
+#category-filter .list-group-item {
+    cursor: pointer;
+    background-color: var(--card-background);
+    border: none; /* Remove default bootstrap border */
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-xs); /* Lighter shadow for individual items */
+    transition: all var(--transition-speed) var(--transition-timing);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--light-text-color);
+    font-weight: 500;
 }
 
-.btn-warning:hover {
-    background-color: #e0a800; /* Darker yellow on hover */
-    border-color: #d39e00;
+#category-filter .list-group-item:last-child {
+    margin-bottom: 0; /* No margin for last item */
 }
 
-
-/* --- 10. Responsive Adjustments (Optimized Media Queries) --- */
-/* For larger desktops and wide screens */
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1320px; /* Max width for Bootstrap's extra large breakpoint */
-    }
+#category-filter .list-group-item:hover {
+    background-color: var(--primary-soft-bg); /* Subtle hover background */
+    box-shadow: var(--shadow-sm);
+    transform: translateX(3px); /* Slight slide effect */
+    color: var(--primary-color);
 }
 
-/* For desktops and large tablets */
-@media (min-width: 992px) {
-    .container {
-        max-width: 1140px; /* Default Bootstrap large breakpoint */
-    }
-    .hero-section h1 {
-        font-size: 4rem; /* Slightly smaller on larger tablets */
-    }
-    .hero-section p {
-        font-size: 1.5rem;
-    }
+#category-filter .list-group-item.active {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--primary-color); /* Ensure active has primary border */
+    font-weight: 600;
 }
 
-/* For medium tablets and smaller desktops */
-@media (max-width: 991.98px) {
-    .hero-section h1 {
-        font-size: 3.5rem;
-    }
-    .hero-section p {
-        font-size: 1.4rem;
-    }
-    .input-group-lg .form-control,
-    .input-group-lg .input-group-text {
-        height: 50px;
-        font-size: 1.1rem;
-    }
-    .btn-group .btn {
-        padding: 0.7rem 1.2rem;
-        font-size: 0.95rem;
-    }
-    .search-filter-section {
-        margin-top: -50px; /* Adjust overlap */
-    }
+/* Product Cards */
+.product-card {
+    background-color: var(--card-background);
+    border: none; /* Remove default bootstrap border */
+    border-radius: var(--border-radius-xl); /* More rounded cards */
+    box-shadow: var(--shadow-md); /* Medium shadow for product cards */
+    transition: transform var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
+    overflow: hidden; /* Ensure rounded corners clip content */
+    margin-bottom: var(--spacing-lg); /* Spacing between cards */
+    display: flex; /* Flexbox for internal layout */
+    flex-direction: column;
 }
 
-/* For smaller tablets and large phones */
-@media (max-width: 767.98px) {
-    .hero-section {
-        min-height: 400px;
-        padding: var(--spacing-lg) 0;
-    }
-    .hero-section h1 {
-        font-size: 2.8rem;
-    }
-    .hero-section p {
-        font-size: 1.1rem;
-    }
-    .hero-section .btn-primary {
-        padding: 0.6rem 1.5rem;
-        font-size: 1rem;
-    }
-    .search-filter-section {
-        margin-top: -40px;
-        padding: var(--spacing-md);
-    }
-    /* Ensure search input and filter buttons stack properly */
-    .search-filter-section .row {
-        flex-direction: column; /* Stack vertically */
-    }
-    .col-md-8, .col-md-4 {
-        width: 100%; /* Full width */
-        margin-bottom: var(--spacing-md); /* Add spacing between stacked elements */
-    }
-    .btn-group {
-        width: 100%;
-        justify-content: center; /* Center buttons */
-        flex-wrap: wrap; /* Allow buttons to wrap to next line */
-    }
-    .btn-group .btn {
-        flex: 1 1 auto; /* Allow buttons to grow and shrink */
-        margin-bottom: var(--spacing-sm); /* Add bottom margin when wrapped */
-        margin-right: var(--spacing-sm);
-        min-width: unset; /* Override potential min-width from Bootstrap */
-    }
-    .btn-group .btn:last-child {
-        margin-right: 0;
-    }
-    .product-card img {
-        height: 200px; /* Adjust image height for smaller screens */
-    }
-    .product-card .card-title {
-        font-size: 1.3rem;
-        min-height: unset; /* Allow title to wrap without fixed height */
-    }
-    .product-card .product-price {
-        font-size: 1.6rem;
-    }
-    .product-card .btn-shopee {
-        font-size: 0.9rem;
-        padding: 0.6rem 1rem;
-    }
-    .admin-product-table th,
-    .admin-product-table td {
-        padding: var(--spacing-xs) var(--spacing-sm);
-        font-size: 0.85rem;
-    }
-    .admin-product-table .btn-sm {
-        padding: 0.2rem 0.4rem;
-        font-size: 0.75rem;
-    }
-    .admin-login-card {
-        padding: var(--spacing-lg) !important; /* Adjust padding for smaller screens */
-    }
+.product-card:hover {
+    transform: translateY(-8px); /* More pronounced lift effect on hover */
+    box-shadow: var(--shadow-lg); /* More prominent shadow on hover */
 }
 
-/* For extra small screens (e.g., iPhone SE) */
-@media (max-width: 575.98px) {
-    .navbar-brand {
-        font-size: 1.5rem;
-    }
-    .hero-section h1 {
-        font-size: 2.2rem;
-    }
-    .hero-section p {
-        font-size: 1rem;
-    }
-    .search-filter-section .input-group-lg .form-control {
-        font-size: 1rem;
-        height: 45px;
-    }
-    .search-filter-section .btn-group .btn {
-        font-size: 0.85rem;
-        padding: 0.6rem 1rem;
-        margin-bottom: var(--spacing-xs); /* Tighter spacing for very small screens */
-    }
-    .product-card img {
-        height: 180px;
-    }
-    .product-card .card-title {
-        font-size: 1.2rem;
-    }
-    .product-card .product-price {
-        font-size: 1.4rem;
-    }
-    .product-card .btn-shopee {
-        font-size: 0.8rem;
-        padding: 0.5rem 0.8rem;
-    }
+.product-card img {
+    border-top-left-radius: var(--border-radius-xl);
+    border-top-right-radius: var(--border-radius-xl);
+    object-fit: cover; /* Ensure images cover the area well */
+    height: 220px; /* Slightly increased fixed height for product images */
+    width: 100%;
+    transition: transform var(--transition-speed-slow) var(--transition-timing);
 }
 
-/* New: Custom Modal Styles (Essential for app.js custom alerts/confirms) */
+.product-card:hover img {
+    transform: scale(1.05); /* Slight zoom on image hover */
+}
+
+.product-card .card-body {
+    padding: var(--spacing-lg); /* More padding for content */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow body to grow */
+}
+
+.product-card .card-title {
+    font-weight: 700;
+    color: var(--primary-color); /* Product title in primary color */
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.3rem; /* Slightly larger title */
+    min-height: 2.6rem; /* Ensure consistent height for titles */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit title to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card .card-text {
+    font-size: 0.9rem;
+    color: var(--light-text-color);
+    margin-bottom: var(--spacing-md);
+    flex-grow: 1; /* Allow description to take space */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit description to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card .price {
+    font-size: 1.6rem; /* Larger price font */
+    font-weight: 800;
+    color: var(--accent-color); /* Price in accent color */
+    margin-bottom: var(--spacing-md);
+    text-align: right; /* Align price to the right */
+}
+
+.product-card .btn-add-to-cart {
+    width: 100%; /* Full width button */
+    font-size: 1rem;
+    padding: var(--spacing-md); /* More padding for CTA button */
+    border-radius: var(--border-radius-md); /* Slightly less rounded than card */
+}
+
+/* Badges for product status or categories */
+.badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: inline-flex; /* Use flex for vertical alignment */
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin-right: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.badge-new { background-color: var(--accent-color); color: var(--white-color); }
+.badge-sale { background-color: var(--danger-color); color: var(--white-color); }
+.badge-limited { background-color: var(--warning-color); color: var(--text-color); }
+.badge-category { background-color: var(--primary-light); color: var(--white-color); }
+
+/* No Products Found Section */
+#product-list-container #no-products-found {
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xxl);
+    background-color: var(--card-background);
+    box-shadow: var(--shadow-md);
+    margin-top: var(--spacing-xl);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#product-list-container #no-products-found i {
+    font-size: 4rem; /* Larger icon */
+    color: var(--light-text-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+#product-list-container #no-products-found h3 {
+    color: var(--light-text-color);
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+#product-list-container #no-products-found p {
+    color: var(--placeholder-color);
+    font-size: 1.1rem;
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-section-bg) !important; /* Darker, premium look for footer */
+    color: var(--white-color);
+    padding: var(--spacing-xl) 0; /* More padding */
+    box-shadow: var(--shadow-md); /* Add shadow to footer */
+    margin-top: var(--spacing-xxl); /* More space above footer */
+    border-top: 3px solid var(--primary-light); /* Accent border at top */
+}
+
+footer .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-lg); /* Gap between footer columns */
+}
+
+footer .footer-section {
+    flex: 1 1 auto; /* Allow sections to grow but also wrap */
+    min-width: 200px; /* Minimum width before wrapping */
+    padding: var(--spacing-sm);
+}
+
+footer .footer-section h5 {
+    color: var(--primary-light);
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 1.1rem;
+}
+
+footer .footer-section p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+footer .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer .footer-section ul li {
+    margin-bottom: var(--spacing-xs);
+}
+
+footer .footer-section ul li a {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    transition: color var(--transition-speed-fast) var(--transition-timing);
+}
+
+footer .footer-section ul li a:hover {
+    color: var(--white-color);
+    transform: translateX(3px); /* Subtle slide effect on link hover */
+}
+
+footer .social-icons {
+    margin-top: var(--spacing-md);
+}
+
+footer .social-icons a {
+    color: var(--white-color);
+    font-size: 1.8rem; /* Larger social icons */
+    margin: 0 var(--spacing-sm);
+    transition: color var(--transition-speed) var(--transition-timing), transform var(--transition-speed) var(--transition-timing);
+    display: inline-block; /* For transform effect */
+}
+
+footer .social-icons a:hover {
+    color: var(--primary-light);
+    transform: translateY(-5px) scale(1.1); /* More pronounced lift and slight scale */
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    text-align: center;
+    width: 100%;
+}
+
+.footer-bottom p {
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- 4. Admin Panel Specific Styles (Enhance appearance for professional look) --- */
+.admin-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-content {
+    flex-grow: 1; /* Allow content to fill space */
+    padding: var(--spacing-xl) 0;
+}
+
+.admin-section {
+    background-color: var(--card-background);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg); /* More prominent shadow for admin sections */
+    margin-bottom: var(--spacing-xxl); /* More space between sections */
+    position: relative;
+    overflow: hidden; /* For any internal overflow */
+}
+
+.admin-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px; /* Top accent bar */
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
+}
+
+.admin-section h4 {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.admin-section h4 i {
+    color: var(--primary-light);
+    font-size: 1.3rem;
+}
+
+/* Login Gate */
+#login-gate {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle background pattern for login gate */
+#login-gate::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.05) 0%, transparent 40%),
+                      radial-gradient(circle at 0% 100%, rgba(255,255,255,0.05) 0%, transparent 40%);
+    background-size: 400px 400px;
+    opacity: 0.7;
+    animation: login-bg-pattern 20s linear infinite;
+}
+
+@keyframes login-bg-pattern {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 400px 400px, -400px -400px; }
+}
+
+#login-gate .card {
+    background-color: var(--card-background);
+    border: none;
+    border-radius: var(--border-radius-xl); /* More rounded login card */
+    box-shadow: var(--shadow-xl); /* Very prominent shadow for login card */
+    padding: var(--spacing-xxl); /* More padding for login card */
+    max-width: 450px; /* Slightly wider */
+    width: 100%;
+    z-index: 1; /* Ensure card is above background pattern */
+    transform: scale(0.95); /* Initial slightly smaller scale */
+    animation: card-entry 0.6s var(--transition-timing-bounce) forwards; /* Bouncy entry animation */
+}
+
+@keyframes card-entry {
+    to { transform: scale(1); }
+}
+
+#login-gate .card-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: var(--spacing-lg);
+    font-size: 2rem;
+    text-align: center;
+}
+
+#login-gate .card-text {
+    text-align: center;
+    color: var(--light-text-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Admin Product Table */
+#admin-product-list {
+    overflow-x: auto; /* Enable horizontal scroll for table on small screens */
+}
+
+#admin-product-list table {
+    width: 100%;
+    border-collapse: separate; /* Allows border-radius on cells */
+    border-spacing: 0; /* Remove space between cell borders */
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden; /* Ensure corners are clipped */
+    box-shadow: var(--shadow-md);
+    min-width: 800px; /* Ensure table doesn't shrink too much */
+}
+
+#admin-product-list th,
+#admin-product-list td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping in table cells */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Show ellipsis for overflowed text */
+}
+
+#admin-product-list th {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Keep header visible on scroll if table is scrollable */
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+}
+
+#admin-product-list th:first-child { border-top-left-radius: var(--border-radius-lg); }
+#admin-product-list th:last-child { border-top-right-radius: var(--border-radius-lg); }
+
+#admin-product-list tbody tr:last-child td {
+    border-bottom: none; /* No border for the last row in tbody */
+}
+
+#admin-product-list tbody tr:nth-child(odd) {
+    background-color: var(--card-background); /* Explicitly white for odd rows */
+}
+#admin-product-list tbody tr:nth-child(even) {
+    background-color: var(--background-color); /* Zebra striping with a subtle background */
+}
+
+#admin-product-list tbody tr:hover {
+    background-color: var(--primary-soft-bg) !important; /* Lighter hover for better readability */
+    color: var(--text-color); /* Keep text color for hover */
+    cursor: pointer;
+    box-shadow: var(--shadow-sm); /* Subtle shadow on row hover */
+}
+
+#admin-product-list tbody tr:hover .btn {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-color: var(--primary-color);
+}
+
+/* Admin Form Section */
+.admin-form-section .img-preview-container {
+    border: 2px dashed var(--border-color); /* Thicker dashed border */
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm);
+    min-height: 120px; /* Slightly taller preview area */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background-color: var(--background-color);
+    transition: border-color var(--transition-speed) var(--transition-timing);
+}
+
+.admin-form-section .img-preview-container:hover {
+    border-color: var(--primary-light); /* Highlight border on hover */
+}
+
+.admin-form-section .img-preview {
+    width: 90px; /* Slightly larger preview images */
+    height: 90px;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-speed-fast) var(--transition-timing);
+}
+
+.admin-form-section .img-preview:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.admin-form-section .img-preview-wrapper {
+    position: relative;
+}
+
+.admin-form-section .remove-img-btn {
+    position: absolute;
+    top: -8px; /* Adjusted position */
+    right: -8px; /* Adjusted position */
+    background-color: var(--danger-color);
+    color: var(--white-color);
+    border: 2px solid var(--card-background); /* White border for contrast */
+    border-radius: var(--border-radius-full);
+    width: 24px; /* Larger hit area */
+    height: 24px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-speed-fast) var(--transition-timing);
+    z-index: 2; /* Ensure button is above image */
+}
+
+.admin-form-section .remove-img-btn:hover {
+    background-color: var(--danger-dark);
+    transform: scale(1.2); /* More pronounced scale on hover */
+    box-shadow: var(--shadow-md);
+}
+
+/* Loader */
+#loader, #admin-loader {
+    text-align: center;
+    padding: var(--spacing-xxl); /* More padding for loader area */
+    border-radius: var(--border-radius-lg);
+    background-color: var(--card-background);
+    box-shadow: var(--shadow-sm);
+    margin-top: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#loader .spinner-border, #admin-loader .spinner-border {
+    color: var(--primary-color) !important;
+    width: 3rem; /* Larger spinner */
+    height: 3rem;
+    border-width: 0.3em; /* Thicker spinner border */
+    animation: spin 1s linear infinite; /* Add a simple spin animation */
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+#loader p, #admin-loader p {
+    margin-top: var(--spacing-md);
+    color: var(--light-text-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* --- 5. Custom Modal/Alert Styles (for enhanced user feedback) --- */
 .custom-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for strong focus */
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 1050; /* Ensure it's above other elements */
+    justify-content: center;
+    z-index: 1050; /* Above Bootstrap modals */
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for fade in/out */
+    transition: opacity var(--transition-speed-slow) var(--transition-timing);
 }
 
 .custom-modal-overlay.show {
@@ -770,97 +1068,527 @@ footer .social-icons a:hover {
     visibility: visible;
 }
 
-.custom-modal {
-    background-color: var(--card-background); /* White background for modal content */
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg); /* Prominent shadow */
-    width: 90%; /* Responsive width */
-    max-width: 400px; /* Max width for readability */
-    transform: translateY(-50px); /* Start slightly above for entrance animation */
-    transition: transform 0.3s ease; /* Smooth transition for animation */
+.custom-modal-content {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-lg); /* Rounded corners for modal */
+    box-shadow: var(--shadow-xl); /* Stronger shadow for modal */
+    padding: 0; /* Remove default padding for internal structure */
+    width: 90%;
+    max-width: 550px; /* Slightly wider modal */
+    transform: translateY(-50px); /* Initial slight lift */
+    transition: transform var(--transition-speed-slow) var(--transition-timing-bounce); /* Bouncy transition */
+    border: 1px solid var(--border-color); /* Subtle border for definition */
 }
 
-.custom-modal-overlay.show .custom-modal {
-    transform: translateY(0); /* Animate to center position */
+.custom-modal-overlay.show .custom-modal-content {
+    transform: translateY(0); /* Slide in effect */
 }
 
 .custom-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-md);
+    padding: var(--spacing-lg); /* More padding in header */
     border-bottom: 1px solid var(--border-color);
-    background-color: var(--background-color); /* Light background for header */
-    border-top-left-radius: var(--border-radius-md);
-    border-top-right-radius: var(--border-radius-md);
+    background-color: var(--primary-light); /* Header background with primary light */
+    color: var(--white-color);
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
+    position: relative;
+    overflow: hidden; /* For header graphic */
 }
 
-.custom-modal-title {
+.custom-modal-header::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-full);
+    transform: rotate(45deg);
+}
+
+.custom-modal-header h5 {
     margin-bottom: 0;
-    font-size: 1.25rem;
-    color: var(--text-color);
-    font-weight: 600;
+    font-weight: 700;
+    color: inherit; /* Inherit color from parent */
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    z-index: 1; /* Ensure text is above graphic */
 }
 
-.custom-modal-close {
+.custom-modal-header h5 i {
+    font-size: 1.2em;
+    color: var(--white-color);
+}
+
+.custom-modal-header .close-button {
     background: none;
     border: none;
-    font-size: 1.5rem;
-    line-height: 1;
-    color: var(--light-text-color);
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    font-size: 1.8rem; /* Larger close button */
+    color: var(--white-color);
     cursor: pointer;
+    transition: transform var(--transition-speed-fast) var(--transition-timing), color var(--transition-speed-fast) var(--transition-timing);
+    z-index: 1;
 }
 
-.custom-modal-close:hover {
-    opacity: 1;
+.custom-modal-header .close-button:hover {
+    transform: rotate(90deg); /* Spin on hover */
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .custom-modal-body {
-    padding: var(--spacing-md);
-    font-size: 1rem;
-    color: var(--text-color);
+    padding: var(--spacing-xxl); /* More padding for content */
+    text-align: center; /* Center text in alert body */
+    position: relative;
 }
+
+.custom-modal-body p {
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.2rem; /* Larger text for readability */
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Specific text colors for alert types (used in custom-modal-body p) */
+.custom-modal-body .text-info { color: var(--info-color); }
+.custom-modal-body .text-success { color: var(--accent-color); }
+.custom-modal-body .text-error { color: var(--danger-color); }
+.custom-modal-body .text-warning { color: var(--warning-color); }
 
 .custom-modal-footer {
     display: flex;
     justify-content: flex-end;
-    padding: var(--spacing-md);
+    padding: var(--spacing-lg); /* More padding */
     border-top: 1px solid var(--border-color);
     background-color: var(--background-color); /* Light background for footer */
-    border-bottom-left-radius: var(--border-radius-md);
-    border-bottom-right-radius: var(--border-radius-md);
+    border-bottom-left-radius: var(--border-radius-lg); /* Match header's radius */
+    border-bottom-right-radius: var(--border-radius-lg); /* Match header's radius */
+    gap: var(--spacing-md); /* Space between buttons */
 }
 
-/* Specific text colors for alert types (used in custom-modal-body p) */
-.custom-modal-body .text-info { color: #17a2b8; } /* Bootstrap info blue */
-.custom-modal-body .text-success { color: var(--accent-color); } /* Green from accent-color */
-.custom-modal-body .text-error { color: var(--danger-color); } /* Red from danger-color */
-.custom-modal-body .text-warning { color: var(--warning-color); } /* Yellow from warning-color */
+.custom-modal-footer .btn {
+    min-width: 100px; /* Ensure buttons have minimum width */
+}
 
 /* Back to Top Button */
 #back-to-top {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: var(--spacing-xl); /* Increased distance from bottom */
+    right: var(--spacing-xl); /* Increased distance from right */
     background-color: var(--primary-color);
     color: var(--white-color);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    border-radius: var(--border-radius-full);
+    width: 55px; /* Slightly larger button */
+    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.7rem; /* Larger icon */
     box-shadow: var(--shadow-md);
+    transition: all var(--transition-speed) var(--transition-timing);
     z-index: 1000;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    /* Animate.css fade in effect is handled by app.js show/hide, animate__fadeInUp is just a baseline */
-}
-#back-to-top:hover {
-    background-color: var(--primary-hover-color);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
+    border: 3px solid var(--white-color); /* White border for emphasis */
 }
 
+#back-to-top:hover {
+    background-color: var(--primary-dark);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-5px) scale(1.05); /* More pronounced lift and scale */
+    border-color: var(--primary-light); /* Change border color on hover */
+}
+
+/* Scrollbar styling for Webkit browsers (Chrome, Safari) for a custom look */
+::-webkit-scrollbar {
+    width: 10px; /* width of the entire scrollbar */
+    height: 10px; /* height of horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color); /* color of the tracking area */
+    border-radius: var(--border-radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary-light); /* color of the scroll thumb */
+    border-radius: var(--border-radius-full); /* roundness of the scroll thumb */
+    border: 2px solid var(--background-color); /* creates padding around scroll thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color); /* color of scroll thumb on hover */
+}
+
+
+/* --- 6. Utility and Helper Classes (General purpose) --- */
+.text-primary { color: var(--primary-color) !important; }
+.text-primary-light { color: var(--primary-light) !important; }
+.text-accent { color: var(--accent-color) !important; }
+.text-light-muted { color: var(--light-text-color) !important; }
+.text-dark-bg { color: var(--dark-section-bg) !important; }
+.text-white { color: var(--white-color) !important; }
+.text-black { color: var(--black-color) !important; }
+
+.bg-primary { background-color: var(--primary-color) !important; }
+.bg-primary-light { background-color: var(--primary-light) !important; }
+.bg-accent { background-color: var(--accent-color) !important; }
+.bg-dark-section { background-color: var(--dark-section-bg) !important; }
+.bg-card { background-color: var(--card-background) !important; }
+.bg-body { background-color: var(--background-color) !important; }
+
+.shadow-xs { box-shadow: var(--shadow-xs) !important; }
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }
+.shadow-xl { box-shadow: var(--shadow-xl) !important; }
+.shadow-inset { box-shadow: var(--shadow-inset) !important; }
+
+.rounded-xs { border-radius: var(--border-radius-xs) !important; }
+.rounded-sm { border-radius: var(--border-radius-sm) !important; }
+.rounded-md { border-radius: var(--border-radius-md) !important; }
+.rounded-lg { border-radius: var(--border-radius-lg) !important; }
+.rounded-xl { border-radius: var(--border-radius-xl) !important; }
+.rounded-full { border-radius: var(--border-radius-full) !important; }
+
+/* Flexbox utilities not covered by Bootstrap or for specific override */
+.d-flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.d-flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-column-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Margin and Padding utilities (if more granular than Bootstrap is needed) */
+.mt-xxs { margin-top: var(--spacing-xxs) !important; }
+.mb-xxs { margin-bottom: var(--spacing-xxs) !important; }
+.ml-xxs { margin-left: var(--spacing-xxs) !important; }
+.mr-xxs { margin-right: var(--spacing-xxs) !important; }
+.mx-xxs { margin-left: var(--spacing-xxs) !important; margin-right: var(--spacing-xxs) !important; }
+.my-xxs { margin-top: var(--spacing-xxs) !important; margin-bottom: var(--spacing-xxs) !important; }
+.p-xxs { padding: var(--spacing-xxs) !important; }
+.pt-xxs { padding-top: var(--spacing-xxs) !important; }
+.pb-xxs { padding-bottom: var(--spacing-xxs) !important; }
+.pl-xxs { padding-left: var(--spacing-xxs) !important; }
+.pr-xxs { padding-right: var(--spacing-xxs) !important; }
+.px-xxs { padding-left: var(--spacing-xxs) !important; padding-right: var(--spacing-xxs) !important; }
+.py-xxs { padding-top: var(--spacing-xxs) !important; padding-bottom: var(--spacing-xxs) !important; }
+
+/* And so on for all spacing variables (sm, md, lg, xl, xxl, xxxl, jumbo) */
+/* This section would typically be generated by a CSS preprocessor or framework, but for demonstration: */
+.mt-xxl { margin-top: var(--spacing-xxl) !important; }
+.mb-xxl { margin-bottom: var(--spacing-xxl) !important; }
+.mt-xxxl { margin-top: var(--spacing-xxxl) !important; }
+.mb-xxxl { margin-bottom: var(--spacing-xxxl) !important; }
+.mt-jumbo { margin-top: var(--spacing-jumbo) !important; }
+.mb-jumbo { margin-bottom: var(--spacing-jumbo) !important; }
+
+.pt-xxl { padding-top: var(--spacing-xxl) !important; }
+.pb-xxl { padding-bottom: var(--spacing-xxl) !important; }
+.py-xxl { padding-top: var(--spacing-xxl) !important; padding-bottom: var(--spacing-xxl) !important; }
+.py-xxxl { padding-top: var(--spacing-xxxl) !important; padding-bottom: var(--spacing-xxxl) !important; }
+.py-jumbo { padding-top: var(--spacing-jumbo) !important; padding-bottom: var(--spacing-jumbo) !important; }
+
+
+/* --- 7. Animations and Keyframes --- */
+/* Fade in from bottom for elements */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate__fadeInUp {
+    animation-name: fadeInUp;
+    animation-duration: 0.6s;
+    animation-fill-mode: both;
+}
+
+/* Scale and slight bounce for clickable elements */
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.8); }
+    70% { opacity: 1; transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.animate__popIn {
+    animation-name: popIn;
+    animation-duration: 0.5s;
+    animation-timing-function: var(--transition-timing-bounce);
+    animation-fill-mode: both;
+}
+
+/* Subtle pulse for indicators */
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.animate__pulse {
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+/* --- 8. Responsive Adjustments (Detailed breakpoints) --- */
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .container {
+        padding-left: var(--spacing-xl);
+        padding-right: var(--spacing-xl);
+    }
+    .hero-section h1 { font-size: 4.5rem; }
+    .hero-section p { font-size: 1.6rem; }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (max-width: 1199.98px) {
+    .hero-section h1 { font-size: 3.5rem; }
+    .hero-section p { font-size: 1.4rem; }
+    .product-card img { height: 200px; }
+    .product-card .card-title { font-size: 1.2rem; }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-link {
+        margin-left: var(--spacing-md); /* Adjust nav links for smaller desktops */
+    }
+    .hero-section {
+        padding: var(--spacing-xxl) 0;
+        margin-bottom: var(--spacing-xl);
+    }
+    .hero-section h1 { font-size: 2.8rem; }
+    .hero-section p { font-size: 1.2rem; }
+    .product-card {
+        margin-bottom: var(--spacing-md); /* Tighter spacing on tablets */
+    }
+    .product-card img {
+        height: 180px; /* Smaller product images on tablets */
+    }
+    .product-card .card-title {
+        font-size: 1.1rem;
+        min-height: unset; /* Allow title to wrap freely */
+        -webkit-line-clamp: unset;
+    }
+    .product-card .card-text {
+        font-size: 0.85rem;
+        min-height: unset; /* Allow description to wrap freely */
+        -webkit-line-clamp: unset;
+    }
+    footer .container {
+        flex-direction: column; /* Stack footer sections */
+        text-align: center;
+    }
+    footer .footer-section {
+        min-width: unset;
+        width: 100%;
+        margin-bottom: var(--spacing-lg);
+    }
+    footer .social-icons {
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-md);
+    }
+    .admin-form-section .img-preview-container {
+        min-height: 80px;
+    }
+    .admin-form-section .img-preview {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 767.98px) {
+    body {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.5rem; }
+
+    .navbar-brand { font-size: 1.5rem; }
+    .navbar-nav {
+        text-align: center;
+        padding-top: var(--spacing-md);
+        padding-bottom: var(--spacing-md);
+    }
+    .navbar-nav .nav-link {
+        margin-left: 0;
+        margin-bottom: var(--spacing-sm);
+        padding: var(--spacing-sm) 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separator for mobile nav links */
+    }
+    .navbar-nav .nav-link:last-child {
+        border-bottom: none;
+    }
+    .navbar-nav .nav-link::after {
+        display: none; /* Hide underline on mobile nav */
+    }
+
+    .hero-section {
+        padding: var(--spacing-xl) 0;
+        border-radius: var(--border-radius-lg);
+    }
+    .hero-section h1 { font-size: 2rem; }
+    .hero-section p { font-size: 1rem; }
+
+    .search-section .form-control {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 1rem;
+    }
+
+    #category-filter {
+        padding: var(--spacing-sm);
+    }
+    #category-filter .list-group-item {
+        font-size: 0.9rem;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .product-card {
+        border-radius: var(--border-radius-lg);
+    }
+    .product-card img {
+        height: 160px; /* Smaller product images on mobile */
+        border-top-left-radius: var(--border-radius-lg);
+        border-top-right-radius: var(--border-radius-lg);
+    }
+    .product-card .card-body {
+        padding: var(--spacing-md);
+    }
+    .product-card .price {
+        font-size: 1.4rem;
+    }
+
+    .custom-modal-content {
+        width: 95%;
+        max-width: 320px;
+        padding: 0;
+    }
+    .custom-modal-header {
+        padding: var(--spacing-md);
+    }
+    .custom-modal-header h5 {
+        font-size: 1.2rem;
+    }
+    .custom-modal-body {
+        padding: var(--spacing-lg);
+    }
+    .custom-modal-body p {
+        font-size: 1rem;
+    }
+    .custom-modal-footer {
+        flex-direction: column; /* Stack buttons in modal footer on mobile */
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+    .custom-modal-footer .btn {
+        width: 100%;
+    }
+
+    #back-to-top {
+        bottom: var(--spacing-md);
+        right: var(--spacing-md);
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .admin-section {
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius-md);
+    }
+    .admin-section h4 {
+        font-size: 1.4rem;
+    }
+    #admin-product-list table {
+        min-width: 600px; /* Ensure table still scrolls if necessary */
+    }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+    .container {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.3rem; }
+
+    .hero-section {
+        padding: var(--spacing-lg) 0;
+        border-radius: var(--border-radius-md);
+    }
+    .hero-section h1 { font-size: 1.8rem; }
+    .hero-section p { font-size: 0.9rem; }
+
+    .product-card {
+        border-radius: var(--border-radius-md);
+    }
+    .product-card img {
+        height: 140px;
+        border-top-left-radius: var(--border-radius-md);
+        border-top-right-radius: var(--border-radius-md);
+    }
+    .product-card .card-title {
+        font-size: 1.1rem;
+    }
+    .product-card .price {
+        font-size: 1.2rem;
+    }
+    .product-card .btn-add-to-cart {
+        font-size: 0.9rem;
+        padding: var(--spacing-sm);
+    }
+
+    #login-gate .card {
+        padding: var(--spacing-xl);
+    }
+    #login-gate .card-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background-color: var(--white-color) !important;
+        color: var(--black-color) !important;
+    }
+    .navbar, footer, #back-to-top, .btn-add-to-cart, .custom-modal-overlay {
+        display: none !important;
+    }
+    .product-card, .admin-section, #login-gate .card {
+        box-shadow: none !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    a {
+        text-decoration: underline !important;
+        color: #000 !important;
+    }
+}
