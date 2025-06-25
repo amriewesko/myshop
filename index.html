@@ -12,110 +12,129 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <!-- Animate.css for subtle entrance animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <!-- Custom Stylesheet -->
+    <!-- Custom Stylesheet (ensure this is loaded last to override Bootstrap defaults) -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Navbar: Top navigation bar for brand and admin link -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
-        <div class="container">
-            <!-- Brand Logo and Name -->
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fas fa-store me-2"></i> My Shop
+    <!-- Added animation class 'animate__animated animate__fadeInDown' for subtle entry effect. -->
+    <nav class="navbar navbar-expand-lg navbar-dark animate__animated animate__fadeInDown">
+        <div class="container-fluid container">
+            <!-- Brand name with a modern icon for visual appeal -->
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store"></i> My Shop
             </a>
-            <!-- Admin Panel Link -->
-            <a href="admin.html" class="btn btn-outline-light btn-sm ms-auto">
-                <i class="fas fa-user-shield me-2"></i> Admin Panel
-            </a>
+            <!-- Toggler for responsive navigation on small screens -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Navbar links and items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto"> <!-- ms-auto pushes items to the right -->
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">หน้าแรก</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">ผู้ดูแลระบบ</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <main>
-        <!-- Hero Section: Main banner with captivating text and call-to-action -->
-        <!-- Added 'hero-section-compact-on-mobile' class for responsive adjustments via CSS -->
-        <section class="hero-section hero-section-compact-on-mobile">
-            <div class="container text-center">
-                <h1 class="animate__animated animate__fadeInDown">สินค้าคุณภาพ ราคาโดนใจ</h1>
-                <p class="animate__animated animate__fadeInUp animate__delay-0-3s">พบกับสินค้าหลากหลายหมวดหมู่ ส่งตรงถึงมือคุณ</p>
-                <!-- Scroll to product section on click -->
-                <a href="#product-section" class="btn btn-primary animate__animated animate__zoomIn animate__delay-0-6s">ดูสินค้าทั้งหมด <i class="fas fa-arrow-down ms-2"></i></a>
-            </div>
-            <!-- Optional: Scroll indicator for more playfulness -->
-            <div class="scroll-indicator animate__animated animate__bounce animate__infinite animate__delay-1s">
-                <span>เลื่อนลง</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        </section>
+    <!-- Header/Hero Section: Large, prominent section to welcome users -->
+    <header class="hero-section text-white text-center">
+        <div class="container">
+            <!-- Main heading for the shop -->
+            <h1 class="display-4 animate__animated animate__zoomIn">ยินดีต้อนรับสู่ My Shop</h1>
+            <!-- Subtitle/slogan for the shop -->
+            <p class="lead animate__animated animate__fadeInUp animate__delay-1s">
+                แหล่งรวมสินค้าคุณภาพดี มีสไตล์ สำหรับทุกคน
+            </p>
+            <!-- Call to action button, animated for emphasis -->
+            <a href="#product-listings" class="btn btn-primary btn-lg mt-4 animate__animated animate__bounceIn animate__delay-2s">
+                <i class="fas fa-shopping-bag me-2"></i> ดูสินค้าทั้งหมด
+            </a>
+        </div>
+    </header>
 
-        <!-- Search and Filter Section: Overlapping the hero, for product discovery -->
-        <section class="container my-5 search-filter-section">
-            <div class="row align-items-center mb-4">
-                <!-- Search Input Field -->
-                <div class="col-md-8 mb-3 mb-md-0">
-                    <div class="input-group input-group-lg">
+    <!-- Main Content Area -->
+    <main class="container my-5" id="product-listings">
+        <div class="row">
+            <!-- Category Filter Section (Left Column on larger screens) -->
+            <div class="col-lg-3 mb-4">
+                <div id="category-filter" class="card p-3 shadow-sm rounded-lg animate__animated animate__fadeInLeft">
+                    <h4 class="mb-3 text-primary"><i class="fas fa-filter me-2"></i>หมวดหมู่สินค้า</h4>
+                    <div class="list-group">
+                        <!-- Category filter options - populated by JavaScript -->
+                        <select id="category-select" class="form-select mb-3">
+                            <option value="ทั้งหมด" selected>ทั้งหมด</option>
+                            <!-- Options will be dynamically loaded here by app.js or can be static -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Listings and Search Section (Right Column) -->
+            <div class="col-lg-9">
+                <!-- Search Section -->
+                <div class="search-section mb-4 animate__animated animate__fadeInRight">
+                    <div class="input-group">
+                        <input type="text" id="search-input" class="form-control" placeholder="ค้นหาสินค้า (ชื่อ, ID, หมวดหมู่)...">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control" id="search-input" placeholder="ค้นหาสินค้า (เช่น รองเท้า, เสื้อยืด, iPhone)..." aria-label="Search products">
                     </div>
                 </div>
-                <!-- Category Filter Buttons - Dynamic buttons will be appended here by app.js -->
-                <div class="col-md-4 text-md-end">
-                    <div class="btn-group" role="group" aria-label="Product Categories" id="category-filter-buttons">
-                        <!-- Default 'All' button. Other category buttons will be added by app.js -->
-                        <button type="button" class="btn btn-outline-secondary active" data-category="ทั้งหมด">ทั้งหมด</button>
+
+                <!-- Loader for Products -->
+                <div id="loader" class="text-center py-5 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">กำลังโหลด...</span>
                     </div>
+                    <p class="mt-3 text-muted">กำลังโหลดสินค้า...</p>
+                </div>
+
+                <!-- No Products Found Message -->
+                <div id="no-products-found" class="text-center py-5 d-none animate__animated animate__zoomIn">
+                    <i class="fas fa-box-open fa-3x text-muted mb-4"></i>
+                    <h3 class="text-muted">ไม่พบสินค้าที่คุณค้นหา</h3>
+                    <p class="text-secondary">ลองปรับคำค้นหาหรือเลือกหมวดหมู่อื่นดูนะคะ</p>
+                </div>
+
+                <!-- Product List Container -->
+                <div id="product-list-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <!-- Product cards will be dynamically loaded here by app.js -->
                 </div>
             </div>
-        </section>
-
-        <!-- Product Listing Section: Dynamically populated product cards -->
-        <section class="container mb-5" id="product-section">
-            <h2 class="text-center mb-4 section-title animate__animated animate__fadeInUp">
-                <i class="fas fa-star text-warning me-2"></i>
-                <i class="fas fa-star text-warning me-1"></i>
-                สินค้าแนะนำ
-                <i class="fas fa-star text-warning ms-1"></i>
-                <i class="fas fa-star text-warning ms-2"></i>
-            </h2>
-            <!-- This div will be populated by app.js with product cards -->
-            <div id="product-list" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            </div>
-
-            <!-- Loader Spinner: Shown while products are being fetched -->
-            <div id="loader" class="text-center my-5 d-none">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2 text-muted">กำลังโหลดสินค้า...</p>
-            </div>
-
-            <!-- No Results Message: Shown when no products match search/filter -->
-            <div id="no-results" class="text-center my-5 d-none">
-                <h3 class="text-muted"><i class="fas fa-box-open me-2"></i>ไม่พบสินค้าที่ตรงกับการค้นหา</h3>
-                <p class="text-muted">ลองใช้คำค้นหาอื่น หรือเลือกหมวดหมู่ใหม่</p>
-            </div>
-        </section>
+        </div>
     </main>
 
-    <!-- Back to Top Button -->
-    <a href="#" id="back-to-top" class="btn btn-primary rounded-circle shadow-lg d-none animate__animated animate__fadeInUp" aria-label="Back to top">
+    <!-- Scroll-to-Top Button -->
+    <a href="#" id="back-to-top" class="btn btn-primary rounded-circle shadow d-none">
         <i class="fas fa-arrow-up"></i>
     </a>
 
     <!-- Footer: Site information and social media links -->
-    <footer class="bg-dark text-white text-center py-4 mt-5">
+    <!-- Removed 'bg-dark' as its styling is now handled by 'style.css' for consistency. -->
+    <footer class="text-white text-center py-4 mt-5">
         <div class="container">
             <p class="mb-0">&copy; 2025 My Shop. All rights reserved.</p>
-            <div class="social-icons mt-2">
-                <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
+            <div class="social-icons mt-3"> <!-- Increased top margin for better spacing. -->
+                <!-- Used 'fab fa-facebook-f' for consistency with modern Font Awesome usage. -->
+                <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
                 <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
                 <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter fa-lg"></i></a>
+                <!-- Added LinkedIn icon for a more professional and global presence. -->
+                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in fa-lg"></i></a>
             </div>
         </div>
     </footer>
 
+    <!-- Custom Modal Overlay (hidden by default) -->
+    <div id="custom-modal-overlay" class="custom-modal-overlay"></div>
+
     <!-- Bootstrap Bundle with Popper for components and interactivity -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JavaScript for dynamic content and logic -->
+    <!-- Custom JavaScript file -->
     <script src="app.js"></script>
 </body>
 </html>
