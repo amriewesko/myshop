@@ -841,12 +841,6 @@ footer .footer-section h5 {
     font-size: 1.1rem;
 }
 
-footer .footer-section p {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.7);
-}
-
 footer .footer-section ul {
     list-style: none;
     padding: 0;
@@ -1507,7 +1501,8 @@ footer .social-icons a:hover {
 @media (max-width: 1199.98px) {
     .hero-section h1 { font-size: 3.5rem; }
     .hero-section p { font-size: 1.4rem; }
-    .product-card img { height: auto; aspect-ratio: 4/3; } /* Adjusted for consistent aspect ratio */
+    /* Updated product card image to be square and contain */
+    .product-card img { height: auto; aspect-ratio: 1 / 1; object-fit: contain; }
     .product-card .card-title { font-size: 1.2rem; }
 }
 
@@ -1527,17 +1522,26 @@ footer .social-icons a:hover {
     }
     .product-card img {
         height: auto; /* Ensure height is auto for aspect-ratio to work */
-        aspect-ratio: 4/3; /* Maintain aspect ratio */
+        aspect-ratio: 1 / 1; /* Ensure 1:1 aspect ratio on tablets */
+        object-fit: contain; /* Ensure image is fully visible */
     }
     .product-card .card-title {
         font-size: 1.1rem;
-        min-height: unset; /* Allow title to wrap freely */
-        -webkit-line-clamp: unset;
+        min-height: 2.2rem; /* Adjusted for smaller font, allow 2 lines approx */
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limit title to 2 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .product-card .card-text {
         font-size: 0.85rem;
-        min-height: unset; /* Allow description to wrap freely */
-        -webkit-line-clamp: unset;
+        min-height: 2.55rem; /* Adjusted for 3 lines approx */
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Limit description to 3 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     footer .container {
         flex-direction: column; /* Stack footer sections */
@@ -1616,12 +1620,23 @@ footer .social-icons a:hover {
     }
     .product-card img {
         height: auto; /* Ensure height is auto for aspect-ratio to work */
-        aspect-ratio: 16/9; /* Wider aspect ratio for mobile images to fill screen better horizontally */
+        aspect-ratio: 1 / 1; /* Square aspect ratio on phones */
+        object-fit: contain; /* Ensure image is fully visible */
         border-top-left-radius: var(--border-radius-md);
         border-top-right-radius: var(--border-radius-md);
     }
     .product-card .card-body {
         padding: var(--spacing-md);
+    }
+    .product-card .card-title {
+        font-size: 1.1rem; /* Consistent title size */
+        min-height: 2.2rem; /* Adjusted for smaller font, allow 2 lines approx */
+        -webkit-line-clamp: 2;
+    }
+    .product-card .card-text {
+        font-size: 0.85rem; /* Consistent description size */
+        min-height: 2.55rem; /* Adjusted for 3 lines approx */
+        -webkit-line-clamp: 3;
     }
     .product-card .price {
         font-size: 1.4rem;
@@ -1697,12 +1712,15 @@ footer .social-icons a:hover {
     }
     .product-card img {
         height: auto; /* Ensure height is auto for aspect-ratio to work */
-        aspect-ratio: 16/9; /* Maintain 16:9 aspect ratio */
+        aspect-ratio: 1 / 1; /* Square aspect ratio on smallest screens */
+        object-fit: contain; /* Ensure image is fully visible */
         border-top-left-radius: var(--border-radius-md);
         border-top-right-radius: var(--border-radius-md);
     }
     .product-card .card-title {
         font-size: 1.1rem;
+        min-height: 2.2rem; /* Adjusted for smaller font, allow 2 lines approx */
+        -webkit-line-clamp: 2;
     }
     .product-card .price {
         font-size: 1.2rem;
