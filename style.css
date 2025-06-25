@@ -730,7 +730,26 @@ footer + section::after {
     font-size: 1rem;
     padding: var(--spacing-md); /* More padding for CTA button */
     border-radius: var(--border-radius-md); /* Slightly less rounded than card */
+    /* เริ่มการปรับปรุงปุ่ม "สั่งซื้อที่ SHOPEE" */
+    background-color: #FF7F00; /* สีส้มของ Shopee */
+    border-color: #FF7F00;
+    color: var(--white-color); /* ตัวอักษรสีขาว */
+    box-shadow: 0 4px 8px rgba(255, 127, 0, 0.4); /* เงาสีส้มที่โดดเด่นขึ้น */
+    transition: all 0.3s ease-in-out;
 }
+
+.product-card .btn-add-to-cart:hover {
+    background-color: #FF6600; /* สีส้มเข้มขึ้นเมื่อโฮเวอร์ */
+    border-color: #FF6600;
+    box-shadow: 0 6px 12px rgba(255, 102, 0, 0.5); /* เงาเข้มขึ้น */
+    transform: translateY(-2px); /* ยกปุ่มขึ้นเล็กน้อย */
+}
+
+.product-card .btn-add-to-cart:active {
+    transform: translateY(1px); /* กดแล้วจมลงเล็กน้อย */
+    box-shadow: 0 2px 4px rgba(255, 127, 0, 0.3); /* เงาอ่อนลงเมื่อกด */
+}
+/* สิ้นสุดการปรับปรุงปุ่ม "สั่งซื้อที่ SHOPEE" */
 
 /* Badges for product status or categories */
 .badge {
@@ -1436,7 +1455,7 @@ footer .social-icons a:hover {
 .mt-xxxl { margin-top: var(--spacing-xxxl) !important; }
 .mb-xxxl { margin-bottom: var(--spacing-xxxl) !important; }
 .mt-jumbo { margin-top: var(--spacing-jumbo) !important; }
-.mb-jumbo { margin-bottom: var(--spacing-jumbo) !important; }
+    .mb-jumbo { margin-bottom: var(--spacing-jumbo) !important; }
 
 .pt-xxl { padding-top: var(--spacing-xxl) !important; }
 .pb-xxl { padding-bottom: var(--spacing-xxl) !important; }
@@ -1544,7 +1563,7 @@ footer .social-icons a:hover {
         font-size: 0.85rem;
         min-height: 2.55rem; /* Adjusted for 3 lines approx */
         display: -webkit-box;
-        -webkit-line-clamp: 3; /* Limit description to 3 lines */
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
