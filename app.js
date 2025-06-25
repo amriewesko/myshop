@@ -59,8 +59,8 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
         }
 
         let modalContent = `
-            <div class="custom-modal">
-                <div class="custom-modal-header">
+            <div class="custom-modal-content">
+                <div class="custom-modal-header ${type}">
                     <h5 class="custom-modal-title">${isConfirm ? 'ยืนยันการกระทำ' : 'แจ้งเตือน'}</h5>
                     <button type="button" class="custom-modal-close" aria-label="Close">&times;</button>
                 </div>
@@ -173,15 +173,15 @@ async function sendData(action, data = {}, method = 'POST') {
  * @param {Array<object>} products - Array of product objects.
  */
 function renderProducts(products) {
-    const productListEl = getEl('product-list');
+    const productListEl = getEl('product-list-container'); // Corrected ID from 'product-list' to 'product-list-container'
     if (!productListEl) return;
 
     productListEl.innerHTML = '';
     hide(getEl('loader'));
-    hide(getEl('no-results'));
+    hide(getEl('no-products-found')); // Corrected ID from 'no-results' to 'no-products-found'
 
     if (products.length === 0) {
-        show(getEl('no-results'));
+        show(getEl('no-products-found'));
         return;
     }
 
@@ -252,9 +252,9 @@ function filterAndSearchProducts() {
  * Loads products from Google Apps Script.
  */
 async function loadProducts() {
-    const productListEl = getEl('product-list');
+    const productListEl = getEl('product-list-container'); // Corrected ID
     const loaderEl = getEl('loader');
-    const noResultsEl = getEl('no-results');
+    const noResultsEl = getEl('no-products-found'); // Corrected ID
 
     if (productListEl) productListEl.innerHTML = '';
     if (loaderEl) show(loaderEl);
@@ -286,40 +286,35 @@ async function loadProducts() {
  * @param {HTMLElement} containerDiv - The div where category buttons will be appended.
  */
 async function fetchAndRenderCategories() {
-    const containerDiv = getEl('category-filter-buttons');
-    if (!containerDiv) return;
+    // This function is intended for a category filter *buttons* section,
+    // but the provided HTML uses a <select> element for categories.
+    // The current implementation in app.js for index.html only loads product data,
+    // and relies on the static options in the <select> element.
+    // Therefore, this function is not directly used by the current `index.html` structure.
+    // If you intend to use dynamic buttons for categories, you would need a new container div for them.
 
-    // Clear existing buttons first, keep "All" button if it exists
-    containerDiv.innerHTML = ''; // Clear all to avoid duplicates when re-fetching
-    const allButton = document.createElement('button');
-    allButton.type = 'button';
-    allButton.classList.add('btn', 'btn-outline-secondary', 'active');
-    allButton.dataset.category = 'ทั้งหมด';
-    allButton.textContent = 'ทั้งหมด';
-    containerDiv.appendChild(allButton);
+    const categorySelect = getEl('category-select'); // Use the select element directly
+    if (!categorySelect) return;
+
+    // Clear existing options, keep the "All" option if desired
+    // For a dynamic select, you might clear all then re-add.
+    // For now, assuming static options are fine or they are dynamically populated elsewhere.
 
     const result = await sendData('getCategories', {}, 'GET');
     if (result && result.success && result.categories) {
-        result.categories.forEach(category => {
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.classList.add('btn', 'btn-outline-secondary');
-            button.dataset.category = category;
-            button.textContent = category;
-            containerDiv.appendChild(button);
-        });
+        // Clear existing dynamic options, keep the first "All" option if present
+        while (categorySelect.children.length > 1) { // Keep the first option ("หมวดหมู่ทั้งหมด")
+            categorySelect.removeChild(categorySelect.lastChild);
+        }
 
-        // Add event listeners for all newly created category filter buttons
-        containerDiv.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                containerDiv.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                currentFilter = e.target.dataset.category;
-                filterAndSearchProducts();
-            });
+        result.categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            categorySelect.appendChild(option);
         });
     } else {
-        console.error("Failed to fetch categories:", result ? result.message : "Unknown error");
+        console.error("Failed to fetch categories for select dropdown:", result ? result.message : "Unknown error");
     }
 }
 
@@ -332,13 +327,20 @@ document.addEventListener('DOMContentLoaded', () => {
         loadProducts(); // Load products for the main shop page
         fetchAndRenderCategories(); // Load and render categories
 
-        // Category filter buttons (re-add listener for dynamic buttons)
-        // This part is handled inside fetchAndRenderCategories, so no need here directly
         // Ensure search input event listener is attached
         const searchInput = getEl('search-input');
         if (searchInput) {
             searchInput.addEventListener('input', () => {
                 currentSearchTerm = searchInput.value.trim();
+                filterAndSearchProducts();
+            });
+        }
+
+        // Category select change listener
+        const categorySelect = getEl('category-select');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                currentFilter = categorySelect.value;
                 filterAndSearchProducts();
             });
         }
@@ -359,7 +361,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Smooth scroll for Hero section's "ดูสินค้าทั้งหมด" button
+        // Smooth scroll for Hero section's "ดูสินค้าทั้งหมด" button (if it exists)
+        // Note: The provided index.html snippet does not show this button.
+        // If it were present, its href would need to be #products-section.
         const heroScrollBtn = document.querySelector('.hero-section .btn-primary');
         if (heroScrollBtn) {
             heroScrollBtn.addEventListener('click', function(e) {
@@ -605,7 +609,7 @@ function renderExistingImagePreviews(imageUrls) {
             }
         }
         return url;
-    }).filter(url => url); // Remove any empty/null URLs
+    }).filter(url => url); // Filter out any empty/null URLs
 
     productImages.forEach((url, index) => {
         const imgDiv = document.createElement('div');
