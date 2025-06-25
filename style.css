@@ -395,7 +395,7 @@ textarea.form-control {
     padding-bottom: var(--spacing-sm);
     z-index: 1030; /* Ensure navbar is above other content */
     border-bottom: 3px solid var(--primary-light); /* Accent border at bottom */
-    position: relative; /* For decorative elements */
+    position: relative;
     overflow: hidden;
 }
 
@@ -673,9 +673,9 @@ footer + section::after {
 .product-card img {
     border-top-left-radius: var(--border-radius-xl);
     border-top-right-radius: var(--border-radius-xl);
-    object-fit: contain; /* เปลี่ยนจาก cover เป็น contain เพื่อให้ภาพแสดงครบถ้วน */
+    object-fit: cover; /* กลับเป็น 'cover' เพื่อให้ภาพเต็มพื้นที่ */
     width: 100%;
-    aspect-ratio: 1 / 1; /* เปลี่ยนจาก 16/9 เป็น 1/1 เพื่อให้เป็นสี่เหลี่ยมจัตุรัส */
+    aspect-ratio: 1 / 1; /* คงสัดส่วน 1:1 ไว้สำหรับภาพสี่เหลี่ยมจัตุรัส */
     transition: transform var(--transition-speed-slow) var(--transition-timing-smooth), filter var(--transition-speed-slow) var(--transition-timing-smooth);
     filter: brightness(1) saturate(1); /* Initial filter state */
 }
@@ -839,6 +839,12 @@ footer .footer-section h5 {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: 1.1rem;
+}
+
+footer .footer-section p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 footer .footer-section ul {
@@ -1501,8 +1507,8 @@ footer .social-icons a:hover {
 @media (max-width: 1199.98px) {
     .hero-section h1 { font-size: 3.5rem; }
     .hero-section p { font-size: 1.4rem; }
-    /* Updated product card image to be square and contain */
-    .product-card img { height: auto; aspect-ratio: 1 / 1; object-fit: contain; }
+    /* Updated product card image to be square and cover */
+    .product-card img { height: auto; aspect-ratio: 1 / 1; object-fit: cover; }
     .product-card .card-title { font-size: 1.2rem; }
 }
 
@@ -1523,7 +1529,7 @@ footer .social-icons a:hover {
     .product-card img {
         height: auto; /* Ensure height is auto for aspect-ratio to work */
         aspect-ratio: 1 / 1; /* Ensure 1:1 aspect ratio on tablets */
-        object-fit: contain; /* Ensure image is fully visible */
+        object-fit: cover; /* Ensure image fills the space */
     }
     .product-card .card-title {
         font-size: 1.1rem;
@@ -1621,7 +1627,7 @@ footer .social-icons a:hover {
     .product-card img {
         height: auto; /* Ensure height is auto for aspect-ratio to work */
         aspect-ratio: 1 / 1; /* Square aspect ratio on phones */
-        object-fit: contain; /* Ensure image is fully visible */
+        object-fit: cover; /* Ensure image fills the space */
         border-top-left-radius: var(--border-radius-md);
         border-top-right-radius: var(--border-radius-md);
     }
@@ -1713,7 +1719,7 @@ footer .social-icons a:hover {
     .product-card img {
         height: auto; /* Ensure height is auto for aspect-ratio to work */
         aspect-ratio: 1 / 1; /* Square aspect ratio on smallest screens */
-        object-fit: contain; /* Ensure image is fully visible */
+        object-fit: cover; /* Ensure image fills the space */
         border-top-left-radius: var(--border-radius-md);
         border-top-right-radius: var(--border-radius-md);
     }
