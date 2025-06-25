@@ -657,6 +657,7 @@ footer + section::after {
     perspective: 1000px; /* For 3D transform */
 }
 
+/* Adjusted for professional look: lift without rotation */
 .product-card:hover {
     transform: translateY(-8px); /* More pronounced lift on hover, removed rotateX */
     box-shadow: var(--shadow-lg); /* More prominent shadow on hover */
@@ -1109,4 +1110,631 @@ footer .social-icons a:hover {
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     transition: all var(--transition-speed-fast) var(--transition-timing);
+}
+
+.admin-form-section .img-preview:hover {
+    transform: scale(1.08); /* More zoom on hover */
+    box-shadow: var(--shadow-md);
+}
+
+.admin-form-section .img-preview-wrapper {
+    position: relative;
+}
+
+.admin-form-section .remove-img-btn {
+    position: absolute;
+    top: -8px; /* Adjusted position */
+    right: -8px; /* Adjusted position */
+    background-color: var(--danger-color);
+    color: var(--white-color);
+    border: 2px solid var(--card-background); /* White border for contrast */
+    border-radius: var(--border-radius-full);
+    width: 24px; /* Larger hit area */
+    height: 24px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-speed-fast) var(--transition-timing);
+    z-index: 2; /* Ensure button is above image */
+}
+
+.admin-form-section .remove-img-btn:hover {
+    background-color: var(--danger-dark);
+    transform: scale(1.25); /* More pronounced scale on hover */
+    box-shadow: var(--shadow-md);
+}
+
+/* Loader */
+#loader, #admin-loader {
+    text-align: center;
+    padding: var(--spacing-xxl); /* More padding for loader area */
+    border-radius: var(--border-radius-lg);
+    background-color: var(--card-background);
+    box-shadow: var(--shadow-sm);
+    margin-top: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#loader .spinner-border, #admin-loader .spinner-border {
+    color: var(--primary-color) !important;
+    width: 3.5rem; /* Even larger spinner */
+    height: 3.5rem;
+    border-width: 0.4em; /* Thicker spinner border */
+    animation: spin 1s linear infinite; /* Add a simple spin animation */
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+#loader p, #admin-loader p {
+    margin-top: var(--spacing-md);
+    color: var(--light-text-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* --- 5. Custom Modal/Alert Styles (for enhanced user feedback) --- */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75); /* Even darker overlay for stronger focus */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050; /* Above Bootstrap modals */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed-slow) var(--transition-timing-smooth); /* Smoother fade */
+    backdrop-filter: blur(5px); /* Added for frosted glass effect */
+    -webkit-backdrop-filter: blur(5px); /* For Safari support */
+}
+
+.custom-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-modal-content {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-xl); /* More rounded modal corners */
+    box-shadow: var(--shadow-xl); /* Stronger shadow for modal */
+    padding: 0; /* Remove default padding for internal structure */
+    width: 90%;
+    max-width: 600px; /* Wider modal for better content display */
+    transform: translateY(-70px); /* More pronounced initial lift */
+    opacity: 0;
+    pointer-events: none; /* Do not block interaction when hidden */
+}
+
+/* Adjusted animation for custom modal content */
+.custom-modal-overlay.show .custom-modal-content {
+    transform: translateY(0); /* Move to original position */
+    opacity: 1;
+    pointer-events: auto; /* Enable interaction when shown */
+    animation: modal-pop-in var(--transition-speed-slow) var(--transition-timing-bounce) forwards;
+}
+
+@keyframes modal-pop-in {
+    0% { transform: translateY(-70px) scale(0.9); opacity: 0; }
+    80% { transform: translateY(10px) scale(1.02); opacity: 1; }
+    100% { transform: translateY(0) scale(1); }
+}
+
+
+.custom-modal-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--secondary-background);
+    border-top-left-radius: var(--border-radius-xl);
+    border-top-right-radius: var(--border-radius-xl);
+}
+
+.custom-modal-header h5 {
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.custom-modal-header .custom-modal-close { /* Renamed from .close-btn to match app.js */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--light-text-color);
+    cursor: pointer;
+    transition: color var(--transition-speed-fast) var(--transition-timing);
+}
+
+.custom-modal-header .custom-modal-close:hover { /* Renamed from .close-btn to match app.js */
+    color: var(--danger-color);
+}
+
+.custom-modal-body {
+    padding: var(--spacing-lg);
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.custom-modal-footer {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+    text-align: right;
+    background-color: var(--secondary-background);
+    border-bottom-left-radius: var(--border-radius-xl);
+    border-bottom-right-radius: var(--border-radius-xl);
+}
+
+.custom-modal-footer .btn {
+    margin-left: var(--spacing-md);
+}
+
+/* Specific styles for alert types */
+.custom-modal-header.success {
+    background-color: var(--accent-light);
+    border-color: var(--accent-color);
+}
+.custom-modal-header.success h5 { color: var(--accent-color); }
+
+.custom-modal-header.error {
+    background-color: #FFEBEE; /* Light red */
+    border-color: var(--danger-color);
+}
+.custom-modal-header.error h5 { color: var(--danger-color); }
+
+.custom-modal-header.warning {
+    background-color: #FFFDE7; /* Light yellow */
+    border-color: var(--warning-dark);
+}
+.custom-modal-header.warning h5 { color: var(--warning-dark); }
+
+.custom-modal-header.info {
+    background-color: #E0F7FA; /* Light cyan */
+    border-color: var(--info-color);
+}
+.custom-modal-header.info h5 { color: var(--info-color); }
+
+
+/* Back to Top Button */
+#back-to-top {
+    position: fixed;
+    bottom: var(--spacing-xl); /* Increased distance from bottom */
+    right: var(--spacing-xl); /* Increased distance from right */
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: var(--border-radius-full);
+    width: 60px; /* Even larger button */
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem; /* Even larger icon */
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-speed) var(--transition-timing-smooth); /* Smoother transition */
+    z-index: 1000;
+    border: 4px solid var(--white-color); /* Thicker white border for emphasis */
+    animation: pulse-border 2s infinite ease-in-out; /* Add a pulsating border */
+}
+
+@keyframes pulse-border {
+    0% { border-color: var(--white-color); box-shadow: var(--shadow-md); }
+    50% { border-color: var(--primary-light); box-shadow: var(--shadow-lg); }
+    100% { border-color: var(--white-color); box-shadow: var(--shadow-md); }
+}
+
+#back-to-top:hover {
+    background-color: var(--primary-dark);
+    box-shadow: var(--shadow-xl); /* More prominent shadow on hover */
+    transform: translateY(-7px) scale(1.1); /* More pronounced lift and scale */
+    border-color: var(--primary-light); /* Change border color on hover */
+    animation: none; /* Stop pulse animation on hover */
+}
+
+/* Scrollbar styling for Webkit browsers (Chrome, Safari) for a custom look */
+::-webkit-scrollbar {
+    width: 12px; /* width of the entire scrollbar */
+    height: 12px; /* height of horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color); /* color of the tracking area */
+    border-radius: var(--border-radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color); /* color of the scroll thumb */
+    border-radius: var(--border-radius-full); /* roundness of the scroll thumb */
+    border: 3px solid var(--background-color); /* creates padding around scroll thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-dark); /* color of scroll thumb on hover */
+}
+
+
+/* --- 6. Utility and Helper Classes (General purpose) --- */
+.text-primary { color: var(--primary-color) !important; }
+.text-primary-light { color: var(--primary-light) !important; }
+.text-accent { color: var(--accent-color) !important; }
+.text-light-muted { color: var(--light-text-color) !important; }
+.text-dark-bg { color: var(--dark-section-bg) !important; }
+.text-white { color: var(--white-color) !important; }
+.text-black { color: var(--black-color) !important; }
+
+.bg-primary { background-color: var(--primary-color) !important; }
+.bg-primary-light { background-color: var(--primary-light) !important; }
+.bg-accent { background-color: var(--accent-color) !important; }
+.bg-dark-section { background-color: var(--dark-section-bg) !important; }
+.bg-card { background-color: var(--card-background) !important; }
+.bg-body { background-color: var(--background-color) !important; }
+
+.shadow-xs { box-shadow: var(--shadow-xs) !important; }
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }
+.shadow-xl { box-shadow: var(--shadow-xl) !important; }
+.shadow-inset { box-shadow: var(--shadow-inset) !important; }
+
+.rounded-xs { border-radius: var(--border-radius-xs) !important; }
+.rounded-sm { border-radius: var(--border-radius-sm) !important; }
+.rounded-md { border-radius: var(--border-radius-md) !important; }
+.rounded-lg { border-radius: var(--border-radius-lg) !important; }
+.rounded-xl { border-radius: var(--border-radius-xl) !important; }
+.rounded-full { border-radius: var(--border-radius-full) !important; }
+
+/* Flexbox utilities not covered by Bootstrap or for specific override */
+.d-flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.d-flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-column-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Margin and Padding utilities (if more granular than Bootstrap is needed) */
+.mt-xxs { margin-top: var(--spacing-xxs) !important; }
+.mb-xxs { margin-bottom: var(--spacing-xxs) !important; }
+.ml-xxs { margin-left: var(--spacing-xxs) !important; }
+.mr-xxs { margin-right: var(--spacing-xxs) !important; }
+.mx-xxs { margin-left: var(--spacing-xxs) !important; margin-right: var(--spacing-xxs) !important; }
+.my-xxs { margin-top: var(--spacing-xxs) !important; margin-bottom: var(--spacing-xxs) !important; }
+.p-xxs { padding: var(--spacing-xxs) !important; }
+.pt-xxs { padding-top: var(--spacing-xxs) !important; }
+.pb-xxs { padding-bottom: var(--spacing-xxs) !important; }
+.pl-xxs { padding-left: var(--spacing-xxs) !important; }
+.pr-xxs { padding-right: var(--spacing-xxs) !important; }
+.px-xxs { padding-left: var(--spacing-xxs) !important; padding-right: var(--spacing-xxs) !important; }
+.py-xxs { padding-top: var(--spacing-xxs) !important; padding-bottom: var(--spacing-xxs) !important; }
+
+/* And so on for all spacing variables (sm, md, lg, xl, xxl, xxxl, jumbo) */
+.mt-xxl { margin-top: var(--spacing-xxl) !important; }
+.mb-xxl { margin-bottom: var(--spacing-xxl) !important; }
+.mt-xxxl { margin-top: var(--spacing-xxxl) !important; }
+.mb-xxxl { margin-bottom: var(--spacing-xxxl) !important; }
+.mt-jumbo { margin-top: var(--spacing-jumbo) !important; }
+.mb-jumbo { margin-bottom: var(--spacing-jumbo) !important; }
+
+.pt-xxl { padding-top: var(--spacing-xxl) !important; }
+.pb-xxl { padding-bottom: var(--spacing-xxl) !important; }
+.py-xxl { padding-top: var(--spacing-xxl) !important; padding-bottom: var(--spacing-xxl) !important; }
+.py-xxxl { padding-top: var(--spacing-xxxl) !important; padding-bottom: var(--spacing-xxxl) !important; }
+.py-jumbo { padding-top: var(--spacing-jumbo) !important; padding-bottom: var(--spacing-jumbo) !important; }
+
+
+/* --- 7. Animations and Keyframes --- */
+/* Fade in from bottom for elements */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate__fadeInUp {
+    animation-name: fadeInUp;
+    animation-duration: 0.6s;
+    animation-fill-mode: both;
+}
+
+/* Scale and slight bounce for clickable elements (Pop In) */
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.8); }
+    70% { opacity: 1; transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.animate__popIn {
+    animation-name: popIn;
+    animation-duration: 0.5s;
+    animation-timing-function: var(--transition-timing-bounce);
+    animation-fill-mode: both;
+}
+
+/* Subtle pulse for indicators */
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.animate__pulse {
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+/* --- 8. Responsive Adjustments (Detailed breakpoints) --- */
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .container {
+        padding-left: var(--spacing-xl);
+        padding-right: var(--spacing-xl);
+    }
+    .hero-section h1 { font-size: 4.5rem; }
+    .hero-section p { font-size: 1.6rem; }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (max-width: 1199.98px) {
+    .hero-section h1 { font-size: 3.5rem; }
+    .hero-section p { font-size: 1.4rem; }
+    .product-card img { height: auto; aspect-ratio: 4/3; } /* Adjusted for consistent aspect ratio */
+    .product-card .card-title { font-size: 1.2rem; }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-link {
+        margin-left: var(--spacing-md); /* Adjust nav links for smaller desktops */
+    }
+    .hero-section {
+        padding: var(--spacing-xxl) 0;
+        margin-bottom: var(--spacing-xl);
+    }
+    .hero-section h1 { font-size: 2.8rem; }
+    .hero-section p { font-size: 1.2rem; }
+    .product-card {
+        margin-bottom: var(--spacing-md); /* Tighter spacing on tablets */
+    }
+    .product-card img {
+        height: auto; /* Ensure height is auto for aspect-ratio to work */
+        aspect-ratio: 4/3; /* Maintain aspect ratio */
+    }
+    .product-card .card-title {
+        font-size: 1.1rem;
+        min-height: unset; /* Allow title to wrap freely */
+        -webkit-line-clamp: unset;
+    }
+    .product-card .card-text {
+        font-size: 0.85rem;
+        min-height: unset; /* Allow description to wrap freely */
+        -webkit-line-clamp: unset;
+    }
+    footer .container {
+        flex-direction: column; /* Stack footer sections */
+        text-align: center;
+    }
+    footer .footer-section {
+        min-width: unset;
+        width: 100%;
+        margin-bottom: var(--spacing-lg);
+    }
+    footer .social-icons {
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-md);
+    }
+    .admin-form-section .img-preview-container {
+        min-height: 80px;
+    }
+    .admin-form-section .img-preview {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 767.98px) {
+    body {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.5rem; }
+
+    .navbar-brand { font-size: 1.5rem; }
+    .navbar-nav {
+        text-align: center;
+        padding-top: var(--spacing-md);
+        padding-bottom: var(--spacing-md);
+    }
+    .navbar-nav .nav-link {
+        margin-left: 0;
+        margin-bottom: var(--spacing-sm);
+        padding: var(--spacing-sm) 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separator for mobile nav links */
+    }
+    .navbar-nav .nav-link:last-child {
+        border-bottom: none;
+    }
+    .navbar-nav .nav-link::after {
+        display: none; /* Hide underline on mobile nav */
+    }
+
+    .hero-section {
+        padding: var(--spacing-xl) 0;
+        border-radius: var(--border-radius-lg);
+    }
+    .hero-section h1 { font-size: 2rem; }
+    .hero-section p { font-size: 1rem; }
+
+    .search-section .form-control {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 1rem;
+    }
+
+    #category-filter {
+        padding: var(--spacing-sm);
+    }
+    #category-filter .list-group-item {
+        font-size: 0.9rem;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .product-card {
+        border-radius: var(--border-radius-lg);
+        margin-bottom: var(--spacing-md); /* Added spacing between cards on mobile */
+    }
+    .product-card img {
+        height: auto; /* Ensure height is auto for aspect-ratio to work */
+        aspect-ratio: 16/9; /* Wider aspect ratio for mobile images to fill screen better horizontally */
+        border-top-left-radius: var(--border-radius-md);
+        border-top-right-radius: var(--border-radius-md);
+    }
+    .product-card .card-body {
+        padding: var(--spacing-md);
+    }
+    .product-card .price {
+        font-size: 1.4rem;
+    }
+
+    /* Important: Adjusted for consistency with the app.js update for custom modal */
+    .custom-modal-content {
+        width: 95%;
+        max-width: 320px;
+        padding: 0;
+    }
+    .custom-modal-header {
+        padding: var(--spacing-md);
+    }
+    .custom-modal-header h5 {
+        font-size: 1.2rem;
+    }
+    .custom-modal-body {
+        padding: var(--spacing-lg);
+    }
+    .custom-modal-body p {
+        font-size: 1rem;
+    }
+    .custom-modal-footer {
+        flex-direction: column; /* Stack buttons in modal footer on mobile */
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+    .custom-modal-footer .btn {
+        width: 100%;
+    }
+
+
+    #back-to-top {
+        bottom: var(--spacing-md);
+        right: var(--spacing-md);
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .admin-section {
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius-md);
+    }
+    .admin-section h4 {
+        font-size: 1.4rem;
+    }
+    #admin-product-list table {
+        min-width: 600px; /* Ensure table still scrolls if necessary */
+    }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+    .container {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.3rem; }
+
+    .hero-section {
+        padding: var(--spacing-lg) 0;
+        border-radius: var(--border-radius-md);
+    }
+    .hero-section h1 { font-size: 1.8rem; }
+    .hero-section p { font-size: 0.9rem; }
+
+    .product-card {
+        border-radius: var(--border-radius-md);
+    }
+    .product-card img {
+        height: auto; /* Ensure height is auto for aspect-ratio to work */
+        aspect-ratio: 16/9; /* Maintain 16:9 aspect ratio */
+        border-top-left-radius: var(--border-radius-md);
+        border-top-right-radius: var(--border-radius-md);
+    }
+    .product-card .card-title {
+        font-size: 1.1rem;
+    }
+    .product-card .price {
+        font-size: 1.2rem;
+    }
+    .product-card .btn-add-to-cart {
+        font-size: 0.9rem;
+        padding: var(--spacing-sm);
+    }
+
+    #login-gate .card {
+        padding: var(--spacing-xl);
+    }
+    #login-gate .card-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background-color: var(--white-color) !important;
+        color: var(--black-color) !important;
+    }
+    .navbar, footer, #back-to-top, .btn-add-to-cart, .custom-modal-overlay {
+        display: none !important;
+    }
+    .product-card, .admin-section, #login-gate .card {
+        box-shadow: none !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    a {
+        text-decoration: underline !important;
+        color: #000 !important;
+    }
 }
