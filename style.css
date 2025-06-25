@@ -662,12 +662,20 @@ footer + section::after {
     box-shadow: var(--shadow-lg); /* More prominent shadow on hover */
 }
 
+.product-card:active { /* */
+    transform: translateY(-5px) scale(1.01); /* Slightly less dramatic than hover, but noticeable on tap */
+    box-shadow: var(--shadow-md), var(--primary-glow); /* Add a glow effect on tap */
+    transition: transform var(--transition-speed-fast) var(--transition-timing-smooth), box-shadow var(--transition-speed-fast) var(--transition-timing-smooth);
+}
+
 .product-card img {
     border-top-left-radius: var(--border-radius-xl);
     border-top-right-radius: var(--border-radius-xl);
     object-fit: cover; /* Ensure images cover the area well */
-    height: 220px; /* Slightly increased fixed height for product images */
+    /* Removed fixed height and added aspect-ratio for better responsiveness on mobile */
+    /* height: 220px; */ /* */
     width: 100%;
+    aspect-ratio: 4/3; /* Maintain a 4:3 aspect ratio for product images */ /* */
     transition: transform var(--transition-speed-slow) var(--transition-timing-smooth), filter var(--transition-speed-slow) var(--transition-timing-smooth);
     filter: brightness(1) saturate(1); /* Initial filter state */
 }
@@ -1203,485 +1211,163 @@ footer .social-icons a:hover {
     width: 90%;
     max-width: 600px; /* Wider modal for better content display */
     transform: translateY(-70px); /* More pronounced initial lift */
-    transition: transform var(--transition-speed-slow) var(--transition-timing-bounce); /* Bouncy transition */
-    border: 2px solid var(--primary-light); /* More prominent border for definition */
+    transition: transform var(--transition-speed-slow) var(--transition-timing-bounce); /* Bouncy entry */
+    opacity: 0;
+    pointer-events: none; /* Do not block interaction when hidden */
 }
 
 .custom-modal-overlay.show .custom-modal-content {
-    transform: translateY(0) scale(1); /* Slide in and slightly scale up effect */
-    animation: modal-pop-in var(--transition-speed-slow) var(--transition-timing-bounce) forwards;
+    transform: translateY(0); /* Move to original position */
+    opacity: 1;
+    pointer-events: auto; /* Enable interaction when shown */
 }
-
-@keyframes modal-pop-in {
-    0% { transform: translateY(-70px) scale(0.9); opacity: 0; }
-    80% { transform: translateY(10px) scale(1.02); opacity: 1; }
-    100% { transform: translateY(0) scale(1); }
-}
-
 
 .custom-modal-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-lg); /* More padding in header */
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--primary-light); /* Header background with primary light */
-    color: var(--white-color);
-    border-top-left-radius: var(--border-radius-xl); /* Match content radius */
-    border-top-right-radius: var(--border-radius-xl); /* Match content radius */
-    position: relative;
-    overflow: hidden; /* For header graphic */
-}
-
-.custom-modal-header::before { /* More defined top-right graphic */
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-    border-radius: 50%;
-    transform: rotate(45deg);
-    opacity: 0.8;
+    background-color: var(--secondary-background);
+    border-top-left-radius: var(--border-radius-xl);
+    border-top-right-radius: var(--border-radius-xl);
 }
 
 .custom-modal-header h5 {
-    margin-bottom: 0;
+    margin: 0;
+    color: var(--primary-color);
     font-weight: 700;
-    color: inherit; /* Inherit color from parent */
-    font-size: 1.5rem; /* Larger header title */
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    z-index: 1; /* Ensure text is above graphic */
+    font-size: 1.2rem;
 }
 
-.custom-modal-header h5 i {
-    font-size: 1.2em;
-    color: var(--white-color);
-}
-
-.custom-modal-header .close-button {
+.custom-modal-header .close-btn {
     background: none;
     border: none;
-    font-size: 2rem; /* Even larger close button */
-    color: var(--white-color);
+    font-size: 1.5rem;
+    color: var(--light-text-color);
     cursor: pointer;
-    transition: transform var(--transition-speed-fast) var(--transition-timing), color var(--transition-speed-fast) var(--transition-timing);
-    z-index: 1;
+    transition: color var(--transition-speed-fast) var(--transition-timing);
 }
 
-.custom-modal-header .close-button:hover {
-    transform: rotate(180deg) scale(1.1); /* Full spin on hover */
-    color: rgba(255, 255, 255, 0.9);
+.custom-modal-header .close-btn:hover {
+    color: var(--danger-color);
 }
 
 .custom-modal-body {
-    padding: var(--spacing-xxl); /* More padding for content */
-    text-align: center; /* Center text in alert body */
-    position: relative;
-}
-
-.custom-modal-body p {
-    margin-bottom: var(--spacing-lg);
-    font-size: 1.2rem; /* Larger text for readability */
+    padding: var(--spacing-lg);
+    font-size: 1.1rem;
     color: var(--text-color);
-    line-height: 1.6;
 }
-
-/* Specific text colors for alert types (used in custom-modal-body p) */
-.custom-modal-body .text-info { color: var(--info-color); }
-.custom-modal-body .text-success { color: var(--accent-color); }
-.custom-modal-body .text-error { color: var(--danger-color); }
-.custom-modal-body .text-warning { color: var(--warning-color); }
 
 .custom-modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding: var(--spacing-lg); /* More padding */
+    padding: var(--spacing-lg);
     border-top: 1px solid var(--border-color);
-    background-color: var(--background-color); /* Light background for footer */
-    border-bottom-left-radius: var(--border-radius-xl); /* Match content radius */
-    border-bottom-right-radius: var(--border-radius-xl); /* Match content radius */
-    gap: var(--spacing-md); /* Space between buttons */
+    text-align: right;
+    background-color: var(--secondary-background);
+    border-bottom-left-radius: var(--border-radius-xl);
+    border-bottom-right-radius: var(--border-radius-xl);
 }
 
 .custom-modal-footer .btn {
-    min-width: 120px; /* Ensure buttons have minimum width */
+    margin-left: var(--spacing-md);
 }
 
-/* Back to Top Button */
-#back-to-top {
-    position: fixed;
-    bottom: var(--spacing-xl); /* Increased distance from bottom */
-    right: var(--spacing-xl); /* Increased distance from right */
-    background-color: var(--primary-color);
-    color: var(--white-color);
-    border-radius: var(--border-radius-full);
-    width: 60px; /* Even larger button */
-    height: 60px;
-    display: flex;
+/* Specific styles for alert types */
+.custom-modal-header.success {
+    background-color: var(--accent-light);
+    border-color: var(--accent-color);
+}
+.custom-modal-header.success h5 { color: var(--accent-color); }
+
+.custom-modal-header.error {
+    background-color: #FFEBEE; /* Light red */
+    border-color: var(--danger-color);
+}
+.custom-modal-header.error h5 { color: var(--danger-color); }
+
+.custom-modal-header.warning {
+    background-color: #FFFDE7; /* Light yellow */
+    border-color: var(--warning-dark);
+}
+.custom-modal-header.warning h5 { color: var(--warning-dark); }
+
+.custom-modal-header.info {
+    background-color: #E0F7FA; /* Light cyan */
+    border-color: var(--info-color);
+}
+.custom-modal-header.info h5 { color: var(--info-color); }
+
+
+/* Scroll-to-Top Button */
+#scrollToTopBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position */
+    bottom: var(--spacing-xl); /* 24px from bottom */
+    right: var(--spacing-xl); /* 24px from right */
+    z-index: 99; /* High z-index to be on top */
+    background-color: var(--primary-color); /* Primary color background */
+    color: var(--white-color); /* White icon */
+    border: none;
+    border-radius: var(--border-radius-full); /* Circular button */
+    width: 50px; /* Fixed width */
+    height: 50px; /* Fixed height */
+    font-size: 1.5rem; /* Icon size */
+    box-shadow: var(--shadow-lg); /* Prominent shadow */
+    transition: all var(--transition-speed) var(--transition-timing);
+    cursor: pointer;
+    display: flex; /* Use flexbox to center icon */
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem; /* Even larger icon */
-    box-shadow: var(--shadow-md);
-    transition: all var(--transition-speed) var(--transition-timing-smooth); /* Smoother transition */
-    z-index: 1000;
-    border: 4px solid var(--white-color); /* Thicker white border for emphasis */
-    animation: pulse-border 2s infinite ease-in-out; /* Add a pulsating border */
 }
 
-@keyframes pulse-border {
-    0% { border-color: var(--white-color); box-shadow: var(--shadow-md); }
-    50% { border-color: var(--primary-light); box-shadow: var(--shadow-lg); }
-    100% { border-color: var(--white-color); box-shadow: var(--shadow-md); }
-}
-
-#back-to-top:hover {
+#scrollToTopBtn:hover {
     background-color: var(--primary-dark);
-    box-shadow: var(--shadow-xl); /* More prominent shadow on hover */
-    transform: translateY(-7px) scale(1.1); /* More pronounced lift and scale */
-    border-color: var(--primary-light); /* Change border color on hover */
-    animation: none; /* Stop pulse animation on hover */
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-3px) scale(1.05); /* Slight lift and scale on hover */
 }
 
-/* Scrollbar styling for Webkit browsers (Chrome, Safari) for a custom look */
-::-webkit-scrollbar {
-    width: 12px; /* width of the entire scrollbar */
-    height: 12px; /* height of horizontal scrollbar */
-}
-
-::-webkit-scrollbar-track {
-    background: var(--background-color); /* color of the tracking area */
-    border-radius: var(--border-radius-full);
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color); /* color of the scroll thumb */
-    border-radius: var(--border-radius-full); /* roundness of the scroll thumb */
-    border: 3px solid var(--background-color); /* creates padding around scroll thumb */
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary-dark); /* color of scroll thumb on hover */
-}
-
-
-/* --- 6. Utility and Helper Classes (General purpose) --- */
-.text-primary { color: var(--primary-color) !important; }
-.text-primary-light { color: var(--primary-light) !important; }
-.text-accent { color: var(--accent-color) !important; }
-.text-light-muted { color: var(--light-text-color) !important; }
-.text-dark-bg { color: var(--dark-section-bg) !important; }
-.text-white { color: var(--white-color) !important; }
-.text-black { color: var(--black-color) !important; }
-
-.bg-primary { background-color: var(--primary-color) !important; }
-.bg-primary-light { background-color: var(--primary-light) !important; }
-.bg-accent { background-color: var(--accent-color) !important; }
-.bg-dark-section { background-color: var(--dark-section-bg) !important; }
-.bg-card { background-color: var(--card-background) !important; }
-.bg-body { background-color: var(--background-color) !important; }
-
-.shadow-xs { box-shadow: var(--shadow-xs) !important; }
-.shadow-sm { box-shadow: var(--shadow-sm) !important; }
-.shadow-md { box-shadow: var(--shadow-md) !important; }
-.shadow-lg { box-shadow: var(--shadow-lg) !important; }
-.shadow-xl { box-shadow: var(--shadow-xl) !important; }
-.shadow-inset { box-shadow: var(--shadow-inset) !important; }
-
-.rounded-xs { border-radius: var(--border-radius-xs) !important; }
-.rounded-sm { border-radius: var(--border-radius-sm) !important; }
-.rounded-md { border-radius: var(--border-radius-md) !important; }
-.rounded-lg { border-radius: var(--border-radius-lg) !important; }
-.rounded-xl { border-radius: var(--border-radius-xl) !important; }
-.rounded-full { border-radius: var(--border-radius-full) !important; }
-
-/* Flexbox utilities not covered by Bootstrap or for specific override */
-.d-flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.d-flex-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.flex-column-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Margin and Padding utilities (if more granular than Bootstrap is needed) */
-.mt-xxs { margin-top: var(--spacing-xxs) !important; }
-.mb-xxs { margin-bottom: var(--spacing-xxs) !important; }
-.ml-xxs { margin-left: var(--spacing-xxs) !important; }
-.mr-xxs { margin-right: var(--spacing-xxs) !important; }
-.mx-xxs { margin-left: var(--spacing-xxs) !important; margin-right: var(--spacing-xxs) !important; }
-.my-xxs { margin-top: var(--spacing-xxs) !important; margin-bottom: var(--spacing-xxs) !important; }
-.p-xxs { padding: var(--spacing-xxs) !important; }
-.pt-xxs { padding-top: var(--spacing-xxs) !important; }
-.pb-xxs { padding-bottom: var(--spacing-xxs) !important; }
-.pl-xxs { padding-left: var(--spacing-xxs) !important; }
-.pr-xxs { padding-right: var(--spacing-xxs) !important; }
-.px-xxs { padding-left: var(--spacing-xxs) !important; padding-right: var(--spacing-xxs) !important; }
-.py-xxs { padding-top: var(--spacing-xxs) !important; padding-bottom: var(--spacing-xxs) !important; }
-
-/* And so on for all spacing variables (sm, md, lg, xl, xxl, xxxl, jumbo) */
-.mt-xxl { margin-top: var(--spacing-xxl) !important; }
-.mb-xxl { margin-bottom: var(--spacing-xxl) !important; }
-.mt-xxxl { margin-top: var(--spacing-xxxl) !important; }
-.mb-xxxl { margin-bottom: var(--spacing-xxxl) !important; }
-.mt-jumbo { margin-top: var(--spacing-jumbo) !important; }
-.mb-jumbo { margin-bottom: var(--spacing-jumbo) !important; }
-
-.pt-xxl { padding-top: var(--spacing-xxl) !important; }
-.pb-xxl { padding-bottom: var(--spacing-xxl) !important; }
-.py-xxl { padding-top: var(--spacing-xxl) !important; padding-bottom: var(--spacing-xxl) !important; }
-.py-xxxl { padding-top: var(--spacing-xxxl) !important; padding-bottom: var(--spacing-xxxl) !important; }
-.py-jumbo { padding-top: var(--spacing-jumbo) !important; padding-bottom: var(--spacing-jumbo) !important; }
-
-
-/* --- 7. Animations and Keyframes --- */
-/* Fade in from bottom for elements */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate__fadeInUp {
-    animation-name: fadeInUp;
-    animation-duration: 0.6s;
-    animation-fill-mode: both;
-}
-
-/* Scale and slight bounce for clickable elements (Pop In) */
-@keyframes popIn {
-    0% { opacity: 0; transform: scale(0.8); }
-    70% { opacity: 1; transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.animate__popIn {
-    animation-name: popIn;
-    animation-duration: 0.5s;
-    animation-timing-function: var(--transition-timing-bounce);
-    animation-fill-mode: both;
-}
-
-/* Subtle pulse for indicators */
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.animate__pulse {
-    animation-name: pulse;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;
-}
-
-/* --- 8. Responsive Adjustments (Detailed breakpoints) --- */
-
-/* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-    .container {
-        padding-left: var(--spacing-xl);
-        padding-right: var(--spacing-xl);
-    }
-    .hero-section h1 { font-size: 4.5rem; }
-    .hero-section p { font-size: 1.6rem; }
-}
-
-/* Large devices (desktops, 992px and up) */
-@media (max-width: 1199.98px) {
+/* --- 6. Responsive Adjustments (Media Queries for various screen sizes) --- */
+@media (max-width: 1200px) { /* For large desktops/laptops */
     .hero-section h1 { font-size: 3.5rem; }
-    .hero-section p { font-size: 1.4rem; }
-    .product-card img { height: 200px; }
-    .product-card .card-title { font-size: 1.2rem; }
+    .hero-section p { font-size: 1.3rem; }
 }
 
-/* Medium devices (tablets, 768px and up) */
-@media (max-width: 991.98px) {
+@media (max-width: 991.98px) { /* For tablets and small desktops (Bootstrap's md breakpoint) */
+    .navbar-nav {
+        margin-top: var(--spacing-md);
+        text-align: center;
+    }
     .navbar-nav .nav-link {
-        margin-left: var(--spacing-md); /* Adjust nav links for smaller desktops */
+        margin-left: 0;
+        padding: var(--spacing-sm) 0;
+    }
+    .navbar-nav .nav-link::after {
+        width: 50%;
+        left: 25%;
     }
     .hero-section {
         padding: var(--spacing-xxl) 0;
         margin-bottom: var(--spacing-xl);
     }
-    .hero-section h1 { font-size: 2.8rem; }
-    .hero-section p { font-size: 1.2rem; }
-    .product-card {
-        margin-bottom: var(--spacing-md); /* Tighter spacing on tablets */
+    .hero-section h1 {
+        font-size: 3rem;
     }
-    .product-card img {
-        height: 180px; /* Smaller product images on tablets */
+    .hero-section p {
+        font-size: 1.2rem;
     }
-    .product-card .card-title {
-        font-size: 1.1rem;
-        min-height: unset; /* Allow title to wrap freely */
-        -webkit-line-clamp: unset;
-    }
-    .product-card .card-text {
-        font-size: 0.85rem;
-        min-height: unset; /* Allow description to wrap freely */
-        -webkit-line-clamp: unset;
-    }
-    footer .container {
-        flex-direction: column; /* Stack footer sections */
-        text-align: center;
-    }
-    footer .footer-section {
-        min-width: unset;
-        width: 100%;
-        margin-bottom: var(--spacing-lg);
-    }
-    footer .social-icons {
-        margin-top: var(--spacing-lg);
-        margin-bottom: var(--spacing-md);
-    }
-    .admin-form-section .img-preview-container {
-        min-height: 80px;
-    }
-    .admin-form-section .img-preview {
-        width: 70px;
-        height: 70px;
-    }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.6rem; }
 }
 
-/* Small devices (landscape phones, 576px and up) */
-@media (max-width: 767.98px) {
-    body {
+@media (max-width: 767.98px) { /* For mobile devices (Bootstrap's sm breakpoint) */
+    .container {
         padding-left: var(--spacing-sm);
         padding-right: var(--spacing-sm);
     }
     h1 { font-size: 2.2rem; }
     h2 { font-size: 1.8rem; }
     h3 { font-size: 1.5rem; }
-
-    .navbar-brand { font-size: 1.5rem; }
-    .navbar-nav {
-        text-align: center;
-        padding-top: var(--spacing-md);
-        padding-bottom: var(--spacing-md);
-    }
-    .navbar-nav .nav-link {
-        margin-left: 0;
-        margin-bottom: var(--spacing-sm);
-        padding: var(--spacing-sm) 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separator for mobile nav links */
-    }
-    .navbar-nav .nav-link:last-child {
-        border-bottom: none;
-    }
-    .navbar-nav .nav-link::after {
-        display: none; /* Hide underline on mobile nav */
-    }
-
-    .hero-section {
-        padding: var(--spacing-xl) 0;
-        border-radius: var(--border-radius-lg);
-    }
-    .hero-section h1 { font-size: 2rem; }
-    .hero-section p { font-size: 1rem; }
-
-    .search-section .form-control {
-        padding: var(--spacing-sm) var(--spacing-md);
-        font-size: 1rem;
-    }
-
-    #category-filter {
-        padding: var(--spacing-sm);
-    }
-    #category-filter .list-group-item {
-        font-size: 0.9rem;
-        padding: var(--spacing-xs) var(--spacing-sm);
-    }
-
-    .product-card {
-        border-radius: var(--border-radius-lg);
-    }
-    .product-card img {
-        height: 160px; /* Smaller product images on mobile */
-        border-top-left-radius: var(--border-radius-lg);
-        border-top-right-radius: var(--border-radius-lg);
-    }
-    .product-card .card-body {
-        padding: var(--spacing-md);
-    }
-    .product-card .price {
-        font-size: 1.4rem;
-    }
-
-    .custom-modal-content {
-        width: 95%;
-        max-width: 320px;
-        padding: 0;
-    }
-    .custom-modal-header {
-        padding: var(--spacing-md);
-    }
-    .custom-modal-header h5 {
-        font-size: 1.2rem;
-    }
-    .custom-modal-body {
-        padding: var(--spacing-lg);
-    }
-    .custom-modal-body p {
-        font-size: 1rem;
-    }
-    .custom-modal-footer {
-        flex-direction: column; /* Stack buttons in modal footer on mobile */
-        gap: var(--spacing-sm);
-        padding: var(--spacing-md);
-    }
-    .custom-modal-footer .btn {
-        width: 100%;
-    }
-
-    #back-to-top {
-        bottom: var(--spacing-md);
-        right: var(--spacing-md);
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
-    }
-
-    .admin-section {
-        padding: var(--spacing-lg);
-        border-radius: var(--border-radius-md);
-    }
-    .admin-section h4 {
-        font-size: 1.4rem;
-    }
-    #admin-product-list table {
-        min-width: 600px; /* Ensure table still scrolls if necessary */
-    }
-}
-
-/* Extra small devices (portrait phones, less than 576px) */
-@media (max-width: 575.98px) {
-    .container {
-        padding-left: var(--spacing-sm);
-        padding-right: var(--spacing-sm);
-    }
-    h1 { font-size: 1.8rem; }
-    h2 { font-size: 1.5rem; }
-    h3 { font-size: 1.3rem; }
 
     .hero-section {
         padding: var(--spacing-lg) 0;
@@ -1692,9 +1378,11 @@ footer .social-icons a:hover {
 
     .product-card {
         border-radius: var(--border-radius-md);
+        margin-bottom: var(--spacing-md); /* Added spacing between cards on mobile */ /* */
     }
     .product-card img {
-        height: 140px;
+        /* height: 140px; */ /* Removed fixed height for better responsiveness */ /* */
+        aspect-ratio: 16/9; /* Use a wider aspect ratio for mobile images to fill screen better horizontally */ /* */
         border-top-left-radius: var(--border-radius-md);
         border-top-right-radius: var(--border-radius-md);
     }
@@ -1713,25 +1401,43 @@ footer .social-icons a:hover {
         padding: var(--spacing-xl);
     }
     #login-gate .card-title {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    /* Adjust admin table for mobile */
+    #admin-product-list th,
+    #admin-product-list td {
+        padding: var(--spacing-sm);
+        font-size: 0.85rem;
     }
 }
 
-/* Print Styles */
-@media print {
-    body {
-        background-color: var(--white-color) !important;
-        color: var(--black-color) !important;
+@media (max-width: 575.98px) { /* For very small mobile devices (Bootstrap's xs breakpoint) */
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    h3 { font-size: 1.2rem; }
+
+    .hero-section h1 { font-size: 1.5rem; }
+    .hero-section p { font-size: 0.8rem; }
+
+    .search-section .form-control,
+    .search-section .input-group-text {
+        font-size: 0.9rem;
+        padding: var(--spacing-sm);
     }
-    .navbar, footer, #back-to-top, .btn-add-to-cart, .custom-modal-overlay {
-        display: none !important;
+
+    .product-card .card-title {
+        font-size: 1rem;
     }
-    .product-card, .admin-section, #login-gate .card {
-        box-shadow: none !important;
-        border: 1px solid var(--border-color) !important;
+    .product-card .price {
+        font-size: 1.1rem;
     }
-    a {
-        text-decoration: underline !important;
-        color: #000 !important;
+    .product-card .card-body {
+        padding: var(--spacing-md);
+    }
+
+    .btn {
+        font-size: 0.85rem;
+        padding: var(--spacing-sm);
     }
 }
