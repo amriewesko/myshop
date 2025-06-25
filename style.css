@@ -673,9 +673,9 @@ footer + section::after {
 .product-card img {
     border-top-left-radius: var(--border-radius-xl);
     border-top-right-radius: var(--border-radius-xl);
-    object-fit: cover; /* Ensure images cover the area well */
+    object-fit: contain; /* เปลี่ยนจาก cover เป็น contain เพื่อให้ภาพแสดงครบถ้วน */
     width: 100%;
-    aspect-ratio: 16/9; /* Maintain a 16:9 aspect ratio for product images for better responsiveness */
+    aspect-ratio: 1 / 1; /* เปลี่ยนจาก 16/9 เป็น 1/1 เพื่อให้เป็นสี่เหลี่ยมจัตุรัส */
     transition: transform var(--transition-speed-slow) var(--transition-timing-smooth), filter var(--transition-speed-slow) var(--transition-timing-smooth);
     filter: brightness(1) saturate(1); /* Initial filter state */
 }
