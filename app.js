@@ -65,7 +65,7 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
                     <button type="button" class="custom-modal-close" aria-label="Close">&times;</button>
                 </div>
                 <div class="custom-modal-body">
-                    <p class="text-${type}">${message}</p>
+                    <!-- Message content will be set using textContent to prevent XSS -->
                 </div>
                 <div class="custom-modal-footer">
                     ${isConfirm ? `
@@ -80,9 +80,16 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
         modalOverlay.innerHTML = modalContent;
 
         const modalInstance = modalOverlay; // Reference to the overlay, which contains the modal
+        const modalBody = modalInstance.querySelector('.custom-modal-body'); // Get modal body to insert text
         const okButton = modalInstance.querySelector('[data-action="ok"]');
         const cancelButton = modalInstance.querySelector('[data-action="cancel"]');
         const closeButton = modalInstance.querySelector('.custom-modal-close');
+
+        // Set message using textContent to prevent XSS
+        const messageParagraph = document.createElement('p');
+        messageParagraph.classList.add(`text-${type}`);
+        messageParagraph.textContent = message; // Use textContent here to prevent XSS
+        modalBody.appendChild(messageParagraph);
 
         // Function to close the modal and resolve the promise
         const closeModal = (result) => {
@@ -549,7 +556,7 @@ function renderNewImagePreviews() {
         const imgDiv = document.createElement('div');
         imgDiv.classList.add('image-preview-item', 'me-2', 'mb-2');
         imgDiv.innerHTML = `
-            <img src="data:image/jpeg;base64,${base64String}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+            <img src="data:image/jpeg;base664,${base64String}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
             <button type="button" class="btn btn-sm btn-danger remove-new-image-btn" data-index="${index}">&times;</button>
         `;
         imagePreviewContainer.appendChild(imgDiv);
@@ -582,7 +589,7 @@ function renderNewImagePreviews() {
                 showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
                     if (confirmed) {
                         productImages.splice(indexToRemove, 1);
-                        renderExistingImagePreviews(); // Re-render only existing images
+                        renderExistingImagePreviews(productImages); // Pass productImages explicitly
                     }
                 });
             });
