@@ -4,9 +4,10 @@
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
 // Make sure this URL is correct and your Apps Script is deployed as a Web App
 // IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyp2yE-D9f73SXHRfwJkHvdrMWc-n-hEQq9mZDCS_lGwMyiuEpdrXOsuDwX-kARpNPU/exec'; // Placeholder, replace with your actual URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCDhFIKM5x6tFQt9O-7V6FMRlbvteMfbOqCGQYA-ExHa66-Oa7G6PqhuV3TDp8uOaG/exec'; // Placeholder, replace with your actual URL
 
-// !!! Removed ADMIN_SECRET_KEY as authentication is now handled by Google Sign-In !!!
+// !!! Admin Secret Key (Must match the one set in Google Apps Script) !!!
+const ADMIN_SECRET_KEY = '1234';
 // ==========================================================
 
 // Global variables to store product data and current states
@@ -16,9 +17,6 @@ let currentSearchTerm = ''; // Stores the current search query
 let selectedFileBase64 = []; // Changed to array to store multiple base64 images of newly selected files
 let selectedFileNames = []; // To store file names for newly selected files
 let productImages = []; // Stores the CURRENT image URLs of a product (either existing from sheet or newly uploaded) when editing
-
-// Global variable to store user's Google ID token after successful login
-let googleIdToken = null;
 
 // ---- Helper Functions ----
 /**
@@ -67,7 +65,7 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
                     <button type="button" class="custom-modal-close" aria-label="Close">&times;</button>
                 </div>
                 <div class="custom-modal-body">
-                    <!-- Message content will be set using textContent to prevent XSS -->
+                    <p class="text-${type}">${message}</p>
                 </div>
                 <div class="custom-modal-footer">
                     ${isConfirm ? `
@@ -82,16 +80,9 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
         modalOverlay.innerHTML = modalContent;
 
         const modalInstance = modalOverlay; // Reference to the overlay, which contains the modal
-        const modalBody = modalInstance.querySelector('.custom-modal-body'); // Get modal body to insert text
         const okButton = modalInstance.querySelector('[data-action="ok"]');
         const cancelButton = modalInstance.querySelector('[data-action="cancel"]');
         const closeButton = modalInstance.querySelector('.custom-modal-close');
-
-        // Set message using textContent to prevent XSS
-        const messageParagraph = document.createElement('p');
-        messageParagraph.classList.add(`text-${type}`);
-        messageParagraph.textContent = message; // Use textContent here to prevent XSS
-        modalBody.appendChild(messageParagraph);
 
         // Function to close the modal and resolve the promise
         const closeModal = (result) => {
@@ -120,7 +111,6 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
 
 /**
  * Sends data to Google Apps Script.
- * For admin actions, it will include the Google ID token.
  * @param {string} action - The action to perform (e.g., 'getProducts', 'addProduct', 'updateProduct', 'deleteProduct', 'uploadImage').
  * @param {object} [data={}] - The data to send.
  * @param {string} [method='POST'] - HTTP method ('GET' or 'POST').
@@ -147,9 +137,8 @@ async function sendData(action, data = {}, method = 'POST') {
 
         } else {
             // For POST requests (addProduct, updateProduct, deleteProduct, uploadImage)
-            // No longer send secretKey, authentication is handled by Google's session implicitly on the Apps Script side
-            // The Apps Script web app implicitly knows the user's email if deployed as "User accessing the web app"
             requestBody = {
+                secretKey: sessionStorage.getItem('secretKey'),
                 action: action,
                 data: data
             };
@@ -400,7 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // DOM Elements for Admin Panel
 const adminLoginGate = getEl('login-gate');
 const adminPanel = getEl('admin-panel');
-// passwordInput and loginBtn are removed as we use Google Sign-In
+const passwordInput = getEl('password-input');
+const loginBtn = getEl('login-btn');
 const logoutBtn = getEl('logout-btn');
 
 const productForm = getEl('product-form');
@@ -420,116 +410,69 @@ const adminLoader = getEl('loader'); // Reusing loader ID for admin page
 
 let adminProducts = []; // Stores products for admin table
 
-// --- Google Sign-In Integration ---
-// Global callback function for Google Identity Services (GSI)
-// This function will be called by the GSI client.js script after a user signs in.
-function handleCredentialResponse(response) {
-    if (response.credential) {
-        // Store the ID token (JWT) in sessionStorage
-        googleIdToken = response.credential;
-        // At this point, the user is authenticated by Google.
-        // The Apps Script doPost function will check if the user's email is an authorized admin.
-        
-        // We don't need to send the token to Apps Script directly here for basic auth check,
-        // as Apps Script will get the user's email from the active session due to `Execute as: User accessing the web app`.
-        // The token is primarily for more advanced server-side validation or other APIs.
-        
-        // Instead of directly logging in, we just refresh the UI based on Google's session.
-        // The actual authorization check happens when sendData is called for admin actions.
-        checkLoginStatus(); // Recheck UI status after Google login
-        showCustomAlert('เข้าสู่ระบบด้วย Google สำเร็จ! ตรวจสอบสิทธิ์ผู้ดูแลระบบ...', 'info');
-    } else {
-        console.error("Google Sign-In failed: No credential received.");
-        showCustomAlert('การเข้าสู่ระบบด้วย Google ไม่สำเร็จ', 'error');
-        googleIdToken = null;
-    }
-}
-
 // --- Admin Panel Functions ---
 
 /**
  * Initializes the admin page: checks login status, sets up events.
- * This is called on DOMContentLoaded if on admin.html.
  */
 function initAdminPage() {
-    // Note: handleLogin is no longer directly called by a button in admin.html.
-    // Google Sign-In's handleCredentialResponse will manage the login status.
     checkLoginStatus();
     setupAdminEventListeners();
-    // Load products only if already logged in or after successful Google login
-    // This is handled by checkLoginStatus now.
+    loadAdminProducts(); // Load products for admin table on page load
 }
 
 /**
- * Checks if the user is authenticated via Google (implicitly by Apps Script's session)
- * and toggles UI based on whether they are an authorized admin.
- * We rely on Apps Script to tell us if the current user (from Google's session) is authorized.
+ * Checks if the user is logged in (via sessionStorage) and toggles UI.
  */
-async function checkLoginStatus() {
-    // Make a small, authorized request to Apps Script to check admin status
-    // A simple 'getProducts' request will implicitly check authentication on Apps Script side
-    // because `doGet` is set to `Execute as: User accessing the web app`.
-    // If the user's Google session is active, Apps Script will know their email.
-    // If the user is authorized, getProducts will succeed. Otherwise, it will fail (unauthorized).
-
-    // Let's create a dedicated endpoint for checking admin status in Code.gs
-    // For now, we'll try to load admin products, and if it fails, we assume not logged in/authorized.
-    // More robust approach: Add a new `action='checkAdminStatus'` to Code.gs that just returns true/false.
-
-    // A simpler way for frontend: if `google.accounts.id.getCredentialResponse()` exists (meaning user logged in Google)
-    // then we assume the user has a Google session.
-    // Then we trigger loadAdminProducts and let the backend decide authorization.
-
-    if (googleIdToken) { // Assuming googleIdToken indicates a successful Google Sign-In happened in this session
-        // User has signed in with Google. Now check if they are an AUTHORIZED_ADMIN_EMAIL.
-        // The actual check is on the Apps Script side when an admin action is attempted.
-        // For UI purposes, we assume they are attempting to be admin.
+function checkLoginStatus() {
+    if (sessionStorage.getItem('loggedIn') === 'true' && sessionStorage.getItem('secretKey') === ADMIN_SECRET_KEY) {
         show(adminPanel);
         hide(adminLoginGate);
-        loadAdminProducts(); // Load data, Apps Script will authorize/deny
     } else {
-        // If no googleIdToken, it means the Google login hasn't occurred or has expired.
-        // Keep the login gate visible.
         hide(adminPanel);
         show(adminLoginGate);
     }
-
-    // This is a simpler logic for UI. The strict authorization happens on Apps Script (Code.gs).
-    // The previous password-based login logic is completely removed.
 }
 
 /**
- * handleLogin is no longer needed as Google Sign-In manages the login directly.
- * It is kept as a placeholder in case any old event listeners accidentally call it.
+ * Handles admin login.
  */
 async function handleLogin() {
-    console.warn("handleLogin() is deprecated. Google Sign-In handles authentication.");
-    // This function will no longer contain password logic.
-    // The Google Sign-In button directly triggers handleCredentialResponse.
+    const enteredPassword = passwordInput.value;
+    if (enteredPassword === ADMIN_SECRET_KEY) {
+        sessionStorage.setItem('loggedIn', 'true');
+        sessionStorage.setItem('secretKey', ADMIN_SECRET_KEY);
+        showCustomAlert('เข้าสู่ระบบสำเร็จ!', 'success');
+        checkLoginStatus();
+        passwordInput.value = ''; // Clear password field
+        loadAdminProducts(); // Load products after successful login
+    } else {
+        showCustomAlert('รหัสผ่านไม่ถูกต้อง!', 'error');
+    }
 }
 
 /**
- * Handles admin logout. Logs out from Google and clears session.
+ * Handles admin logout.
  */
 function handleLogout() {
-    googleIdToken = null; // Clear local token
-    sessionStorage.removeItem('loggedIn'); // Clear old session storage items
-    // Optionally revoke Google session if needed, but signing out of the browser's Google account is usually enough.
-    // google.accounts.id.disableAutoSelect(); // If using auto-login
-    // google.accounts.id.revoke(googleIdToken, () => {
-    //     console.log("Google session revoked.");
-    // });
+    sessionStorage.removeItem('loggedIn');
+    sessionStorage.removeItem('secretKey');
     showCustomAlert('ออกจากระบบแล้ว', 'info');
-    checkLoginStatus(); // Update UI
-    clearProductForm(); // Clear form data upon logout
+    checkLoginStatus();
 }
 
 /**
  * Sets up all event listeners for the admin page.
  */
 function setupAdminEventListeners() {
-    // Removed loginBtn event listener as it's no longer in HTML
-    // Removed passwordInput event listener
+    if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+    if (passwordInput) { // Allow Enter key to login
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+    }
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     if (productForm) productForm.addEventListener('submit', handleProductFormSubmit);
     if (clearBtn) clearBtn.addEventListener('click', clearProductForm);
@@ -606,7 +549,7 @@ function renderNewImagePreviews() {
         const imgDiv = document.createElement('div');
         imgDiv.classList.add('image-preview-item', 'me-2', 'mb-2');
         imgDiv.innerHTML = `
-            <img src="data:image/jpeg;base664,${base64String}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+            <img src="data:image/jpeg;base64,${base64String}" alt="Preview" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
             <button type="button" class="btn btn-sm btn-danger remove-new-image-btn" data-index="${index}">&times;</button>
         `;
         imagePreviewContainer.appendChild(imgDiv);
@@ -639,7 +582,7 @@ function renderNewImagePreviews() {
                 showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
                     if (confirmed) {
                         productImages.splice(indexToRemove, 1);
-                        renderExistingImagePreviews(productImages); // Pass productImages explicitly
+                        renderExistingImagePreviews(); // Re-render only existing images
                     }
                 });
             });
@@ -666,7 +609,7 @@ function renderExistingImagePreviews(imageUrls) {
             }
         }
         return url;
-    }).filter(url => url); // Filter out any empty/null strings
+    }).filter(url => url); // Filter out any empty/null URLs
 
     productImages.forEach((url, index) => {
         const imgDiv = document.createElement('div');
@@ -701,13 +644,6 @@ function renderExistingImagePreviews(imageUrls) {
  */
 async function handleProductFormSubmit(event) {
     event.preventDefault();
-
-    // Check if user is logged in with Google (this will be implicitly checked by Apps Script)
-    // If googleIdToken is null, it means no Google session is active for the UI to show.
-    if (!googleIdToken) {
-        showCustomAlert('โปรดเข้าสู่ระบบด้วยบัญชี Google ก่อนทำการบันทึกสินค้า', 'warning');
-        return;
-    }
 
     const productId = productIdInput.value.trim();
     const name = nameInput.value.trim();
@@ -774,13 +710,7 @@ async function handleProductFormSubmit(event) {
             clearProductForm(); // Clear form after successful submission
             loadAdminProducts(); // Reload product list
         } else {
-            // If the error is an authorization error, prompt user to re-login
-            if (response.message && response.message.includes('Unauthorized')) {
-                showCustomAlert('การดำเนินการไม่ได้รับอนุญาต โปรดตรวจสอบว่าคุณเข้าสู่ระบบด้วยบัญชีผู้ดูแลระบบที่ถูกต้อง', 'error');
-                handleLogout(); // Force logout to re-trigger login process
-            } else {
-                showCustomAlert(`เกิดข้อผิดพลาดในการ${productId ? 'อัปเดต' : 'เพิ่ม'}สินค้า: ` + (response.message || 'Unknown error'), 'error');
-            }
+            showCustomAlert(`เกิดข้อผิดพลาดในการ${productId ? 'อัปเดต' : 'เพิ่ม'}สินค้า: ` + (response.message || 'Unknown error'), 'error');
         }
     } catch (error) {
         console.error("Error submitting product:", error);
@@ -802,7 +732,7 @@ function clearProductForm() {
     shopeeLinkInput.value = '';
     imageFileInput.value = ''; // Clear selected file in file input
     imagePreviewContainer.innerHTML = ''; // Clear image preview area
-    selectedFileBase664 = []; // Clear base64 data for newly selected files
+    selectedFileBase64 = []; // Clear base64 data for newly selected files
     selectedFileNames = []; // Clear file names for newly selected files
     productImages = []; // Clear current product images (existing ones)
     formTitle.textContent = 'เพิ่มสินค้าใหม่';
@@ -816,21 +746,14 @@ async function loadAdminProducts() {
     hide(adminProductList);
 
     try {
-        const response = await sendData('getProducts', {}, 'GET'); // getProducts should be allowed for all logged-in users or public
+        const response = await sendData('getProducts', {}, 'GET');
         if (response.success && response.data) {
             adminProducts = response.data;
             renderAdminProducts(adminProducts);
         } else {
             adminProducts = [];
             renderAdminProducts([]);
-            // If not authorized for admin tasks (even for getProducts, if doGet were restricted),
-            // this message will appear. The backend's doPost is what's truly restricted.
-            if (response.message && response.message.includes('Unauthorized')) {
-                 showCustomAlert('คุณไม่ได้รับอนุญาตให้เข้าถึงข้อมูลผู้ดูแลระบบ โปรดเข้าสู่ระบบด้วยบัญชีที่ถูกต้อง', 'error');
-                 handleLogout(); // Force logout if not authorized
-            } else {
-                 showCustomAlert('ไม่สามารถโหลดรายการสินค้าได้: ' + (response.message || 'Unknown error'), 'error');
-            }
+            showCustomAlert('ไม่สามารถโหลดรายการสินค้าได้: ' + (response.message || 'Unknown error'), 'error');
         }
     } catch (error) {
         console.error("Error loading admin products:", error);
@@ -1005,13 +928,7 @@ async function deleteProduct(id) {
             showCustomAlert('สินค้าถูกลบเรียบร้อยแล้ว!', 'success');
             loadAdminProducts();
         } else {
-            // If the error is an authorization error, prompt user to re-login
-            if (response.message && response.message.includes('Unauthorized')) {
-                showCustomAlert('การดำเนินการไม่ได้รับอนุญาต โปรดตรวจสอบว่าคุณเข้าสู่ระบบด้วยบัญชีผู้ดูแลระบบที่ถูกต้อง', 'error');
-                handleLogout(); // Force logout to re-trigger login process
-            } else {
-                showCustomAlert('เกิดข้อผิดพลาดในการลบสินค้า: ' + (response.message || 'Unknown error'), 'error');
-            }
+            showCustomAlert('เกิดข้อผิดพลาดในการลบสินค้า: ' + (response.message || 'Unknown error'), 'error');
         }
     } catch (error) {
         console.error("Error deleting product:", error);
