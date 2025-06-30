@@ -4,7 +4,7 @@
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
 // ตรวจสอบให้แน่ใจว่า URL นี้ถูกต้องและ Apps Script ของคุณถูก Deploy เป็น Web App แล้ว
 // สำคัญ: แทนที่ URL PLACEHOLDER นี้ด้วย URL ที่คุณ Deploy จริงๆ (เช่น ลงท้ายด้วย /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0EDWKfSdUP4OO2aQgpIBWpFPPPNRGpjDfOpy2fsFgqMJCap2nui12j0e4ocZimCl-/exec'; // แทนที่ด้วย URL ของคุณ
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgG1vS9pgclLizfJ0Bkm0DMQTJZUguvoSOFS5GgmS1RXMmNEOCswd_Rgd0bbRP3zTn/exec'; // แทนที่ด้วย URL ของคุณ
 
 // ==========================================================
 
