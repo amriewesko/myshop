@@ -4,7 +4,7 @@
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
 // Make sure this URL is correct and your Apps Script is deployed as a Web App
 // IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCDhFIKM5x6tFQt9O-7V6FMRlbvteMfbOqCGQYA-ExHa66-Oa7G6PqhuV3TDp8uOaG/exec'; // Placeholder, replace with your actual URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0EDWKfSdUP4OO2aQgpIBWpFPPPNRGpjDfOpy2fsFgqMJCap2nui12j0e4ocZimCl-/exec'; // Placeholder, replace with your actual URL
 
 // !!! Admin Secret Key (Must match the one set in Google Apps Script) !!!
 const ADMIN_SECRET_KEY = '1234';
