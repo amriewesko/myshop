@@ -3,156 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Shop | ผู้ดูแลระบบ</title>
+    <title>My Shop | ร้านค้าออนไลน์คุณภาพ</title>
+    <!-- Bootstrap CSS for responsive design and components -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts - Kanit for modern typography -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Animate.css for subtle entrance animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Custom Stylesheet (ensure this is loaded last to override Bootstrap defaults) -->
     <link rel="stylesheet" href="style.css">
-
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+    <!-- Navbar: Top navigation bar for brand and admin link -->
+    <!-- Added animation class 'animate__animated animate__fadeInDown' for subtle entry effect. -->
     <nav class="navbar navbar-expand-lg navbar-dark animate__animated animate__fadeInDown">
         <div class="container-fluid container">
-            <a class="navbar-brand animate__animated animate__pulse" href="index.html">
-                <i class="fas fa-store"></i> My Shop
+            <!-- Brand name with a modern icon for visual appeal -->
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store"></i> AMRIE_633
             </a>
+            <!-- Toggler for responsive navigation on small screens -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
+            <!-- Navbar links and items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto"> <!-- ms-auto pushes items to the right -->
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="admin.html">ผู้ดูแลระบบ</a>
+                        <a class="nav-link active" aria-current="page" href="index.html">หน้าแรก</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">กลับหน้าหลัก</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="logout-button" style="display: none;">ออกจากระบบ</a>
+                        <a class="nav-link" href="admin.html">ผู้ดูแลระบบ</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div id="login-gate" class="container mt-5 text-center animate__animated animate__fadeIn">
-        <div class="card p-5 shadow-lg rounded-3">
-            <h2 class="card-title mb-4">เข้าสู่ระบบผู้ดูแลระบบ</h2>
-            <p>กรุณาลงชื่อเข้าใช้ด้วยบัญชี Google ที่ได้รับอนุญาต</p>
-            <div id="g_id_onload"
-                 data-client_id="519638238531-lnc06bptiulncdan77jlse075sdket94.apps.googleusercontent.com"  data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-size="large"
-                 data-theme="outline"
-                 data-text="sign_in_with"
-                 data-shape="rectangular"
-                 data-logo_alignment="left">
-            </div>
-            <div id="login-error" class="text-danger mt-3" style="display: none;"></div>
+    <!-- Header/Hero Section: Large, prominent section to welcome users -->
+    <header class="hero-section text-white text-center">
+        <div class="container">
+            <!-- Main heading for the shop -->
+            <h1 class="display-4 animate__animated animate__zoomIn">ยินดีต้อนรับสู่ AMRIE_633</h1>
+            <!-- Subtitle/slogan for the shop -->
+            <p class="lead animate__animated animate__fadeInUp animate__delay-1s">
+                แหล่งรวมสินค้าคุณภาพดี มีสไตล์ สำหรับทุกคน
+            </p>
+            <!-- Call to action button, animated for emphasis -->
+            <a href="#product-listings" class="btn btn-primary btn-lg mt-4 animate__animated animate__bounceIn animate__delay-2s">
+                <i class="fas fa-shopping-bag me-2"></i> ดูสินค้าทั้งหมด
+            </a>
         </div>
-    </div>
+    </header>
 
-    <div id="admin-content" style="display: none;">
-        <main class="container my-5">
-            <h1 class="text-center mb-4 animate__animated animate__fadeInDown">การจัดการสินค้า</h1>
-
-            <section id="product-form-section" class="mb-5 animate__animated animate__fadeInUp">
-                <h2><span id="form-title">เพิ่มสินค้าใหม่</span></h2>
-                <form id="product-form" class="bg-light p-4 rounded shadow-sm">
-                    <input type="hidden" id="product-id" name="id">
-                    
-                    <div class="mb-3">
-                        <label for="product-name" class="form-label">ชื่อสินค้า:</label>
-                        <input type="text" class="form-control" id="product-name" name="name" required>
+    <!-- Main Content Area -->
+    <main class="container my-5" id="product-listings">
+        <div class="row">
+            <!-- Category Filter Section (Left Column on larger screens) -->
+            <div class="col-lg-3 mb-4">
+                <div id="category-filter" class="card p-3 shadow-sm rounded-lg animate__animated animate__fadeInLeft">
+                    <h4 class="mb-3 text-primary"><i class="fas fa-filter me-2"></i>หมวดหมู่สินค้า</h4>
+                    <div class="list-group">
+                        <!-- Category filter options - populated by JavaScript -->
+                        <select id="category-select" class="form-select mb-3">
+                            <option value="ทั้งหมด" selected>ทั้งหมด</option>
+                            <!-- Options will be dynamically loaded here by app.js or can be static -->
+                        </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="product-category" class="form-label">หมวดหมู่:</label>
-                        <input type="text" class="form-control" id="product-category" name="category" list="category-suggestions" required>
-                        <datalist id="category-suggestions"></datalist>
-                    </div>
-                    <div class="mb-3">
-                        <label for="product-price" class="form-label">ราคา:</label>
-                        <input type="number" class="form-control" id="product-price" name="price" step="0.01" min="0" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="product-image" class="form-label">รูปภาพสินค้า:</label>
-                        <input type="file" class="form-control" id="product-image" name="image" accept="image/*" multiple>
-                        <div id="image-preview" class="mt-2 row row-cols-3 g-2">
-                            </div>
-                        <div class="form-text">
-                            รองรับไฟล์ JPG, PNG. คุณสามารถอัปโหลดได้หลายรูปภาพ
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="product-shopee-url" class="form-label">ลิงก์ Shopee (ถ้ามี):</label>
-                        <input type="url" class="form-control" id="product-shopee-url" name="shopee_url">
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> บันทึกสินค้า</button>
-                        <button type="button" class="btn btn-secondary btn-lg" id="cancel-edit-button" style="display: none;"><i class="fas fa-ban"></i> ยกเลิก</button>
-                    </div>
-                </form>
-            </section>
-
-            <section id="product-list-section" class="animate__animated animate__fadeInUp">
-                <h2>รายการสินค้า</h2>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="search-admin-products" placeholder="ค้นหาสินค้า...">
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped" id="admin-product-list-table">
-                        <thead>
-                            <tr>
-                                <th>รูปภาพ</th>
-                                <th>ID</th>
-                                <th>ชื่อสินค้า</th>
-                                <th>หมวดหมู่</th>
-                                <th>ราคา</th>
-                                <th>จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td colspan="6" class="text-center">กำลังโหลดสินค้า...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div id="no-products-message-admin" class="alert alert-info text-center" style="display: none;">
-                    ไม่มีสินค้าในระบบ
-                </div>
-                <nav aria-label="Product list pagination">
-                    <ul class="pagination justify-content-center" id="admin-pagination">
-                        </ul>
-                </nav>
-            </section>
-        </main>
-    </div>
+            </div>
 
+            <!-- Product Listings and Search Section (Right Column) -->
+            <div class="col-lg-9">
+                <!-- Search Section -->
+                <div class="search-section mb-4 animate__animated animate__fadeInRight">
+                    <div class="input-group">
+                        <input type="text" id="search-input" class="form-control" placeholder="ค้นหาสินค้า (ชื่อ, ID, หมวดหมู่)...">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                </div>
+
+                <!-- Loader for Products -->
+                <div id="loader" class="text-center py-5 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">กำลังโหลด...</span>
+                    </div>
+                    <p class="mt-3 text-muted">กำลังโหลดสินค้า...</p>
+                </div>
+
+                <!-- No Products Found Message -->
+                <div id="no-products-found" class="text-center py-5 d-none animate__animated animate__zoomIn">
+                    <i class="fas fa-box-open fa-3x text-muted mb-4"></i>
+                    <h3 class="text-muted">ไม่พบสินค้าที่คุณค้นหา</h3>
+                    <p class="text-secondary">ลองปรับคำค้นหาหรือเลือกหมวดหมู่อื่นดูนะคะ</p>
+                </div>
+
+                <!-- Product List Container -->
+                <!-- Adjusted for 2 columns on extra small/small screens, 2 on medium, 3 on large -->
+                <div id="product-list-container" class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-4">
+                    <!-- Product cards will be dynamically loaded here by app.js -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scroll-to-Top Button -->
     <a href="#" id="back-to-top" class="btn btn-primary rounded-circle shadow d-none">
         <i class="fas fa-arrow-up"></i>
     </a>
 
+    <!-- Footer: Site information and social media links -->
+    <!-- Removed 'bg-dark' as its styling is now handled by 'style.css' for consistency. -->
     <footer class="text-white text-center py-4 mt-5">
         <div class="container">
             <p class="mb-0">&copy; 2025 My Shop. All rights reserved.</p>
-            <div class="social-icons mt-3">
+            <div class="social-icons mt-3"> <!-- Increased top margin for better spacing. -->
+                <!-- Used 'fab fa-facebook-f' for consistency with modern Font Awesome usage. -->
                 <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
                 <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
                 <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter fa-lg"></i></a>
+                <!-- Added LinkedIn icon for a more professional and global presence. -->
                 <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in fa-lg"></i></a>
             </div>
         </div>
     </footer>
 
+    <!-- Custom Modal Overlay (hidden by default) -->
     <div id="custom-modal-overlay" class="custom-modal-overlay"></div>
 
+    <!-- Bootstrap Bundle with Popper for components and interactivity -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript file -->
     <script src="app.js"></script>
 </body>
 </html>
