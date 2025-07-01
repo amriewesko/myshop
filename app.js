@@ -4,13 +4,10 @@
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
 // Make sure this URL is correct and your Apps Script is deployed as a Web App
 // IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFI7JuJBGh7fxk3fsomiNcS-uSpjH1frSVF8Is8tsJlf5syClJt9qUkQ6Vn4eTHJ9c/exec'; // Placeholder, replace with your actual URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBU0oVXg9sWnRMvGd2mJqUh8iKEMbeFOGxB0oHre_znVF5un-90eCM8jRr-Lmva0VJ/exec'; // URL ของ Google Apps Script ของคุณ
 
-// !!! Admin Secret Key (Must match the one set in Google Apps Script) !!!
-// สำคัญ: คีย์นี้ใช้สำหรับการตรวจสอบรหัสผ่านในฝั่ง Client-side (เบราว์เซอร์) เท่านั้น
-// ไม่ได้ใช้ในการยืนยันตัวตนกับ Google Apps Script อีกต่อไปเพื่อเพิ่มความปลอดภัย
-// การยืนยันตัวตนกับ Apps Script จะถูกจัดการโดย Google Account ของคุณเองเมื่อ Deploy Apps Script
-const ADMIN_SECRET_KEY = '1234';
+// ADMIN_SECRET_KEY ถูกลบออกทั้งหมดเพื่อความปลอดภัยสูงสุด
+// การยืนยันตัวตนสำหรับหน้า Admin จะถูกจัดการโดย Google Account ของคุณเองเมื่อ Deploy Apps Script
 // ==========================================================
 
 // Global variables to store product data and current states
@@ -140,7 +137,6 @@ async function sendData(action, data = {}, method = 'POST') {
 
         } else {
             // สำหรับ POST requests (addProduct, updateProduct, deleteProduct, uploadImage)
-            // *** สำคัญ: ไม่ส่ง ADMIN_SECRET_KEY ไปยัง Apps Script อีกต่อไปเพื่อความปลอดภัย ***
             // การยืนยันตัวตนจะถูกจัดการโดย Google Apps Script โดยตรง
             requestBody = {
                 action: action,
@@ -300,17 +296,13 @@ async function fetchAndRenderCategories() {
     const categorySelect = getEl('category-select'); // Use the select element directly
     if (!categorySelect) return;
 
-    // Clear existing options, keep the "All" option if desired
-    // For a dynamic select, you might clear all then re-add.
-    // For now, assuming static options are fine or they are dynamically populated elsewhere.
+    // Clear existing dynamic options, keep the first "All" option ("หมวดหมู่ทั้งหมด")
+    while (categorySelect.children.length > 1) {
+        categorySelect.removeChild(categorySelect.lastChild);
+    }
 
     const result = await sendData('getCategories', {}, 'GET');
     if (result && result.success && result.categories) {
-        // Clear existing dynamic options, keep the first "All" option ("หมวดหมู่ทั้งหมด")
-        while (categorySelect.children.length > 1) {
-            categorySelect.removeChild(categorySelect.lastChild);
-        }
-
         result.categories.forEach(category => {
             const option = document.createElement('option');
             option.value = category;
@@ -391,11 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================
 
 // DOM Elements for Admin Panel
-const adminLoginGate = getEl('login-gate');
+// adminLoginGate, passwordInput, loginBtn, logoutBtn are no longer needed for client-side password login
+// const adminLoginGate = getEl('login-gate');
 const adminPanel = getEl('admin-panel');
-const passwordInput = getEl('password-input');
-const loginBtn = getEl('login-btn');
-const logoutBtn = getEl('logout-btn');
+
 
 const productForm = getEl('product-form');
 const productIdInput = getEl('product-id');
@@ -418,72 +409,32 @@ let adminProducts = []; // Stores products for admin table
 
 /**
  * Initializes the admin page: checks login status, sets up events.
+ * Simplified to directly show the admin panel. Google's authentication will handle access.
  */
 function initAdminPage() {
-    checkLoginStatus();
+    // ไม่มี login gate ในฝั่ง Client-side อีกต่อไป
+    // หน้า Admin จะแสดงผลทันที และ Google Apps Script จะจัดการการยืนยันตัวตนเมื่อเรียกใช้ฟังก์ชัน Admin
+    show(adminPanel);
+    // hide(adminLoginGate); // adminLoginGate ถูกลบออกไปแล้ว
+
     setupAdminEventListeners();
     loadAdminProducts(); // Load products for admin table on page load
 }
 
 /**
- * Checks if the user is logged in (via sessionStorage) and toggles UI.
- * หมายเหตุ: การตรวจสอบนี้ใช้สำหรับ UI ในฝั่ง Client-side เท่านั้น
- * การยืนยันตัวตนที่แท้จริงจะเกิดขึ้นเมื่อ Apps Script ถูกเรียกใช้
+ * checkLoginStatus, handleLogin, handleLogout are no longer needed as client-side password login is removed.
+ * Google's authentication handles the access.
  */
-function checkLoginStatus() {
-    // ตรวจสอบว่ามีการล็อกอินใน sessionStorage และรหัสผ่านที่เก็บไว้ตรงกับ ADMIN_SECRET_KEY ในโค้ด
-    // นี่คือการตรวจสอบเพื่อควบคุมการแสดงผล UI ในฝั่ง Client-side เท่านั้น
-    if (sessionStorage.getItem('loggedIn') === 'true' && sessionStorage.getItem('adminSecretKeyStored') === ADMIN_SECRET_KEY) {
-        show(adminPanel);
-        hide(adminLoginGate);
-    } else {
-        hide(adminPanel);
-        show(adminLoginGate);
-    }
-}
+// function checkLoginStatus() {}
+// async function handleLogin() {}
+// function handleLogout() {}
 
-/**
- * Handles admin login.
- * หมายเหตุ: การล็อกอินนี้เป็นการตรวจสอบรหัสผ่านในฝั่ง Client-side เพื่อควบคุม UI
- * การยืนยันตัวตนที่แท้จริงจะเกิดขึ้นเมื่อ Apps Script ถูกเรียกใช้
- */
-async function handleLogin() {
-    const enteredPassword = passwordInput.value;
-    if (enteredPassword === ADMIN_SECRET_KEY) {
-        sessionStorage.setItem('loggedIn', 'true');
-        sessionStorage.setItem('adminSecretKeyStored', ADMIN_SECRET_KEY); // เก็บ ADMIN_SECRET_KEY ที่ใช้ล็อกอิน
-        showCustomAlert('เข้าสู่ระบบสำเร็จ!', 'success');
-        checkLoginStatus();
-        passwordInput.value = ''; // Clear password field
-        loadAdminProducts(); // Load products after successful login
-    } else {
-        showCustomAlert('รหัสผ่านไม่ถูกต้อง!', 'error');
-    }
-}
-
-/**
- * Handles admin logout.
- */
-function handleLogout() {
-    sessionStorage.removeItem('loggedIn');
-    sessionStorage.removeItem('adminSecretKeyStored'); // ลบ ADMIN_SECRET_KEY ที่เก็บไว้
-    showCustomAlert('ออกจากระบบแล้ว', 'info');
-    checkLoginStatus();
-}
 
 /**
  * Sets up all event listeners for the admin page.
+ * Removed event listeners related to client-side password login.
  */
 function setupAdminEventListeners() {
-    if (loginBtn) loginBtn.addEventListener('click', handleLogin);
-    if (passwordInput) { // Allow Enter key to login
-        passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleLogin();
-            }
-        });
-    }
-    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     if (productForm) productForm.addEventListener('submit', handleProductFormSubmit);
     if (clearBtn) clearBtn.addEventListener('click', clearProductForm);
     if (adminSearchInput) adminSearchInput.addEventListener('input', filterAdminProducts);
@@ -633,7 +584,6 @@ function renderExistingImagePreviews(imageUrls) {
         `;
         imagePreviewContainer.appendChild(imgDiv);
 
-        // Add event listener for remove button of existing images
         imgDiv.querySelector('.remove-existing-image-btn').addEventListener('click', (e) => {
             const indexToRemove = parseInt(e.target.dataset.index);
             showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
