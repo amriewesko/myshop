@@ -4,10 +4,10 @@
 // !!! Google Apps Script URLs (Deployed Web App URLs) !!!
 // IMPORTANT: REPLACE THESE PLACEHOLDERS WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URLs
 // PUBLIC_APPS_SCRIPT_URL: สำหรับการอ่านข้อมูล (doGet) - Deploy ด้วย "Who has access: Anyone"
-const PUBLIC_APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbyCUh2bIi7ueIqd0MfXuhATnVkiKly3Qf_Sp6_AAzxZF7w-UJnWzH7s8K1URRcKuH8h/exec'; 
+const PUBLIC_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytw2TOBevOIQ8gMx6fj20pZ7TcQ8RY9t8p-WrSbDzCL4jPkXT-ZasgLsZo48_BV6Sa/exec'; 
 
 // ADMIN_APPS_SCRIPT_URL: สำหรับการเขียนข้อมูล (doPost) - Deploy ด้วย "Who has access: Only myself"
-const ADMIN_APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbwW7g-uCN0R5NmgtbjgrmD5Yk-BxFpgJajS28Ll7J1FWmFjhW3rlvxr2ulC6WQ7e94c/exec'; // *** สำคัญ: ต้องแทนที่ด้วย URL ของ Admin Web App ของคุณ ***
+const ADMIN_APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbwVyZaF2BqZVRv8KBUB4nUMtvJM8fEjFTel07GOBRbkrhzoqFGbaNTvIbYsNafqFVrA/exec'; // *** สำคัญ: ต้องแทนที่ด้วย URL ของ Admin Web App ของคุณ ***
 
 // ADMIN_SECRET_KEY ถูกลบออกทั้งหมดเพื่อความปลอดภัยสูงสุด
 // การยืนยันตัวตนสำหรับหน้า Admin จะถูกจัดการโดย Google Account ของคุณเองเมื่อ Deploy Apps Script
