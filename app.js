@@ -1,10 +1,13 @@
 // ==========================================================
 // =================== CONFIGURATION ========================
 // ==========================================================
-// !!! Google Apps Script URL (Deployed Web App URL) !!!
-// Make sure this URL is correct and your Apps Script is deployed as a Web App
-// IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBU0oVXg9sWnRMvGd2mJqUh8iKEMbeFOGxB0oHre_znVF5un-90eCM8jRr-Lmva0VJ/exec'; // URL ของ Google Apps Script ของคุณ
+// !!! Google Apps Script URLs (Deployed Web App URLs) !!!
+// IMPORTANT: REPLACE THESE PLACEHOLDERS WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URLs
+// PUBLIC_APPS_SCRIPT_URL: สำหรับการอ่านข้อมูล (doGet) - Deploy ด้วย "Who has access: Anyone"
+const PUBLIC_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxypRwPOstoczHyeqe9fQZrsXhHLYLw7am5QXH-3xI02UnNWfSvYbNO-Uhc0I3U5QRi/exec'; 
+
+// ADMIN_APPS_SCRIPT_URL: สำหรับการเขียนข้อมูล (doPost) - Deploy ด้วย "Who has access: Only myself"
+const ADMIN_APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbzSscXp1O71yuC0an9alnVLtKUTzskGtJJQgRvKG4vbTqCKGXsutj7pBYoEOJ1Wd1LO/exec'; // *** สำคัญ: ต้องแทนที่ด้วย URL ของ Admin Web App ของคุณ ***
 
 // ADMIN_SECRET_KEY ถูกลบออกทั้งหมดเพื่อความปลอดภัยสูงสุด
 // การยืนยันตัวตนสำหรับหน้า Admin จะถูกจัดการโดย Google Account ของคุณเองเมื่อ Deploy Apps Script
@@ -117,11 +120,19 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
  * @returns {Promise<object>} The JSON response from the Apps Script.
  */
 async function sendData(action, data = {}, method = 'POST') {
+    let requestUrl;
     let requestBody = {};
+
+    // กำหนด URL ที่จะเรียกใช้ตาม Action
+    if (action === 'getProducts' || action === 'getCategories') {
+        requestUrl = PUBLIC_APPS_SCRIPT_URL;
+    } else { // addProduct, updateProduct, deleteProduct, uploadImage
+        requestUrl = ADMIN_APPS_SCRIPT_URL;
+    }
 
     try {
         if (method === 'GET') {
-            const url = new URL(APPS_SCRIPT_URL);
+            const url = new URL(requestUrl);
             url.searchParams.append('action', action);
             // Append all data properties as search params for GET requests
             for (const key in data) {
@@ -135,16 +146,14 @@ async function sendData(action, data = {}, method = 'POST') {
             }
             return await response.json();
 
-        } else {
-            // สำหรับ POST requests (addProduct, updateProduct, deleteProduct, uploadImage)
-            // การยืนยันตัวตนจะถูกจัดการโดย Google Apps Script โดยตรง
+        } else { // POST method
             requestBody = {
                 action: action,
                 data: data
             };
         }
 
-        const response = await fetch(APPS_SCRIPT_URL, {
+        const response = await fetch(requestUrl, {
             method: method,
             mode: 'cors',
             headers: {
@@ -261,7 +270,7 @@ async function loadProducts() {
     if (noResultsEl) hide(noResultsEl);
 
     try {
-        const response = await sendData('getProducts', {}, 'GET');
+        const response = await sendData('getProducts', {}, 'GET'); // ใช้ PUBLIC_APPS_SCRIPT_URL
         if (response.success && response.data) {
             allProducts = response.data;
             filterAndSearchProducts();
@@ -301,7 +310,7 @@ async function fetchAndRenderCategories() {
         categorySelect.removeChild(categorySelect.lastChild);
     }
 
-    const result = await sendData('getCategories', {}, 'GET');
+    const result = await sendData('getCategories', {}, 'GET'); // ใช้ PUBLIC_APPS_SCRIPT_URL
     if (result && result.success && result.categories) {
         result.categories.forEach(category => {
             const option = document.createElement('option');
@@ -584,6 +593,7 @@ function renderExistingImagePreviews(imageUrls) {
         `;
         imagePreviewContainer.appendChild(imgDiv);
 
+        // Add event listener for remove button of existing images
         imgDiv.querySelector('.remove-existing-image-btn').addEventListener('click', (e) => {
             const indexToRemove = parseInt(e.target.dataset.index);
             showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
@@ -643,7 +653,7 @@ async function handleProductFormSubmit(event) {
                     fileName: selectedFileNames[i] || `product_image_${Date.now()}_${i}.png`,
                     mimeType: `image/${selectedFileNames[i].split('.').pop()}` // Infer MIME type from extension
                 };
-                const uploadResponse = await sendData('uploadImage', imageData);
+                const uploadResponse = await sendData('uploadImage', imageData); // ใช้ ADMIN_APPS_SCRIPT_URL
                 if (uploadResponse.success && uploadResponse.url) {
                     uploadedImageUrls.push(uploadResponse.url); // Add newly uploaded URL
                 } else {
@@ -666,7 +676,7 @@ async function handleProductFormSubmit(event) {
         }
 
 
-        const response = await sendData(action, data);
+        const response = await sendData(action, data); // ใช้ ADMIN_APPS_SCRIPT_URL
 
         if (response.success) {
             showCustomAlert(`สินค้าถูก${productId ? 'อัปเดต' : 'เพิ่ม'}เรียบร้อยแล้ว!`, 'success');
@@ -709,7 +719,7 @@ async function loadAdminProducts() {
     hide(adminProductList);
 
     try {
-        const response = await sendData('getProducts', {}, 'GET');
+        const response = await sendData('getProducts', {}, 'GET'); // ใช้ PUBLIC_APPS_SCRIPT_URL
         if (response.success && response.data) {
             adminProducts = response.data;
             renderAdminProducts(adminProducts);
@@ -886,7 +896,7 @@ async function confirmDeleteProduct(id) {
 async function deleteProduct(id) {
     show(adminLoader);
     try {
-        const response = await sendData('deleteProduct', { id: id });
+        const response = await sendData('deleteProduct', { id: id }); // ใช้ ADMIN_APPS_SCRIPT_URL
         if (response.success) {
             showCustomAlert('สินค้าถูกลบเรียบร้อยแล้ว!', 'success');
             loadAdminProducts();
