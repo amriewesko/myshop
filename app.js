@@ -4,7 +4,7 @@
 // !!! Google Apps Script URLs (Deployed Web App URLs) !!!
 // IMPORTANT: REPLACE THESE PLACEHOLDERS WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URLs
 // PUBLIC_APPS_SCRIPT_URL: สำหรับการอ่านข้อมูล (doGet) - Deploy ด้วย "Who has access: Anyone"
-const PUBLIC_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxypRwPOstoczHyeqe9fQZrsXhHLYLw7am5QXH-3xI02UnNWfSvYbNO-Uhc0I3U5QRi/exec'; 
+const PUBLIC_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSscXp1O71yuC0an9alnVLtKUTzskGtJJQgRvKG4vbTqCKGXsutj7pBYoEOJ1Wd1LO/exec'; 
 
 // ADMIN_APPS_SCRIPT_URL: สำหรับการเขียนข้อมูล (doPost) - Deploy ด้วย "Who has access: Only myself"
 const ADMIN_APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbzSscXp1O71yuC0an9alnVLtKUTzskGtJJQgRvKG4vbTqCKGXsutj7pBYoEOJ1Wd1LO/exec'; // *** สำคัญ: ต้องแทนที่ด้วย URL ของ Admin Web App ของคุณ ***
