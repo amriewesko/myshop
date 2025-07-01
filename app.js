@@ -4,7 +4,7 @@
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
 // Make sure this URL is correct and your Apps Script is deployed as a Web App
 // IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyZ68S3oI1D1jgEeM2vQfrC4dZg9SnlZcB56VcDAMBbSJnUK5HI0gM1B0LZLZl3G74/exec'; // Placeholder, replace with your actual URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2pxvLe4RvklqjrkxjTcxnJjDxM-5Ijo33fC_wFcvbWyL2bJloAWnwBP4u4LvgpXed/exec'; // Placeholder, replace with your actual URL
 
 // ADMIN_SECRET_KEY is now managed by Google Sign-In and Apps Script backend.
 // 
