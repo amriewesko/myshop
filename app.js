@@ -4,7 +4,7 @@
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
 // Make sure this URL is correct and your Apps Script is deployed as a Web App
 // IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxePwZVSFL-jb16gh-ZAHVtER7XmkWVwQ20j-lxSSkX5k5wIRXnYpVWpamW3llbgqev/exec'; // Placeholder, replace with your actual URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuavk_C4iNKBQWvMmLLNVm8osXEg7zAHqlmGECk-yheI65XScQdM1xoNeNavQay9w/exec'; // Placeholder, replace with your actual URL
 
 // ADMIN_SECRET_KEY is now managed by Google Sign-In and Apps Script backend.
 // 
@@ -20,7 +20,8 @@ let productImages = []; // Stores the CURRENT image URLs of a product (either ex
 
 // Google Sign-In related variables
 let googleIdToken = null; // To store the ID Token after successful Google Sign-In
-const ADMIN_AUTHORIZED_EMAIL = '106768013@yru.ac.th'; // ***** แทนที่ด้วยอีเมลผู้ดูแลระบบของคุณ *****
+const ADMIN_AUTHORIZED_EMAIL = ['106768013@yru.ac.th', 'amriewesako111@gmail.com']; // แทนที่ด้วยอีเมลจริง
+
 
 // ---- Helper Functions ----
 /**
