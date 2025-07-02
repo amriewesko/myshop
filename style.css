@@ -260,10 +260,9 @@ footer {
 
 
 /* --- 5. สติกเกอร์โดราเอมอน --- */
-body::after {
-    content: '';
+#doraemon-sticker {
     position: fixed;
-    bottom: -20px; /* เริ่มจากด้านล่าง */
+    bottom: -20px;
     right: 20px;
     width: 150px;
     height: 150px;
@@ -273,11 +272,21 @@ body::after {
     z-index: 999;
     transition: transform 0.5s var(--transition-timing-bounce);
     transform: translateY(200px); /* ซ่อนไว้ด้านล่าง */
-    pointer-events: none;
+    pointer-events: auto; /* ทำให้คลิกได้ */
+    cursor: pointer;
 }
 
-body.scrolled::after {
+#doraemon-sticker.show {
     transform: translateY(0); /* แสดงเมื่อเลื่อนลง */
+}
+
+#doraemon-sticker:hover {
+    animation: wave-hand 0.5s ease-in-out 3;
+}
+
+@keyframes wave-hand {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(15deg); }
 }
 
 /* --- 6. ระบบแจ้งเตือน (Notification System) --- */
