@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet
- * Version: 8.0 (With Real Stickers!)
+ * Version: 9.0 (Blue Overlay Effect)
  * Author: Your Name / Gemini
  * Description: The ultimate, production-quality stylesheet based on the iconic Doraemon theme.
  * This version incorporates a comprehensive design system, advanced graphics, stickers,
@@ -80,6 +80,20 @@ body {
     line-height: 1.7;
     overflow-x: hidden;
 }
+
+/* === NEW: เพิ่มเลเยอร์สีฟ้าโปร่งแสงทับทั้งหน้าจอ === */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 158, 227, 0.25); /* สีฟ้าโดราเอมอนโปร่งแสง (ปรับค่าสุดท้ายเพื่อเปลี่ยนความเข้ม) */
+    z-index: 99999; /* ต้องอยู่บนสุดทับทุกอย่าง */
+    pointer-events: none; /* ทำให้สามารถคลิกทะลุเลเยอร์นี้ไปยังเนื้อหาข้างหลังได้ */
+}
+
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
