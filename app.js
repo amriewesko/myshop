@@ -23,20 +23,6 @@ const hide = (el) => el && el.classList.add('d-none');
 // =================== INITIALIZATION =======================
 // ==========================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // สร้างสติกเกอร์โดราเอมอนและเพิ่มเข้าไปใน body
-    const sticker = document.createElement('div');
-    sticker.id = 'doraemon-sticker';
-    document.body.appendChild(sticker);
-
-    // เพิ่ม Event Listener สำหรับการเลื่อนหน้าจอเพื่อแสดง/ซ่อนสติกเกอร์
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 200) {
-            sticker.classList.add('show');
-        } else {
-            sticker.classList.remove('show');
-        }
-    });
-    
     const path = window.location.pathname;
     if (path.includes('admin.html')) {
         initAdminPage();
@@ -61,12 +47,21 @@ function initAdminPage() {
 // =================== NEW NOTIFICATION SYSTEM ==============
 // ==========================================================
 
+/**
+ * ระบบแจ้งเตือนที่สวยงามและทันสมัย
+ * สามารถแสดงผลได้ทั้งแบบ Toast (มุมจอ) และ Modal (กลางจอ)
+ * @param {string} message - ข้อความที่ต้องการแสดง
+ * @param {string} [type='info'] - ประเภทการแจ้งเตือน: 'success', 'error', 'warning', 'info'
+ * @param {boolean} [isConfirm=false] - ถ้าเป็น true จะแสดงเป็น Modal พร้อมปุ่มยืนยัน/ยกเลิก
+ */
 function showAlert(message, type = 'info', isConfirm = false) {
     if (isConfirm) {
+        // Use Modal for confirmation dialogs
         return showConfirmationModal(message, type);
     } else {
+        // Use Toast for simple notifications
         showToast(message, type);
-        return Promise.resolve();
+        return Promise.resolve(); // Toasts don't wait for user input
     }
 }
 
@@ -99,10 +94,17 @@ function showToast(message, type = 'info') {
 
     toastContainer.appendChild(toast);
 
-    setTimeout(() => toast.classList.add('show'), 100);
+    // Trigger animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
 
-    const timeoutId = setTimeout(() => closeToast(toast), 5000);
+    // Auto-dismiss after 5 seconds
+    const timeoutId = setTimeout(() => {
+        closeToast(toast);
+    }, 5000);
 
+    // Close on click
     toast.querySelector('.toast-close-btn').addEventListener('click', () => {
         clearTimeout(timeoutId);
         closeToast(toast);
@@ -123,7 +125,7 @@ function closeToast(toast) {
 function showConfirmationModal(message, type = 'warning') {
     return new Promise((resolve) => {
         let modalOverlay = getEl('confirmation-modal-overlay');
-        if (modalOverlay) modalOverlay.remove();
+        if (modalOverlay) modalOverlay.remove(); // Remove old one if exists
 
         modalOverlay = document.createElement('div');
         modalOverlay.id = 'confirmation-modal-overlay';
@@ -131,7 +133,7 @@ function showConfirmationModal(message, type = 'warning') {
         
         const icons = {
             warning: 'fa-exclamation-triangle',
-            error: 'fa-bomb',
+            error: 'fa-bomb', // For dangerous actions
             info: 'fa-question-circle'
         };
 
@@ -170,14 +172,20 @@ function showConfirmationModal(message, type = 'warning') {
     });
 }
 
+
 // ==========================================================
 // =================== API & DATA HANDLING ==================
 // ==========================================================
 async function sendData(action, data = {}) {
     try {
-        const body = { action, token: sessionStorage.getItem('sessionToken'), data };
+        const body = {
+            action: action,
+            token: sessionStorage.getItem('sessionToken'),
+            data: data
+        };
         const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST', mode: 'cors',
+            method: 'POST',
+            mode: 'cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(body)
         });
@@ -191,8 +199,95 @@ async function sendData(action, data = {}) {
         }
         return result;
     } catch (error) {
+        console.error("API Error:", error);
         showAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
         return { success: false, message: error.message };
+    }
+}
+
+// ==========================================================
+// =================== PUBLIC PAGE LOGIC ====================
+// ==========================================================
+async function loadProducts() {
+    const loader = getEl('loader');
+    show(loader);
+    try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
+        const result = await response.json();
+        if (result.success) {
+            allProducts = result.data;
+            renderProducts(allProducts);
+        }
+    } catch (error) {
+        console.error("Error loading products:", error);
+    } finally {
+        hide(loader);
+    }
+}
+
+function renderProducts(products) {
+    const container = getEl('product-list-container');
+    const noProductsEl = getEl('no-products-found');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    if (products.length === 0) {
+        show(noProductsEl);
+        return;
+    }
+    hide(noProductsEl);
+
+    products.forEach(product => {
+        const imageUrls = String(product.image_url || '').split(',');
+        const firstImageUrl = imageUrls[0]?.trim() || 'https://placehold.co/400x250/cccccc/333333?text=No+Image';
+        const cardHtml = `
+            <div class="col animate__animated animate__fadeInUp">
+                <div class="product-card">
+                    <div class="img-container">
+                        <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}" onerror="this.src='https://placehold.co/400x250/cccccc/333333?text=Error';">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${product.name}</h5>
+                        <p class="price">฿${parseFloat(product.price).toFixed(2)}</p>
+                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-primary btn-add-to-cart w-100"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        container.insertAdjacentHTML('beforeend', cardHtml);
+    });
+}
+
+function filterAndSearchProducts(searchTerm = null, category = null) {
+    const currentSearch = searchTerm !== null ? searchTerm : getEl('search-input').value;
+    const currentCategory = category !== null ? category : getEl('category-select').value;
+
+    let filtered = allProducts;
+    if (currentCategory !== 'ทั้งหมด') {
+        filtered = filtered.filter(p => p.category === currentCategory);
+    }
+    if (currentSearch) {
+        const lowerSearch = currentSearch.toLowerCase();
+        filtered = filtered.filter(p => 
+            p.name.toLowerCase().includes(lowerSearch) ||
+            p.id.toLowerCase().includes(lowerSearch)
+        );
+    }
+    renderProducts(filtered);
+}
+
+async function fetchAndRenderCategories() {
+    const select = getEl('category-select');
+    if (!select) return;
+    try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=getCategories`);
+        const result = await response.json();
+        if (result.success) {
+            result.categories.forEach(cat => {
+                select.insertAdjacentHTML('beforeend', `<option value="${cat}">${cat}</option>`);
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching categories:", error);
     }
 }
 
@@ -226,12 +321,11 @@ async function handleLogin() {
     try {
         const result = await sendData('secureLogin', { username, password });
         if (result.success) {
-            showAlert(`ยินดีต้อนรับ, ${result.user.username}!`, 'success');
             sessionStorage.setItem('sessionToken', result.token);
             sessionStorage.setItem('currentUser', JSON.stringify(result.user));
             checkLoginStatus();
         } else {
-            showAlert(result.message || 'รหัสผ่านไม่ถูกต้อง', 'error');
+            showAlert(result.message || 'Login failed', 'error');
         }
     } finally {
         hide(getEl('loader'));
@@ -487,8 +581,3 @@ async function handleChangePassword() {
         showAlert(result.message, 'error');
     }
 }
-
-// ==========================================================
-// =================== PUBLIC PAGE LOGIC (No changes needed)
-// ==========================================================
-// (The public page functions remain the same as the previous version)
