@@ -2,7 +2,7 @@
 // =================== CONFIGURATION ========================
 // ==========================================================
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw9kSzJiz5KUXZhGnjgv6FsgteotVw5LpPdtHJrlpWjTLJSg3Bl1k0UAZX-68yCZZxY/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGaz_iTiJxhoZionkZ_99Ff9na7gEQ5njSDMGvKHouBZX0DLUAi4qYhL3B-KWG_AEX/exec';
 // ==========================================================
 
 // Global variables
