@@ -4,7 +4,7 @@
 // !!! Google Apps Script URL (Deployed Web App URL) !!!
 // Make sure this URL is correct and your Apps Script is deployed as a Web App
 // IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
-const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbwSqbVqXIlFa2OmteGWcT09cwXk52m4hrRJEqjTEOJC5XQnea2t5algwcRQ7kP4PbU-/exec'; // Placeholder, replace with your actual URL
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbw6F5kLZfb7UGMruPtv4HitX9seOPrioxHSfD06vz75I_CtiPxrvoL3gXW62CpFtobG/exec'; // Placeholder, replace with your actual URL
 
 
 
