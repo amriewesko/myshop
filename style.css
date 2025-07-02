@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 8.0
+ * Version: 9.0 (Gadget Frame Update)
  * Description: The ultimate, production-quality stylesheet based on the iconic Doraemon theme.
 */
 
@@ -25,6 +25,7 @@
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
     --border-radius-md: 12px;
     --border-radius-lg: 20px;
     --border-radius-full: 9999px;
@@ -139,11 +140,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
     text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
 }
 
+/* === กรอบแสดงสินค้า (สไตล์ใหม่) === */
+.main-content-frame {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 4px solid var(--dora-blue);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-inset), 0 0 25px rgba(0, 158, 227, 0.4);
+    backdrop-filter: blur(5px);
+}
+
 /* Product Cards */
 .product-card {
     transition: all var(--transition-speed) var(--transition-timing);
     overflow: hidden;
     height: 100%;
+    position: relative; /* Add for sticker positioning */
 }
 .product-card:hover {
     transform: translateY(-10px);
@@ -159,6 +171,29 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
 .product-card .card-body { padding: 16px; text-align: center; }
 .product-card .card-title { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-color); }
 .product-card .price { font-size: 1.8rem; font-weight: 800; color: var(--dora-blue); margin-bottom: 16px; }
+
+/* === สติกเกอร์ตกใจบนการ์ดสินค้า (สไตล์ใหม่) === */
+.product-card::after {
+    content: '';
+    position: absolute;
+    bottom: 55px; /* ปรับตำแหน่งให้อยู่ใกล้ปุ่ม */
+    right: -15px; /* ยื่นออกมาจากขอบขวาเล็กน้อย */
+    width: 70px;
+    height: 70px;
+    background-image: url('https://lh3.googleusercontent.com/d/1u8SpHoiFABHhFEGOJntUa_ZLmHrDDriF'); /* รูปท่าตกใจ */
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 10;
+    transform: rotate(15deg) scale(0);
+    opacity: 0;
+    transition: all 0.3s var(--transition-timing-bounce);
+    pointer-events: none;
+}
+.product-card:hover::after {
+    transform: rotate(15deg) scale(1);
+    opacity: 1;
+}
+
 
 /* No Products Found Message */
 #no-products-found { padding: 32px; }
@@ -347,11 +382,13 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 /* --- 8. Responsive Adjustments --- */
 @media (max-width: 991.98px) {
     .hero-section h1 { font-size: 3rem; }
+    .main-content-frame { padding: 16px; }
 }
 @media (max-width: 768px) {
     .hero-section h1 { font-size: 2.5rem; }
     #doraemon-sticker { right: 10px; width: 120px; height: 120px; }
     #back-to-top { bottom: 15px; right: 15px; width: 50px; height: 50px; }
+    .product-card::after { width: 50px; height: 50px; bottom: 50px; right: -10px; }
 }
 @media (max-width: 576px) {
     body { font-size: 14px; }
