@@ -1,106 +1,52 @@
 /*
- * MyShop - Definitive Doraemon Edition Stylesheet
- * Version: 9.0 (Blue Overlay Effect)
- * Author: Your Name / Gemini
+ * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
+ * Version: 8.0
  * Description: The ultimate, production-quality stylesheet based on the iconic Doraemon theme.
- * This version incorporates a comprehensive design system, advanced graphics, stickers,
- * fluid animations, and a pixel-perfect responsive experience across all devices,
- * crafted with maximum intention and detail.
 */
 
 /* --- 1. ระบบตัวแปร (Design System Core) - ธีมโดราเอมอน --- */
 :root {
-    /* =================================== */
-    /* ========= ชุดสีโดราเอมอน =========== */
-    /* =================================== */
-
-    /* -- สีหลัก: จากตัวละครโดราเอมอน -- */
-    --dora-blue: #009EE3;              /* สีฟ้าโดราเอมอน */
-    --dora-blue-dark: #007AB8;         /* สีฟ้าเข้มสำหรับ Hover */
-    --dora-red: #D82129;               /* สีแดงจากปลอกคอและจมูก */
-    --dora-red-dark: #B91C22;          /* สีแดงเข้มสำหรับ Hover */
-    --dora-yellow: #F7D617;            /* สีเหลืองจากกระดิ่ง */
-    --dora-yellow-dark: #F2C40A;       /* สีเหลืองเข้ม */
-
-    /* -- สีกลาง: สำหรับพื้นหลังและข้อความ -- */
-    --text-color: #333333;              /* สีเทาเข้มสำหรับตัวอักษร อ่านง่าย */
-    --light-text-color: #555555;        /* สีเทาอ่อนสำหรับคำอธิบาย */
-    --background-color: #F0F8FF;        /* สีฟ้าอ่อนๆ เหมือนท้องฟ้า */
-    --card-background: #FFFFFF;         /* สีขาว เหมือนท้องและใบหน้า */
-    --border-color: #E0E0E0;            /* สีเทาสำหรับเส้นขอบ */
+    --dora-blue: #009EE3;
+    --dora-blue-dark: #007AB8;
+    --dora-red: #D82129;
+    --dora-red-dark: #B91C22;
+    --dora-yellow: #F7D617;
+    --dora-yellow-dark: #F2C40A;
+    --text-color: #333333;
+    --light-text-color: #777777;
+    --background-color: #F0F8FF;
+    --card-background: #FFFFFF;
+    --border-color: #E0E0E0;
     --white-color: #FFFFFF;
-
-    /* -- สีสำหรับสถานะต่างๆ -- */
-    --success-color: #28a745;           /* สีเขียวสำหรับ "สำเร็จ" */
-    --danger-color: var(--dora-red);    /* ใช้สีแดงโดราเอมอนสำหรับ "ผิดพลาด" */
-    --warning-color: var(--dora-yellow);/* ใช้สีเหลืองโดราเอมอนสำหรับ "คำเตือน" */
-    --info-color: #17a2b8;              /* สีฟ้าเทอร์ควอยซ์สำหรับ "ข้อมูล" */
-
-    /* =================================== */
-    /* ========= เงาและมิติ ============== */
-    /* =================================== */
+    --success-color: #28a745;
+    --danger-color: var(--dora-red);
+    --warning-color: var(--dora-yellow);
+    --info-color: #17a2b8;
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-
-    /* =================================== */
-    /* ========= ระยะห่างและขอบมน ========= */
-    /* =================================== */
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-    --spacing-xxl: 64px;
-    --border-radius-md: 12px; /* ทำให้ขอบมนขึ้น */
+    --border-radius-md: 12px;
     --border-radius-lg: 20px;
     --border-radius-full: 9999px;
-
-    /* =================================== */
-    /* ========= อนิเมชัน ================ */
-    /* =================================== */
     --transition-speed: 0.3s;
     --transition-timing: ease-in-out;
     --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 /* --- 2. สไตล์พื้นฐานและตัวอักษร --- */
-html {
-    scroll-behavior: smooth;
-}
-
+html { scroll-behavior: smooth; }
 body {
     font-family: 'Kanit', sans-serif;
     color: var(--text-color);
     background-color: var(--background-color);
-    /* พื้นหลังลายท้องฟ้าจากรูปที่ให้มา */
-    background-image: url('https://lh3.googleusercontent.com/d/1tdt0PtNCXUQUrMy1D1fh7HKh_WBkJRWz');
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
     line-height: 1.7;
     overflow-x: hidden;
 }
+h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
 
-/* === NEW: เพิ่มเลเยอร์สีฟ้าโปร่งแสงทับทั้งหน้าจอ === */
-body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 158, 227, 0.25); /* สีฟ้าโดราเอมอนโปร่งแสง (ปรับค่าสุดท้ายเพื่อเปลี่ยนความเข้ม) */
-    z-index: 99999; /* ต้องอยู่บนสุดทับทุกอย่าง */
-    pointer-events: none; /* ทำให้สามารถคลิกทะลุเลเยอร์นี้ไปยังเนื้อหาข้างหลังได้ */
-}
+/* --- 3. ส่วนประกอบทั่วไป --- */
 
-
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
-    color: var(--dora-blue-dark);
-}
-
-/* --- ปุ่มสไตล์โดราเอมอน --- */
+/* Buttons */
 .btn {
     border-radius: var(--border-radius-full);
     padding: 12px 30px;
@@ -113,268 +59,266 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
     overflow: hidden;
 }
-
 .btn:hover {
     transform: translateY(-3px) scale(1.05);
     box-shadow: var(--shadow-lg);
 }
+.btn-primary, .btn-add-to-cart { background-color: var(--dora-red); color: var(--white-color) !important; }
+.btn-primary:hover, .btn-add-to-cart:hover { background-color: var(--dora-red-dark); }
+.btn-secondary { background-color: #6c757d; color: var(--white-color); }
+.btn-secondary:hover { background-color: #5a6268; }
+.btn-warning { background-color: var(--dora-yellow); color: var(--text-color); }
+.btn-warning:hover { background-color: var(--dora-yellow-dark); }
+.btn-danger { background-color: var(--dora-red); color: var(--white-color); }
+.btn-danger:hover { background-color: var(--dora-red-dark); }
 
-.btn-primary {
-    background-color: var(--dora-red);
-    color: var(--white-color);
+/* Cards & Forms */
+.card {
+    border: 3px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    background-color: var(--card-background);
+}
+.form-control, .form-select {
+    border-radius: var(--border-radius-md);
+    padding: 12px 15px;
+    border: 2px solid var(--border-color);
+    transition: all var(--transition-speed) var(--transition-timing);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--dora-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 158, 227, 0.25);
 }
 
-.btn-primary:hover {
-    background-color: var(--dora-red-dark);
-}
-
-/* --- 3. การจัดวางและส่วนต่างๆ --- */
+/* --- 4. การจัดวางและส่วนต่างๆ --- */
 
 /* Navbar */
 .navbar {
     background-color: var(--dora-blue);
     box-shadow: var(--shadow-md);
-    padding: var(--spacing-sm) 0;
-    position: sticky;
-    top: 0;
-    z-index: 1030;
+    position: sticky; top: 0; z-index: 1030;
     border-bottom: 5px solid var(--dora-red);
 }
-
-.navbar-brand, .navbar .nav-link {
-    color: var(--white-color) !important;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-}
+.navbar-brand, .navbar .nav-link { color: var(--white-color) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)); /* Overlay to not fully hide the body background */
-    color: var(--dora-blue-dark);
-    padding: var(--spacing-xxl) 0;
-    text-align: center;
     position: relative;
-    margin-bottom: var(--spacing-xl);
-    padding-top: 200px; /* Add padding to make space for the sticker */
+    padding: 60px 0;
+    text-align: center;
+    color: var(--white-color);
+    background-image: url('https://lh3.googleusercontent.com/d/1aS3qWjz8UFwO6ucQ_qiuLN3yAOPX5mV6');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
 }
-
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 122, 184, 0.5);
+    z-index: 1;
+}
+.hero-section .container { position: relative; z-index: 2; }
+#hero-doraemon-img {
+    width: 200px;
+    max-width: 50%;
+    margin-bottom: 20px;
+    filter: drop-shadow(0px 5px 15px rgba(0,0,0,0.3));
+    animation: float-animation 6s ease-in-out infinite;
+}
+@keyframes float-animation {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
 .hero-section h1 {
     font-weight: 800;
     font-size: 3.5rem;
-    color: var(--dora-blue-dark);
-    text-shadow: 2px 2px 5px rgba(255,255,255,0.7);
-}
-.hero-section p.lead {
-    text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
+    color: var(--white-color);
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
 }
 
 /* Product Cards */
 .product-card {
-    background-color: var(--card-background);
-    border: 3px solid var(--border-color);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
     transition: all var(--transition-speed) var(--transition-timing);
     overflow: hidden;
     height: 100%;
 }
-
 .product-card:hover {
     transform: translateY(-10px);
     box-shadow: var(--shadow-lg);
     border-color: var(--dora-yellow);
 }
-
 .product-card img {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     transition: transform 0.4s ease;
 }
+.product-card:hover img { transform: scale(1.1); }
+.product-card .card-body { padding: 16px; text-align: center; }
+.product-card .card-title { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-color); }
+.product-card .price { font-size: 1.8rem; font-weight: 800; color: var(--dora-blue); margin-bottom: 16px; }
 
-.product-card:hover img {
-    transform: scale(1.1);
+/* No Products Found Message */
+#no-products-found { padding: 32px; }
+#no-products-found::before {
+    content: '';
+    display: block;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 16px;
+    background-image: url('https://lh3.googleusercontent.com/d/1u8SpHoiFABHhFEGOJntUa_ZLmHrDDriF');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
-
-.product-card .card-body {
-    padding: var(--spacing-lg);
-    text-align: center;
-}
-
-.product-card .card-title {
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    margin-bottom: var(--spacing-sm);
-}
-
-.product-card .price {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--dora-blue);
-    margin-bottom: var(--spacing-lg);
-}
-
-.btn-add-to-cart {
-    background-color: var(--dora-red);
-    color: var(--white-color);
-}
-
-.btn-add-to-cart:hover {
-    background-color: var(--dora-red-dark);
-}
+#no-products-found i.fa-box-open { display: none; }
 
 /* Footer */
 footer {
     background-color: var(--dora-blue);
     color: rgba(255, 255, 255, 0.9);
-    padding: var(--spacing-xl) 0;
-    margin-top: var(--spacing-xxl);
-    border-top: 5px solid var(--dora-red);
+    padding-top: 60px; /* Make space for doraemon */
+    padding-bottom: 20px;
+    margin-top: 64px;
     position: relative;
+    border-top: 5px solid var(--dora-red);
 }
+.footer-doraemon {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    height: 120px;
+    background-image: url('https://lh3.googleusercontent.com/d/1_KEx580WL57sR-gSnRrU6fBMiNfu9civ');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    pointer-events: none;
+}
+footer .social-icons a { color: var(--white-color); margin: 0 10px; transition: color var(--transition-speed); }
+footer .social-icons a:hover { color: var(--dora-yellow); }
 
-/* --- 4. ปุ่มกลับสู่ด้านบน (สไตล์กระดิ่งโดราเอมอน) --- */
+/* --- 5. วิดเจ็ตและองค์ประกอบพิเศษ --- */
+
+/* Back to Top Button (Bell) */
 #back-to-top {
     position: fixed;
-    bottom: var(--spacing-xl);
-    right: var(--spacing-xl);
-    width: 60px;
-    height: 60px;
+    bottom: 24px; right: 24px;
+    width: 60px; height: 60px;
     background-color: var(--dora-yellow);
-    color: var(--dora-yellow-dark);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
+    border-radius: 50%; display: flex;
+    align-items: center; justify-content: center;
     box-shadow: var(--shadow-lg);
-    transition: all var(--transition-speed) var(--transition-timing-bounce);
-    z-index: 1000;
-    border: 4px solid #a67c00;
+    z-index: 1000; border: 4px solid #a67c00;
     text-decoration: none;
     animation: bell-swing 3s infinite ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.5);
+    transition: all 0.4s var(--transition-timing-bounce);
 }
-
-#back-to-top::before { /* สร้างเส้นขีดกลางกระดิ่ง */
-    content: '';
-    position: absolute;
-    width: 80%;
-    height: 2px;
-    background-color: #a67c00;
-    top: 65%;
+#back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
 }
-
-#back-to-top i { /* ซ่อนไอคอนลูกศรเดิม */
-    display: none;
+#back-to-top::before {
+    content: ''; position: absolute;
+    width: 80%; height: 2px;
+    background-color: #a67c00; top: 65%;
 }
-
+#back-to-top i { display: none; }
 #back-to-top:hover {
-    animation-play-state: paused; /* หยุดอนิเมชันเมื่อโฮเวอร์ */
-    transform: translateY(-5px) scale(1.1);
-    background-color: var(--dora-yellow-dark);
+    animation-play-state: paused;
+    transform: translateY(-5px) scale(1.1) !important;
 }
-
 @keyframes bell-swing {
     0%, 100% { transform: rotate(0deg); }
     25% { transform: rotate(10deg); }
     75% { transform: rotate(-10deg); }
 }
 
-/* --- 5. สติกเกอร์โดราเอมอน (Stickers) --- */
-
-/* Welcome sticker in Hero section */
-.hero-sticker {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 250px;
-    max-width: 50%;
-    z-index: 10;
-}
-
-/* Flying sticker */
-#flying-doraemon-sticker {
+/* Doraemon Sticker */
+#doraemon-sticker {
     position: fixed;
-    bottom: 20px;
-    right: 100px; /* Adjust position to not overlap bell */
-    width: 180px;
+    bottom: 20px; right: 100px;
+    width: 180px; height: 180px;
+    background-image: url('https://lh3.googleusercontent.com/d/1qeqmCHDXcgrYHUg7cslCYSzWFtVL02eF');
+    background-size: contain;
+    background-repeat: no-repeat;
     z-index: 999;
-    transition: transform 0.5s ease-in-out;
-    animation: bobbing 5s infinite ease-in-out;
-    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+    transition: transform 0.5s var(--transition-timing-bounce);
+    transform: translateY(250px);
+    pointer-events: auto;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+}
+#doraemon-sticker.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+#doraemon-sticker:hover {
+    transform: translateY(-10px) rotate(5deg) !important;
 }
 
-@keyframes bobbing {
-    0%, 100% { transform: translateY(0) rotate(-5deg); }
-    50% { transform: translateY(-20px) rotate(5deg); }
+/* --- 6. หน้าผู้ดูแลระบบ --- */
+.admin-wrapper { min-height: calc(100vh - 200px); }
+.d-flex-center { display: flex; align-items: center; justify-content: center; padding: 32px; }
+#login-gate .card { max-width: 450px; width: 100%; }
+.admin-section {
+    background: var(--card-background);
+    padding: 24px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
 }
-
-/* Relaxing sticker in footer */
-.footer-doraemon {
+.img-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-md);
+    min-height: 110px;
+}
+.img-preview-wrapper { position: relative; }
+.remove-img-btn {
     position: absolute;
-    bottom: 0;
-    right: 20px;
-    width: 150px;
-    transform: translateY(25%); /* Make it sit on the edge */
-    z-index: 1;
+    top: -5px; right: -5px;
+    width: 24px; height: 24px;
+    background: var(--dora-red);
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Surprised sticker for no products found */
-.no-product-sticker {
-    width: 150px;
-    margin-bottom: 1rem;
-    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
-    transform: translate3d(0, 0, 0);
-}
-
-@keyframes shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-  40%, 60% { transform: translate3d(4px, 0, 0); }
-}
-
-/* --- 6. Responsive Adjustments --- */
-@media (max-width: 991.98px) {
-    .hero-section h1 { font-size: 3rem; }
-    .hero-sticker { width: 200px; }
-}
-
-@media (max-width: 768px) {
-    .hero-section { padding-top: 150px; }
-    .hero-section h1 { font-size: 2.5rem; }
-    .hero-sticker { width: 180px; }
-    #flying-doraemon-sticker { width: 150px; right: 20px; }
-    .footer-doraemon { width: 120px; }
-}
-
-@media (max-width: 576px) {
-    body { background-position: top center; }
-    .hero-section { padding-top: 120px; }
-    .hero-section h1 { font-size: 2rem; }
-    .hero-sticker { width: 150px; }
-    #flying-doraemon-sticker { width: 120px; }
-    .footer-doraemon { display: none; } /* Hide on very small screens to avoid clutter */
-}
-
-/* Fallback for old custom modal if it's still used by JS */
+/* --- 7. ระบบแจ้งเตือน (Custom Modal) --- */
 .custom-modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background-color: rgba(0, 158, 227, 0.6);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1999;
-    opacity: 1;
-}
-.custom-modal-overlay.d-none {
     opacity: 0;
+    transition: opacity var(--transition-speed) ease-in-out;
     pointer-events: none;
+}
+.custom-modal-overlay.d-none { display: none !important; }
+.custom-modal-overlay:not(.d-none) {
+    opacity: 1;
+    pointer-events: auto;
 }
 .custom-modal-content {
     background-color: var(--card-background);
@@ -382,26 +326,36 @@ footer {
     box-shadow: var(--shadow-lg);
     width: 90%;
     max-width: 450px;
-    padding: var(--spacing-xl);
-    border: 3px solid var(--dora-blue);
+    padding: 24px;
 }
 .custom-modal-header {
-    padding: var(--spacing-md);
-    margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg);
+    padding: 16px;
     color: var(--white-color);
     border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    margin: -24px -24px 16px -24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 .custom-modal-header.success { background-color: var(--success-color); }
 .custom-modal-header.error { background-color: var(--danger-color); }
-.custom-modal-header.warning { background-color: var(--warning-color); }
+.custom-modal-header.warning { background-color: var(--warning-color); color: var(--text-color); }
 .custom-modal-header.info { background-color: var(--info-color); }
+.custom-modal-close { background: none; border: none; font-size: 1.5rem; color: var(--white-color); opacity: 0.8; }
+.custom-modal-footer { margin-top: 24px; display: flex; gap: 16px; justify-content: flex-end; }
 
-.custom-modal-footer {
-    margin-top: var(--spacing-lg);
-    display: flex;
-    gap: var(--spacing-md);
-    justify-content: flex-end;
+/* --- 8. Responsive Adjustments --- */
+@media (max-width: 991.98px) {
+    .hero-section h1 { font-size: 3rem; }
+}
+@media (max-width: 768px) {
+    .hero-section h1 { font-size: 2.5rem; }
+    #doraemon-sticker { right: 10px; width: 120px; height: 120px; }
+    #back-to-top { bottom: 15px; right: 15px; width: 50px; height: 50px; }
+}
+@media (max-width: 576px) {
+    body { font-size: 14px; }
+    .hero-section h1 { font-size: 2rem; }
+    .modal-footer { flex-direction: column; }
+    .modal-footer .btn { width: 100%; }
 }
