@@ -1,7 +1,7 @@
 // ==========================================================
 // =================== CONFIGURATION ========================
 // ==========================================================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw7pVw9mbFSZqHTQsztAlIOkdHqr-ti_z9EcKSUs-Xhp1QL7jDGX7ErHwFVV3XSFNc/exec'; // !!! แทนที่ด้วย URL ของคุณ !!!
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjGn_mnY58mqVmSILLswFu5ZyvaB1x56dzTnY-JbWKIdilOVJMXK6rFjPIF9Zfcspq/exec'; // !!! แทนที่ด้วย URL ของคุณ !!!
 
 // ==========================================================
 // =================== GLOBAL VARIABLES =====================
