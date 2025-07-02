@@ -1,569 +1,502 @@
 // ==========================================================
 // =================== CONFIGURATION ========================
 // ==========================================================
-// !!! Google Apps Script URL (Deployed Web App URL) !!!
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGaz_iTiJxhoZionkZ_99Ff9na7gEQ5njSDMGvKHouBZX0DLUAi4qYhL3B-KWG_AEX/exec';
-// ==========================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw7pVw9mbFSZqHTQsztAlIOkdHqr-ti_z9EcKSUs-Xhp1QL7jDGX7ErHwFVV3XSFNc/exec'; // !!! แทนที่ด้วย URL ของคุณ !!!
 
-// Global variables
+// ==========================================================
+// =================== GLOBAL VARIABLES =====================
+// ==========================================================
 let allProducts = [];
-let currentFilter = 'ทั้งหมด';
-let currentSearchTerm = '';
+let currentUser = { username: '', role: '' };
 let selectedFileBase64 = [];
 let selectedFileNames = [];
 let productImages = [];
 
-// ---- Helper and Security Functions ----
+// ==========================================================
+// =================== DOM ELEMENT GETTERS ==================
+// ==========================================================
 const getEl = (id) => document.getElementById(id);
 const show = (el) => el && el.classList.remove('d-none');
 const hide = (el) => el && el.classList.add('d-none');
 
-/**
- * Converts special characters to HTML entities to prevent XSS.
- * @param {string | number} str The string to sanitize.
- * @returns {string} The sanitized string.
- */
-const sanitizeHTML = (str) => {
-    const temp = document.createElement('div');
-    temp.textContent = String(str);
-    return temp.innerHTML;
-};
+// ==========================================================
+// =================== INITIALIZATION =======================
+// ==========================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    if (path.includes('admin.html')) {
+        initAdminPage();
+    } else {
+        initPublicPage();
+    }
+});
 
-
-function showCustomAlert(message, type = 'info', isConfirm = false) {
-    return new Promise((resolve) => {
-        // ... (The showCustomAlert function remains unchanged from your original file) ...
-    });
+function initPublicPage() {
+    loadProducts();
+    fetchAndRenderCategories();
+    getEl('search-input')?.addEventListener('input', (e) => filterAndSearchProducts(e.target.value));
+    getEl('category-select')?.addEventListener('change', (e) => filterAndSearchProducts(null, e.target.value));
 }
 
-async function sendData(action, data = {}, method = 'POST') {
+function initAdminPage() {
+    checkLoginStatus();
+    setupAdminEventListeners();
+}
+
+// ==========================================================
+// =================== API & DATA HANDLING ==================
+// ==========================================================
+async function sendData(action, data = {}) {
     try {
-        if (method === 'GET') {
-            const url = new URL(APPS_SCRIPT_URL);
-            url.searchParams.append('action', action);
-            Object.keys(data).forEach(key => url.searchParams.append(key, data[key]));
-            const response = await fetch(url.toString());
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return await response.json();
-        } else {
-            // For POST requests, include the auth token
-            const requestBody = {
-                action: action,
-                data: data
-            };
-            // Add auth token if it exists and action is not 'login'
-            const authToken = sessionStorage.getItem('authToken');
-            if (action !== 'login' && authToken) {
-                requestBody.authToken = authToken;
-            }
+        const body = {
+            action: action,
+            token: sessionStorage.getItem('sessionToken'),
+            data: data
+        };
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(body)
+        });
 
-            const response = await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`HTTP error! status: ${response.status}. Response: ${errorText}`);
-            }
-            return await response.json();
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const result = await response.json();
+        if (result.reauth) {
+            showCustomAlert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่', 'error');
+            handleLogout();
         }
+        return result;
     } catch (error) {
-        console.error("Send Data API Error:", error);
-        showCustomAlert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message, 'error');
+        console.error("API Error:", error);
+        showCustomAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
         return { success: false, message: error.message };
     }
 }
 
-
-// ---- Product Management (Public Page) ----
+// ==========================================================
+// =================== PUBLIC PAGE LOGIC ====================
+// ==========================================================
+async function loadProducts() {
+    const loader = getEl('loader');
+    show(loader);
+    try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
+        const result = await response.json();
+        if (result.success) {
+            allProducts = result.data;
+            renderProducts(allProducts);
+        }
+    } catch (error) {
+        console.error("Error loading products:", error);
+    } finally {
+        hide(loader);
+    }
+}
 
 function renderProducts(products) {
-    const productListEl = getEl('product-list-container');
-    if (!productListEl) return;
-    productListEl.innerHTML = '';
-    hide(getEl('loader'));
-    hide(getEl('no-products-found'));
-
+    const container = getEl('product-list-container');
+    const noProductsEl = getEl('no-products-found');
+    if (!container) return;
+    container.innerHTML = '';
+    
     if (products.length === 0) {
-        show(getEl('no-products-found'));
+        show(noProductsEl);
         return;
     }
+    hide(noProductsEl);
 
     products.forEach(product => {
-        let imageUrls = (product.image_url) ? String(product.image_url).split(',').map(url => url.trim()) : [];
-        const firstImageUrl = imageUrls[0] || 'https://placehold.co/400x250/cccccc/333333?text=No+Image';
-
-        const sanitizedName = sanitizeHTML(product.name);
-        const sanitizedPrice = sanitizeHTML(parseFloat(product.price).toFixed(2));
-
-        const productCardHtml = `
+        const imageUrls = String(product.image_url || '').split(',');
+        const firstImageUrl = imageUrls[0]?.trim() || 'https://placehold.co/400x250/cccccc/333333?text=No+Image';
+        const cardHtml = `
             <div class="col animate__animated animate__fadeInUp">
                 <div class="product-card">
-                    <img src="${firstImageUrl}" class="card-img-top" alt="${sanitizedName}" onerror="this.onerror=null;this.src='https://placehold.co/400x250/cccccc/333333?text=No+Image';">
+                    <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}" onerror="this.src='https://placehold.co/400x250/cccccc/333333?text=Error';">
                     <div class="card-body">
-                        <h5 class="card-title">${sanitizedName}</h5>
-                        <p class="product-price">฿${sanitizedPrice}</p>
-                        ${product.shopee_url ? `<a href="${sanitizeHTML(product.shopee_url)}" target="_blank" rel="noopener noreferrer" class="btn btn-add-to-cart"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ SHOPEE</a>` : ''}
+                        <h5 class="card-title">${product.name}</h5>
+                        <p class="price">฿${parseFloat(product.price).toFixed(2)}</p>
+                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-add-to-cart w-100"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
                     </div>
                 </div>
             </div>`;
-        productListEl.insertAdjacentHTML('beforeend', productCardHtml);
+        container.insertAdjacentHTML('beforeend', cardHtml);
     });
 }
 
+function filterAndSearchProducts(searchTerm = null, category = null) {
+    const currentSearch = searchTerm !== null ? searchTerm : getEl('search-input').value;
+    const currentCategory = category !== null ? category : getEl('category-select').value;
 
-function filterAndSearchProducts() {
     let filtered = allProducts;
-    if (currentFilter !== 'ทั้งหมด') {
-        filtered = filtered.filter(p => p.category && p.category.toLowerCase() === currentFilter.toLowerCase());
+    if (currentCategory !== 'ทั้งหมด') {
+        filtered = filtered.filter(p => p.category === currentCategory);
     }
-    if (currentSearchTerm) {
-        const lowerCaseSearchTerm = currentSearchTerm.toLowerCase();
-        filtered = filtered.filter(p =>
-            (p.name && p.name.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (p.id && String(p.id).toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (p.category && p.category.toLowerCase().includes(lowerCaseSearchTerm))
+    if (currentSearch) {
+        const lowerSearch = currentSearch.toLowerCase();
+        filtered = filtered.filter(p => 
+            p.name.toLowerCase().includes(lowerSearch) ||
+            p.id.toLowerCase().includes(lowerSearch)
         );
     }
     renderProducts(filtered);
 }
 
-async function loadProducts() {
-    const loaderEl = getEl('loader');
-    if (loaderEl) show(loaderEl);
+async function fetchAndRenderCategories() {
+    const select = getEl('category-select');
+    if (!select) return;
     try {
-        const response = await sendData('getProducts', {}, 'GET');
-        if (response.success && response.data) {
-            allProducts = response.data;
-            filterAndSearchProducts();
-        } else {
-            allProducts = [];
-            show(getEl('no-products-found'));
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=getCategories`);
+        const result = await response.json();
+        if (result.success) {
+            result.categories.forEach(cat => {
+                select.insertAdjacentHTML('beforeend', `<option value="${cat}">${cat}</option>`);
+            });
         }
     } catch (error) {
-        console.error("Error loading products:", error);
-        allProducts = [];
-        show(getEl('no-products-found'));
-    } finally {
-        if (loaderEl) hide(loaderEl);
+        console.error("Error fetching categories:", error);
     }
 }
 
-async function fetchAndRenderCategories() {
-    const categorySelect = getEl('category-select');
-    if (!categorySelect) return;
-    const result = await sendData('getCategories', {}, 'GET');
-    if (result.success && result.categories) {
-        // Clear old options except the first one
-        while (categorySelect.options.length > 1) {
-            categorySelect.remove(1);
-        }
-        result.categories.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = sanitizeHTML(category);
-            categorySelect.appendChild(option);
-        });
-    }
-}
-
-
-// ---- Admin Panel Logic ----
-function initAdminPage() {
-    checkLoginStatus();
-    setupAdminEventListeners();
-    if (sessionStorage.getItem('loggedIn') === 'true') {
-        loadAdminProducts();
-    }
-}
-
+// ==========================================================
+// =================== ADMIN: AUTHENTICATION ================
+// ==========================================================
 function checkLoginStatus() {
-    const adminPanel = getEl('admin-panel');
-    const loginGate = getEl('login-gate');
-    const logoutBtnContainer = getEl('logout-btn-container');
-
-    if (sessionStorage.getItem('loggedIn') === 'true' && sessionStorage.getItem('authToken')) {
-        show(adminPanel);
-        hide(loginGate);
-        show(logoutBtnContainer);
+    const token = sessionStorage.getItem('sessionToken');
+    const user = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (token && user) {
+        currentUser = user;
+        show(getEl('admin-panel'));
+        hide(getEl('login-gate'));
+        show(getEl('user-dropdown'));
+        getEl('username-display').textContent = currentUser.username;
+        loadAdminProducts();
     } else {
-        hide(adminPanel);
-        show(loginGate);
-        hide(logoutBtnContainer);
+        hide(getEl('admin-panel'));
+        show(getEl('login-gate'));
+        hide(getEl('user-dropdown'));
     }
 }
 
 async function handleLogin() {
-    const passwordInput = getEl('password-input');
-    const enteredPassword = passwordInput.value;
-    if (!enteredPassword) {
-        showCustomAlert('กรุณากรอกรหัสผ่าน', 'warning');
-        return;
+    const username = getEl('username-input').value.trim();
+    const password = getEl('password-input').value.trim();
+    if (!username || !password) {
+        return showCustomAlert('กรุณากรอก Username และ Password', 'error');
     }
+    show(getEl('loader'));
     try {
-        const response = await sendData('login', { password: enteredPassword });
-        if (response.success && response.token) {
-            sessionStorage.setItem('loggedIn', 'true');
-            sessionStorage.setItem('authToken', response.token);
-            showCustomAlert('เข้าสู่ระบบสำเร็จ!', 'success');
+        const result = await sendData('secureLogin', { username, password });
+        if (result.success) {
+            sessionStorage.setItem('sessionToken', result.token);
+            sessionStorage.setItem('currentUser', JSON.stringify(result.user));
             checkLoginStatus();
-            passwordInput.value = '';
-            loadAdminProducts();
         } else {
-            showCustomAlert('รหัสผ่านไม่ถูกต้อง!', 'error');
+            showCustomAlert(result.message || 'Login failed', 'error');
         }
-    } catch (error) {
-        showCustomAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+    } finally {
+        hide(getEl('loader'));
     }
 }
 
 function handleLogout() {
-    sessionStorage.removeItem('loggedIn');
-    sessionStorage.removeItem('authToken');
-    showCustomAlert('ออกจากระบบแล้ว', 'info');
+    sessionStorage.clear();
+    currentUser = { username: '', role: '' };
     checkLoginStatus();
-    // Optional: clear admin products from view
-    const adminProductList = getEl('admin-product-list');
-    if (adminProductList) adminProductList.innerHTML = '';
+    showCustomAlert('ออกจากระบบแล้ว', 'info');
 }
 
+// ==========================================================
+// =================== ADMIN: EVENT LISTENERS ===============
+// ==========================================================
+function setupAdminEventListeners() {
+    getEl('secure-login-btn')?.addEventListener('click', handleLogin);
+    getEl('password-input')?.addEventListener('keypress', (e) => e.key === 'Enter' && handleLogin());
+    getEl('logout-btn')?.addEventListener('click', handleLogout);
 
-async function handleProductFormSubmit(event) {
-    event.preventDefault();
-    const productId = getEl('product-id').value.trim();
-    const name = getEl('name').value.trim();
-    const category = getEl('category').value.trim();
-    const price = parseFloat(getEl('price').value);
-    const shopeeLink = getEl('shopeeLink').value.trim();
+    // Product Form
+    getEl('product-form')?.addEventListener('submit', handleProductFormSubmit);
+    getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
+    getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
+    getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
 
-    if (!name || !category || isNaN(price) || price < 0) {
-        showCustomAlert('โปรดกรอกข้อมูลสินค้าให้ครบถ้วนและถูกต้อง (ชื่อ, หมวดหมู่, ราคา)', 'error');
-        return;
+    // Change Password Modal
+    getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
+}
+
+// ==========================================================
+// =================== ADMIN: PRODUCT MGMT ==================
+// ==========================================================
+async function loadAdminProducts() {
+    // A simple way to check if token is still valid before fetching public data
+    const checkTokenResult = await sendData('secureGetUsers'); 
+    if (checkTokenResult.success) { 
+        const productResult = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
+        const products = await productResult.json();
+        if (products.success) {
+            allProducts = products.data;
+            renderAdminProducts(allProducts);
+        }
+    }
+}
+
+function renderAdminProducts(products, searchTerm = '') {
+    const container = getEl('admin-product-list');
+    if(!container) return;
+
+    let filteredProducts = products;
+    if (searchTerm) {
+        const lowerSearch = searchTerm.toLowerCase();
+        filteredProducts = products.filter(p => 
+            p.name.toLowerCase().includes(lowerSearch) || 
+            p.id.toLowerCase().includes(lowerSearch)
+        );
     }
 
-    const adminLoader = getEl('loader');
-    show(adminLoader);
+    const tableHtml = `
+        <table class="table table-hover">
+            <thead><tr><th>ID</th><th>รูป</th><th>ชื่อ</th><th>ราคา</th><th>การกระทำ</th></tr></thead>
+            <tbody>
+                ${filteredProducts.map(p => {
+                    const imageUrls = String(p.image_url || '').split(',');
+                    const firstImg = imageUrls[0]?.trim() || 'https://placehold.co/50x50/cccccc/333333?text=NoImg';
+                    return `
+                        <tr>
+                            <td>${p.id}</td>
+                            <td><img src="${firstImg}" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;"></td>
+                            <td>${p.name}</td>
+                            <td>${parseFloat(p.price).toFixed(2)}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                }).join('') || '<tr><td colspan="5" class="text-center">ไม่พบสินค้า</td></tr>'}
+            </tbody>
+        </table>`;
+    container.innerHTML = tableHtml;
+}
 
+async function handleProductFormSubmit(e) {
+    e.preventDefault();
+    const id = getEl('product-id').value;
+    const action = id ? 'secureUpdateProduct' : 'secureAddProduct';
+    
+    let data = {
+        id: id,
+        name: getEl('name').value,
+        category: getEl('category').value,
+        price: getEl('price').value,
+        shopee_url: getEl('shopeeLink').value,
+    };
+
+    if (!data.name || !data.category || !data.price) {
+        return showCustomAlert('กรุณากรอกข้อมูลสินค้าให้ครบ', 'error');
+    }
+    
+    show(getEl('loader'));
     try {
         let uploadedImageUrls = [];
         if (selectedFileBase64.length > 0) {
             for (let i = 0; i < selectedFileBase64.length; i++) {
-                const imageData = {
+                const uploadResult = await sendData('secureUploadImage', {
                     imageData: selectedFileBase64[i],
                     fileName: selectedFileNames[i],
                     mimeType: `image/${selectedFileNames[i].split('.').pop()}`
-                };
-                const uploadResponse = await sendData('uploadImage', imageData);
-                if (uploadResponse.success && uploadResponse.url) {
-                    uploadedImageUrls.push(uploadResponse.url);
-                } else {
-                    throw new Error('ไม่สามารถอัปโหลดรูปภาพได้: ' + (uploadResponse.message || 'Unknown error'));
-                }
+                });
+                if (uploadResult.success) uploadedImageUrls.push(uploadResult.url);
             }
         }
+        data.image_url = [...productImages, ...uploadedImageUrls].join(',');
 
-        const finalImageUrls = [...productImages, ...uploadedImageUrls];
-        const data = {
-            name, category, price,
-            shopee_url: shopeeLink,
-            image_url: finalImageUrls.join(','),
-        };
-        if (productId) {
-            data.id = productId;
-        }
-
-        const action = productId ? 'updateProduct' : 'addProduct';
-        const response = await sendData(action, data);
-
-        if (response.success) {
-            showCustomAlert(`สินค้าถูก${productId ? 'อัปเดต' : 'เพิ่ม'}เรียบร้อยแล้ว!`, 'success');
+        const result = await sendData(action, data);
+        if (result.success) {
+            showCustomAlert(`บันทึกสินค้าเรียบร้อย`, 'success');
             clearProductForm();
             loadAdminProducts();
         } else {
-            throw new Error(response.message || 'Unknown error');
+            showCustomAlert(result.message, 'error');
         }
-    } catch (error) {
-        showCustomAlert(`เกิดข้อผิดพลาด: ${error.message}`, 'error');
     } finally {
-        hide(adminLoader);
+        hide(getEl('loader'));
     }
 }
 
 function clearProductForm() {
     getEl('product-form').reset();
     getEl('product-id').value = '';
-    getEl('imagePreview').innerHTML = '<p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพที่เลือก</p>';
     getEl('form-title').textContent = 'เพิ่มสินค้าใหม่';
+    productImages = [];
     selectedFileBase64 = [];
     selectedFileNames = [];
-    productImages = [];
-}
-
-async function loadAdminProducts() {
-    const adminLoader = getEl('loader');
-    const adminProductList = getEl('admin-product-list');
-    show(adminLoader);
-    hide(adminProductList);
-
-    try {
-        const response = await sendData('getProducts', {}, 'GET'); // Re-uses public endpoint
-        if (response.success && response.data) {
-            adminProducts = response.data;
-            renderAdminProducts(adminProducts);
-        } else {
-            throw new Error(response.message || 'Unknown error');
-        }
-    } catch (error) {
-        showCustomAlert('ไม่สามารถโหลดรายการสินค้าได้: ' + error.message, 'error');
-    } finally {
-        hide(adminLoader);
-        show(adminProductList);
-    }
-}
-
-
-function renderAdminProducts(products) {
-    const adminProductList = getEl('admin-product-list');
-    let tableHtml = `
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>รูปภาพ</th>
-                    <th>ชื่อสินค้า</th>
-                    <th>หมวดหมู่</th>
-                    <th>ราคา</th>
-                    <th>ลิงก์ Shopee</th>
-                    <th>การกระทำ</th>
-                </tr>
-            </thead>
-            <tbody>`;
-
-    if (products.length === 0) {
-        tableHtml += `<tr><td colspan="7" class="text-center text-muted py-4">ไม่พบสินค้า</td></tr>`;
-    } else {
-        products.forEach(product => {
-            const firstImageUrl = (product.image_url) ? String(product.image_url).split(',')[0].trim() : 'https://placehold.co/50x50/cccccc/333333?text=NoImg';
-            const sanitizedName = sanitizeHTML(product.name);
-            const sanitizedCategory = sanitizeHTML(product.category);
-
-            tableHtml += `
-                <tr data-id="${product.id}">
-                    <td>${sanitizeHTML(product.id)}</td>
-                    <td><img src="${firstImageUrl}" alt="${sanitizedName}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null;this.src='https://placehold.co/50x50/cccccc/333333?text=NoImg';"></td>
-                    <td>${sanitizedName}</td>
-                    <td>${sanitizedCategory}</td>
-                    <td>฿${sanitizeHTML(parseFloat(product.price).toFixed(2))}</td>
-                    <td>${product.shopee_url ? `<a href="${sanitizeHTML(product.shopee_url)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-info text-white"><i class="fas fa-external-link-alt"></i></a>` : 'ไม่มี'}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm edit-btn" data-id="${product.id}"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="${product.id}"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>`;
-        });
-    }
-
-    tableHtml += `</tbody></table>`;
-    adminProductList.innerHTML = tableHtml;
-
-    // Re-attach event listeners after rendering
-    adminProductList.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', () => editProduct(btn.dataset.id)));
-    adminProductList.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', () => confirmDeleteProduct(btn.dataset.id)));
-}
-
-function filterAdminProducts() {
-    const searchTerm = getEl('admin-search-input').value.toLowerCase().trim();
-    if (!searchTerm) {
-        renderAdminProducts(adminProducts);
-        return;
-    }
-    const filtered = adminProducts.filter(p =>
-        (p.id && String(p.id).toLowerCase().includes(searchTerm)) ||
-        (p.name && p.name.toLowerCase().includes(searchTerm))
-    );
-    renderAdminProducts(filtered);
+    renderImagePreviews();
 }
 
 function editProduct(id) {
-    // ... (This function remains largely the same, just ensure it clears all image arrays correctly) ...
-    const product = adminProducts.find(p => String(p.id) === String(id));
-    if (product) {
-        getEl('product-id').value = product.id;
-        getEl('name').value = product.name;
-        getEl('category').value = product.category;
-        getEl('price').value = product.price;
-        getEl('shopeeLink').value = product.shopee_url || '';
-        getEl('form-title').textContent = `แก้ไขสินค้า: ${sanitizeHTML(product.name)}`;
-        
-        // Clear all image states before loading new ones
-        clearProductFormImages();
-
-        if(product.image_url) {
-            productImages = String(product.image_url).split(',').map(url => url.trim()).filter(Boolean);
-        }
-        renderExistingImagePreviews();
-
-        getEl('product-form').scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-async function confirmDeleteProduct(id) {
-    const productName = (adminProducts.find(p => String(p.id) === String(id)) || {}).name || id;
-    const confirmed = await showCustomAlert(`คุณแน่ใจหรือไม่ที่ต้องการลบสินค้า "${sanitizeHTML(productName)}"?`, 'error', true);
-    if (confirmed) {
-        deleteProduct(id);
-    }
+    const product = allProducts.find(p => p.id === id);
+    if (!product) return;
+    getEl('product-id').value = product.id;
+    getEl('name').value = product.name;
+    getEl('category').value = product.category;
+    getEl('price').value = product.price;
+    getEl('shopeeLink').value = product.shopee_url;
+    getEl('form-title').textContent = `แก้ไขสินค้า: ${product.name}`;
+    productImages = String(product.image_url || '').split(',').filter(Boolean);
+    renderImagePreviews();
+    getEl('product-management-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 async function deleteProduct(id) {
-    const adminLoader = getEl('loader');
-    show(adminLoader);
-    try {
-        const response = await sendData('deleteProduct', { id });
-        if (response.success) {
-            showCustomAlert('สินค้าถูกลบเรียบร้อยแล้ว!', 'success');
-            loadAdminProducts();
-        } else {
-            throw new Error(response.message || 'Unknown error');
-        }
-    } catch (error) {
-        showCustomAlert('เกิดข้อผิดพลาดในการลบสินค้า: ' + error.message, 'error');
-    } finally {
-        hide(adminLoader);
+    if (!await showCustomAlert('ยืนยันการลบสินค้านี้?', 'warning', true)) return;
+    show(getEl('loader'));
+    const result = await sendData('secureDeleteProduct', { id });
+    if (result.success) {
+        showCustomAlert('ลบสินค้าแล้ว', 'success');
+        loadAdminProducts();
+    } else {
+        showCustomAlert(result.message, 'error');
     }
+    hide(getEl('loader'));
 }
 
-
-// ---- Image Preview Handling ----
-function setupAdminEventListeners() {
-    const loginBtn = getEl('login-btn');
-    const passwordInput = getEl('password-input');
-    const logoutBtn = getEl('logout-btn');
-    const productForm = getEl('product-form');
-    const clearBtn = getEl('clear-btn');
-    const adminSearchInput = getEl('admin-search-input');
-    const imageFileInput = getEl('imageFileInput');
-
-    if(loginBtn) loginBtn.addEventListener('click', handleLogin);
-    if(passwordInput) passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
-    if(logoutBtn) logoutBtn.addEventListener('click', handleLogout);
-    if(productForm) productForm.addEventListener('submit', handleProductFormSubmit);
-    if(clearBtn) clearBtn.addEventListener('click', clearProductForm);
-    if(adminSearchInput) adminSearchInput.addEventListener('input', filterAdminProducts);
-    if(imageFileInput) imageFileInput.addEventListener('change', handleFileSelect);
-}
-
-function clearProductFormImages() {
-    getEl('imageFileInput').value = '';
-    getEl('imagePreview').innerHTML = '<p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพที่เลือก</p>';
-    selectedFileBase64 = [];
-    selectedFileNames = [];
-    productImages = [];
-}
-
-async function handleFileSelect(event) {
+function handleImageFileChange(event) {
     const files = event.target.files;
-    if (files.length === 0) return;
-
-    // When new files are selected, clear previous selections
     selectedFileBase64 = [];
     selectedFileNames = [];
-
-    for (const file of files) {
-        if (file.type.startsWith('image/')) {
+    
+    if (files.length > 0) {
+        Array.from(files).forEach(file => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 selectedFileBase64.push(e.target.result.split(',')[1]);
                 selectedFileNames.push(file.name);
-                renderAllImagePreviews();
+                renderImagePreviews();
             };
             reader.readAsDataURL(file);
-        }
+        });
     }
 }
 
-function renderAllImagePreviews() {
-    const previewContainer = getEl('imagePreview');
-    previewContainer.innerHTML = '';
+function renderImagePreviews() {
+    const container = getEl('imagePreview');
+    container.innerHTML = '';
+    const allImageSources = [
+        ...productImages,
+        ...selectedFileBase64.map(b64 => `data:image/jpeg;base64,${b64}`)
+    ];
 
-    if (productImages.length === 0 && selectedFileBase64.length === 0) {
-        previewContainer.innerHTML = '<p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพที่เลือก</p>';
+    if (allImageSources.length === 0) {
+        container.innerHTML = '<p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพ</p>';
         return;
     }
 
-    // Render existing images
-    productImages.forEach((url, index) => {
-        const imgWrapper = document.createElement('div');
-        imgWrapper.className = 'img-preview-wrapper';
-        imgWrapper.innerHTML = `
-            <img src="${url}" class="img-preview" alt="Existing Image">
-            <button type="button" class="remove-img-btn" data-type="existing" data-index="${index}">&times;</button>`;
-        previewContainer.appendChild(imgWrapper);
+    allImageSources.forEach((src, index) => {
+        const isExisting = index < productImages.length;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'img-preview-wrapper';
+        wrapper.innerHTML = `
+            <img src="${src}" class="img-thumbnail" style="width:90px; height:90px; object-fit:cover;">
+            <button type="button" class="remove-img-btn" data-index="${index}" data-type="${isExisting ? 'existing' : 'new'}">&times;</button>
+        `;
+        container.appendChild(wrapper);
     });
 
-    // Render newly selected images
-    selectedFileBase64.forEach((b64, index) => {
-        const imgWrapper = document.createElement('div');
-        imgWrapper.className = 'img-preview-wrapper';
-        imgWrapper.innerHTML = `
-            <img src="data:image/jpeg;base64,${b64}" class="img-preview" alt="New Image">
-            <button type="button" class="remove-img-btn" data-type="new" data-index="${index}">&times;</button>`;
-        previewContainer.appendChild(imgWrapper);
-    });
-
-    // Add event listeners to remove buttons
-    previewContainer.querySelectorAll('.remove-img-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const type = btn.dataset.type;
-            const index = parseInt(btn.dataset.index, 10);
+    container.querySelectorAll('.remove-img-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            const type = e.target.dataset.type;
             if (type === 'existing') {
                 productImages.splice(index, 1);
-            } else if (type === 'new') {
-                selectedFileBase64.splice(index, 1);
-                selectedFileNames.splice(index, 1);
+            } else {
+                const newIndex = index - productImages.length;
+                selectedFileBase64.splice(newIndex, 1);
+                selectedFileNames.splice(newIndex, 1);
             }
-            renderAllImagePreviews();
+            renderImagePreviews();
         });
     });
 }
-function renderExistingImagePreviews() { renderAllImagePreviews(); } // Alias for consistency
 
+// ==========================================================
+// =================== ADMIN: PASSWORD MGMT =================
+// ==========================================================
+async function handleChangePassword() {
+    const currentPassword = getEl('current-password').value;
+    const newPassword = getEl('new-password-modal').value;
+    const confirmPassword = getEl('confirm-password-modal').value;
 
-// ---- Main DOMContentLoaded Event ----
-document.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname;
-    const backToTopButton = getEl('back-to-top');
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        return showCustomAlert('กรุณากรอกข้อมูลให้ครบทุกช่อง', 'error');
+    }
+    if (newPassword !== confirmPassword) {
+        return showCustomAlert('รหัสผ่านใหม่ไม่ตรงกัน', 'error');
+    }
 
-    if (!path.includes('admin.html')) {
-        // Public page logic
-        loadProducts();
-        fetchAndRenderCategories();
-        const searchInput = getEl('search-input');
-        if (searchInput) searchInput.addEventListener('input', (e) => {
-            currentSearchTerm = e.target.value.trim();
-            filterAndSearchProducts();
-        });
-        const categorySelect = getEl('category-select');
-        if (categorySelect) categorySelect.addEventListener('change', (e) => {
-            currentFilter = e.target.value;
-            filterAndSearchProducts();
-        });
+    show(getEl('loader'));
+    const result = await sendData('secureUpdateOwnPassword', {
+        username: currentUser.username,
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+    });
+    hide(getEl('loader'));
+
+    if (result.success) {
+        const modalEl = getEl('changePasswordModal');
+        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modal.hide();
+        showCustomAlert('เปลี่ยนรหัสผ่านสำเร็จ', 'success');
     } else {
-        // Admin page logic
-        initAdminPage();
+        showCustomAlert(result.message, 'error');
     }
-    
-    // Back to top button logic for both pages
-    if (backToTopButton) {
-        window.addEventListener('scroll', () => {
-            (window.scrollY > 300) ? show(backToTopButton) : hide(backToTopButton);
-        });
-        backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-});
+}
+
+// ==========================================================
+// =================== UTILITIES ============================
+// ==========================================================
+function showCustomAlert(message, type = 'info', isConfirm = false) {
+    return new Promise((resolve) => {
+        let modalOverlay = getEl('custom-modal-overlay');
+        if (!modalOverlay) {
+            modalOverlay = document.createElement('div');
+            modalOverlay.id = 'custom-modal-overlay';
+            modalOverlay.classList.add('custom-modal-overlay');
+            document.body.appendChild(modalOverlay);
+        }
+
+        const typeClass = { success: 'success', error: 'error', warning: 'warning' }[type] || 'info';
+
+        modalOverlay.innerHTML = `
+            <div class="custom-modal-content animate__animated animate__fadeInDown">
+                <div class="custom-modal-header ${typeClass}">
+                    <h5 class="custom-modal-title">${isConfirm ? 'โปรดยืนยัน' : 'แจ้งเตือน'}</h5>
+                    <button type="button" class="custom-modal-close">&times;</button>
+                </div>
+                <div class="custom-modal-body"><p>${message}</p></div>
+                <div class="custom-modal-footer">
+                    ${isConfirm ? `<button class="btn btn-secondary" data-action="cancel">ยกเลิก</button>` : ''}
+                    <button class="btn btn-primary" data-action="ok">ตกลง</button>
+                </div>
+            </div>`;
+        
+        show(modalOverlay);
+
+        const closeModal = (result) => {
+            const content = modalOverlay.querySelector('.custom-modal-content');
+            if(content) {
+                content.classList.replace('animate__fadeInDown', 'animate__fadeOutUp');
+                content.addEventListener('animationend', () => {
+                    hide(modalOverlay);
+                    resolve(result);
+                }, { once: true });
+            } else {
+                hide(modalOverlay);
+                resolve(result);
+            }
+        };
+
+        modalOverlay.querySelector('[data-action="ok"]')?.addEventListener('click', () => closeModal(true));
+        modalOverlay.querySelector('[data-action="cancel"]')?.addEventListener('click', () => closeModal(false));
+        modalOverlay.querySelector('.custom-modal-close')?.addEventListener('click', () => closeModal(false));
+    });
+}
