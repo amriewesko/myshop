@@ -22,7 +22,7 @@
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="index.html">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="admin.html">ผู้ดูแลระบบ</a></li>
-                    <!-- User Dropdown: Will be shown after login -->
+                    <li id="user-management-nav" class="nav-item d-none"><a class="nav-link" href="#user-management-section">จัดการผู้ใช้</a></li>
                     <li class="nav-item dropdown d-none" id="user-dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle me-1"></i> <span id="username-display"></span>
@@ -85,13 +85,31 @@
                 <div class="input-group mb-3"><input type="text" class="form-control" id="admin-search-input" placeholder="ค้นหาสินค้า..."><span class="input-group-text"><i class="fas fa-search"></i></span></div>
                 <div id="admin-product-list" class="table-responsive"></div>
             </section>
-            
-            <!-- User Management Section is now removed from the view -->
 
+            <!-- User Management Section (Superadmin only) -->
+            <section id="user-management-section" class="admin-section mb-5 d-none">
+                <h4 class="mb-4"><i class="fas fa-users-cog me-2"></i>จัดการผู้ใช้งาน</h4>
+                <form id="user-form" class="mb-4">
+                    <h5 id="user-form-title" class="mb-3 text-primary">เพิ่มผู้ใช้ใหม่</h5>
+                    <input type="hidden" id="user-form-username">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label for="new-username" class="form-label">ชื่อผู้ใช้ <span class="text-danger">*</span></label><input type="text" class="form-control" id="new-username" required></div>
+                        <div class="col-md-6"><label for="new-password" class="form-label">รหัสผ่าน <span id="password-req" class="text-danger">*</span></label><input type="password" class="form-control" id="new-password" placeholder="เว้นว่างไว้หากไม่ต้องการเปลี่ยน"></div>
+                        <div class="col-md-6"><label for="user-role" class="form-label">สิทธิ์ <span class="text-danger">*</span></label><select id="user-role" class="form-select"><option value="EDITOR">Editor</option><option value="SUPERADMIN">Superadmin</option></select></div>
+                        <div class="col-md-6"><label for="user-status" class="form-label">สถานะ <span class="text-danger">*</span></label><select id="user-status" class="form-select"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="button" id="clear-user-form-btn" class="btn btn-secondary me-2"><i class="fas fa-redo-alt me-2"></i>ล้างฟอร์ม</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus me-2"></i>บันทึกผู้ใช้</button>
+                    </div>
+                </form>
+                <h5 class="mb-3 text-primary"><i class="fas fa-users me-2"></i>รายชื่อผู้ใช้ทั้งหมด</h5>
+                <div id="admin-user-list" class="table-responsive"></div>
+            </section>
         </main>
     </div>
     
-    <!-- Change Password Modal -->
+    <!-- Modals -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
