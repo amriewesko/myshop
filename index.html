@@ -62,49 +62,52 @@
 
     <!-- Main Content Area -->
     <main class="container my-5" id="product-listings">
-        <div class="row">
-            <!-- Category Filter Section (Left Column on larger screens) -->
-            <div class="col-lg-3 mb-4">
-                <div id="category-filter" class="card p-3 shadow-sm rounded-lg animate__animated animate__fadeInLeft">
-                    <h4 class="mb-3 text-primary"><i class="fas fa-filter me-2"></i>หมวดหมู่สินค้า</h4>
-                    <div class="list-group">
-                        <!-- Category filter options - populated by JavaScript -->
-                        <select id="category-select" class="form-select mb-3">
-                            <option value="ทั้งหมด" selected>ทั้งหมด</option>
-                            <!-- Options will be dynamically loaded here by app.js -->
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Listings and Search Section (Right Column) -->
-            <div class="col-lg-9">
-                <!-- Search Section -->
-                <div class="search-section mb-4 animate__animated animate__fadeInRight">
-                    <div class="input-group">
-                        <input type="text" id="search-input" class="form-control" placeholder="ค้นหาสินค้า (ชื่อ, ID, หมวดหมู่)...">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+        <!-- กรอบสำหรับส่วนแสดงสินค้า (เพิ่มเข้ามาใหม่) -->
+        <div class="main-content-frame">
+            <div class="row">
+                <!-- Category Filter Section (Left Column on larger screens) -->
+                <div class="col-lg-3 mb-4">
+                    <div id="category-filter" class="card p-3 shadow-sm rounded-lg animate__animated animate__fadeInLeft">
+                        <h4 class="mb-3 text-primary"><i class="fas fa-filter me-2"></i>หมวดหมู่สินค้า</h4>
+                        <div class="list-group">
+                            <!-- Category filter options - populated by JavaScript -->
+                            <select id="category-select" class="form-select mb-3">
+                                <option value="ทั้งหมด" selected>ทั้งหมด</option>
+                                <!-- Options will be dynamically loaded here by app.js -->
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Loader for Products -->
-                <div id="loader" class="text-center py-5 d-none">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">กำลังโหลด...</span>
+                <!-- Product Listings and Search Section (Right Column) -->
+                <div class="col-lg-9">
+                    <!-- Search Section -->
+                    <div class="search-section mb-4 animate__animated animate__fadeInRight">
+                        <div class="input-group">
+                            <input type="text" id="search-input" class="form-control" placeholder="ค้นหาสินค้า (ชื่อ, ID, หมวดหมู่)...">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        </div>
                     </div>
-                    <p class="mt-3 text-muted">กำลังโหลดสินค้า...</p>
-                </div>
 
-                <!-- No Products Found Message -->
-                <div id="no-products-found" class="text-center py-5 d-none animate__animated animate__zoomIn">
-                    <i class="fas fa-box-open fa-3x text-muted mb-4"></i>
-                    <h3 class="text-muted">ไม่พบสินค้าที่คุณค้นหา</h3>
-                    <p class="text-secondary">ลองปรับคำค้นหาหรือเลือกหมวดหมู่อื่นดูนะคะ</p>
-                </div>
+                    <!-- Loader for Products -->
+                    <div id="loader" class="text-center py-5 d-none">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">กำลังโหลด...</span>
+                        </div>
+                        <p class="mt-3 text-muted">กำลังโหลดสินค้า...</p>
+                    </div>
 
-                <!-- Product List Container -->
-                <div id="product-list-container" class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-4">
-                    <!-- Product cards will be dynamically loaded here by app.js -->
+                    <!-- No Products Found Message -->
+                    <div id="no-products-found" class="text-center py-5 d-none animate__animated animate__zoomIn">
+                        <i class="fas fa-box-open fa-3x text-muted mb-4"></i>
+                        <h3 class="text-muted">ไม่พบสินค้าที่คุณค้นหา</h3>
+                        <p class="text-secondary">ลองปรับคำค้นหาหรือเลือกหมวดหมู่อื่นดูนะคะ</p>
+                    </div>
+
+                    <!-- Product List Container -->
+                    <div id="product-list-container" class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-4">
+                        <!-- Product cards will be dynamically loaded here by app.js -->
+                    </div>
                 </div>
             </div>
         </div>
