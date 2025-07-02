@@ -23,10 +23,13 @@ const hide = (el) => el && el.classList.add('d-none');
 // =================== INITIALIZATION =======================
 // ==========================================================
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DEBUG: DOM Content Loaded. Initializing page...");
     const path = window.location.pathname;
     if (path.includes('admin.html')) {
+        console.log("DEBUG: Admin page detected. Running initAdminPage().");
         initAdminPage();
     } else {
+        console.log("DEBUG: Public page detected. Running initPublicPage().");
         initPublicPage();
     }
 });
@@ -47,12 +50,15 @@ function initAdminPage() {
 // =================== API & DATA HANDLING ==================
 // ==========================================================
 async function sendData(action, data = {}) {
+    console.log(`DEBUG: sendData called. Action: ${action}`, data);
     try {
         const body = {
             action: action,
             token: sessionStorage.getItem('sessionToken'),
             data: data
         };
+        console.log("DEBUG: Sending request to Apps Script with body:", body);
+
         const response = await fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             mode: 'cors',
@@ -60,27 +66,139 @@ async function sendData(action, data = {}) {
             body: JSON.stringify(body)
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        console.log("DEBUG: Fetch response received from Apps Script.", response);
+
+        if (!response.ok) {
+            console.error(`DEBUG: HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const result = await response.json();
+        console.log("DEBUG: Parsed JSON result from Apps Script:", result);
+
         if (result.reauth) {
+            console.warn("DEBUG: Server requested re-authentication.");
             showCustomAlert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่', 'error');
             handleLogout();
         }
         return result;
     } catch (error) {
-        console.error("API Error:", error);
+        console.error("DEBUG: API Error in sendData function:", error);
         showCustomAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
         return { success: false, message: error.message };
     }
 }
 
 // ==========================================================
+// =================== ADMIN: AUTHENTICATION ================
+// ==========================================================
+async function handleLogin() {
+    console.log("DEBUG: handleLogin function started.");
+    
+    const usernameInput = getEl('username-input');
+    const passwordInput = getEl('password-input');
+    
+    if (!usernameInput || !passwordInput) {
+        console.error("DEBUG: Login form inputs not found!");
+        return;
+    }
+
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+    
+    console.log(`DEBUG: Username: '${username}', Password: '${password.substring(0,1)}...'`);
+
+    if (!username || !password) {
+        console.log("DEBUG: Username or Password is empty.");
+        return showCustomAlert('กรุณากรอก Username และ Password', 'error');
+    }
+
+    const loader = getEl('loader');
+    if(loader) show(loader);
+    console.log("DEBUG: Loader shown. Preparing to send login data...");
+
+    try {
+        const result = await sendData('secureLogin', { username, password });
+        console.log("DEBUG: Login result received in handleLogin:", result);
+
+        if (result && result.success) {
+            console.log("DEBUG: Login successful. Storing token and user data.");
+            sessionStorage.setItem('sessionToken', result.token);
+            sessionStorage.setItem('currentUser', JSON.stringify(result.user));
+            checkLoginStatus();
+        } else {
+            console.error("DEBUG: Login failed. Server message:", result ? result.message : "No result object");
+            showCustomAlert(result ? result.message : 'Login failed: No response from server', 'error');
+        }
+    } catch (error) {
+        console.error("DEBUG: An error occurred during the login process in handleLogin:", error);
+    } finally {
+        if(loader) hide(loader);
+        console.log("DEBUG: Loader hidden. handleLogin finished.");
+    }
+}
+
+function checkLoginStatus() {
+    console.log("DEBUG: checkLoginStatus called.");
+    const token = sessionStorage.getItem('sessionToken');
+    const user = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (token && user) {
+        console.log("DEBUG: User is logged in.", user);
+        currentUser = user;
+        show(getEl('admin-panel'));
+        hide(getEl('login-gate'));
+        show(getEl('user-dropdown'));
+        getEl('username-display').textContent = currentUser.username;
+        loadAdminProducts();
+    } else {
+        console.log("DEBUG: User is not logged in.");
+        hide(getEl('admin-panel'));
+        show(getEl('login-gate'));
+        hide(getEl('user-dropdown'));
+    }
+}
+
+function handleLogout() {
+    console.log("DEBUG: handleLogout called.");
+    sessionStorage.clear();
+    currentUser = { username: '', role: '' };
+    checkLoginStatus();
+    showCustomAlert('ออกจากระบบแล้ว', 'info');
+}
+
+// ==========================================================
+// =================== ADMIN: EVENT LISTENERS ===============
+// ==========================================================
+function setupAdminEventListeners() {
+    console.log("DEBUG: setupAdminEventListeners called.");
+    const loginBtn = getEl('secure-login-btn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', handleLogin);
+        console.log("DEBUG: Login button event listener attached.");
+    } else {
+        console.error("DEBUG: Login button ('secure-login-btn') not found!");
+    }
+
+    getEl('password-input')?.addEventListener('keypress', (e) => e.key === 'Enter' && handleLogin());
+    getEl('logout-btn')?.addEventListener('click', handleLogout);
+    getEl('product-form')?.addEventListener('submit', handleProductFormSubmit);
+    getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
+    getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
+    getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
+    getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
+    console.log("DEBUG: All admin event listeners attached.");
+}
+
+
+// --- The rest of the functions remain the same, only the debugging logs are added to the login flow ---
+// --- You can copy the rest of your app.js (single user version) below this line ---
+
+// ==========================================================
 // =================== PUBLIC PAGE LOGIC ====================
 // ==========================================================
 async function loadProducts() {
     const loader = getEl('loader');
-    show(loader);
+    if(loader) show(loader);
     try {
         const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
         const result = await response.json();
@@ -91,7 +209,7 @@ async function loadProducts() {
     } catch (error) {
         console.error("Error loading products:", error);
     } finally {
-        hide(loader);
+        if(loader) hide(loader);
     }
 }
 
@@ -157,72 +275,6 @@ async function fetchAndRenderCategories() {
     } catch (error) {
         console.error("Error fetching categories:", error);
     }
-}
-
-// ==========================================================
-// =================== ADMIN: AUTHENTICATION ================
-// ==========================================================
-function checkLoginStatus() {
-    const token = sessionStorage.getItem('sessionToken');
-    const user = JSON.parse(sessionStorage.getItem('currentUser'));
-    if (token && user) {
-        currentUser = user;
-        show(getEl('admin-panel'));
-        hide(getEl('login-gate'));
-        show(getEl('user-dropdown'));
-        getEl('username-display').textContent = currentUser.username;
-        loadAdminProducts();
-    } else {
-        hide(getEl('admin-panel'));
-        show(getEl('login-gate'));
-        hide(getEl('user-dropdown'));
-    }
-}
-
-async function handleLogin() {
-    const username = getEl('username-input').value.trim();
-    const password = getEl('password-input').value.trim();
-    if (!username || !password) {
-        return showCustomAlert('กรุณากรอก Username และ Password', 'error');
-    }
-    show(getEl('loader'));
-    try {
-        const result = await sendData('secureLogin', { username, password });
-        if (result.success) {
-            sessionStorage.setItem('sessionToken', result.token);
-            sessionStorage.setItem('currentUser', JSON.stringify(result.user));
-            checkLoginStatus();
-        } else {
-            showCustomAlert(result.message || 'Login failed', 'error');
-        }
-    } finally {
-        hide(getEl('loader'));
-    }
-}
-
-function handleLogout() {
-    sessionStorage.clear();
-    currentUser = { username: '', role: '' };
-    checkLoginStatus();
-    showCustomAlert('ออกจากระบบแล้ว', 'info');
-}
-
-// ==========================================================
-// =================== ADMIN: EVENT LISTENERS ===============
-// ==========================================================
-function setupAdminEventListeners() {
-    getEl('secure-login-btn')?.addEventListener('click', handleLogin);
-    getEl('password-input')?.addEventListener('keypress', (e) => e.key === 'Enter' && handleLogin());
-    getEl('logout-btn')?.addEventListener('click', handleLogout);
-
-    // Product Form
-    getEl('product-form')?.addEventListener('submit', handleProductFormSubmit);
-    getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
-    getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
-    getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
-
-    // Change Password Modal
-    getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
 }
 
 // ==========================================================
