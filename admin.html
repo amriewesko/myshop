@@ -36,7 +36,13 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="admin.html">ผู้ดูแลระบบ</a>
                     </li>
-                    <!-- ปุ่มออกจากระบบถูกลบออกแล้ว เนื่องจากใช้การยืนยันตัวตนของ Google โดยตรง -->
+                    <!-- Logout button, shown only when logged in -->
+                    <li class="nav-item ms-lg-3" id="logout-btn-container">
+                        <!-- Removed inline 'style="display: none;"' to allow app.js to control visibility -->
+                        <button class="btn btn-outline-light btn-sm mt-2 mt-lg-0" id="logout-btn">
+                            <i class="fas fa-sign-out-alt me-2"></i>ออกจากระบบ
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -44,10 +50,23 @@
 
     <!-- Admin Panel Wrapper -->
     <div class="admin-wrapper">
-        <!-- Login Gate ถูกลบออกแล้ว เนื่องจากใช้การยืนยันตัวตนของ Google โดยตรง -->
+        <!-- Login Gate: Shown when not logged in -->
+        <section id="login-gate" class="d-flex-center">
+            <div class="card shadow-lg animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">เข้าสู่ระบบผู้ดูแลระบบ</h2>
+                    <p class="card-text text-center mb-4">กรุณากรอกรหัสผ่านเพื่อเข้าถึงส่วนผู้ดูแลระบบ</p>
+                    <div class="mb-3">
+                        <label for="password-input" class="form-label visually-hidden">รหัสผ่าน</label>
+                        <input type="password" class="form-control form-control-lg" id="password-input" placeholder="รหัสผ่าน" required>
+                    </div>
+                    <button id="login-btn" class="btn btn-primary btn-lg w-100"><i class="fas fa-sign-in-alt me-2"></i>เข้าสู่ระบบ</button>
+                </div>
+            </div>
+        </section>
 
-        <!-- Admin Panel: Shown by default, Google authentication handles access -->
-        <main id="admin-panel" class="container my-5 admin-content">
+        <!-- Admin Panel: Shown when logged in -->
+        <main id="admin-panel" class="container my-5 admin-content d-none">
             <h1 class="text-center mb-5 text-primary">แผงควบคุมผู้ดูแลระบบ</h1>
 
             <!-- Product Management Section -->
@@ -76,7 +95,7 @@
                             <input type="url" class="form-control" id="shopeeLink" placeholder="เช่น https://shopee.co.th/product-id">
                         </div>
                         <div class="col-12">
-                            <label for="imageFileInput" class="form-label">รูปภาพสินค้า <span class="text-muted">(อัปโหลดไฟล์ใหม่)</span></label>
+                            <label for="imageFileInput" class="form-label">รูปภาพสินค้ <span class="text-muted">(อัปโหลดไฟล์ใหม่)</span></label>
                             <input type="file" class="form-control" id="imageFileInput" accept="image/*" multiple>
                         </div>
                         <div class="col-12">
