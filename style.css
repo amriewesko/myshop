@@ -1,58 +1,80 @@
 /*
- * MyShop - Championship Edition Stylesheet
- * Version: 3.0 (Professional & Dynamic Theme)
+ * MyShop - The Masterpiece Edition Stylesheet
+ * Version: 5.0 (Definitive, Production-Quality Theme)
  * Author: Your Name / Gemini
- * Description: A definitive, production-quality stylesheet incorporating advanced animations,
- * a sophisticated design system, and a premium user experience for all devices.
+ * Description: The ultimate, production-quality stylesheet. This version incorporates a
+ * comprehensive design system, advanced graphics, fluid animations, and a pixel-perfect
+ * responsive experience across all devices, crafted with maximum intention and detail.
 */
 
 /* --- 1. Global Styles and Variables (The Design System Core) --- */
 :root {
-    /* Color Palette - Modern, High-Contrast, and Professional */
-    --primary-color: #1A237E;           /* Deep Indigo: For main actions and branding */
-    --primary-light: #5C6BC0;           /* Lighter Indigo: For accents and hover states */
-    --primary-dark: #000051;            /* Very Dark Indigo: For strong emphasis */
+    /* =================================== */
+    /* ========= COLOR PALETTE =========== */
+    /* =================================== */
+
+    /* -- Primary Colors: Deep, sophisticated blues for branding and key actions. */
+    --primary-color: #1A237E;           /* Deep Indigo: Main theme color, strong and professional. */
+    --primary-light: #5C6BC0;           /* Lighter Indigo: For accents, links, and hover states. */
+    --primary-dark: #000051;            /* Very Dark Indigo: For strong emphasis and dark mode elements. */
     --primary-gradient: linear-gradient(45deg, #3F51B5, #1A237E);
-    --primary-soft-bg: rgba(26, 35, 126, 0.08);
-    --primary-glow: rgba(63, 81, 181, 0.4);
+    --primary-soft-bg: rgba(26, 35, 126, 0.08); /* Subtle tint for backgrounds on hover. */
+    --primary-glow: rgba(63, 81, 181, 0.4);   /* Soft glow for focus states on form elements. */
 
-    /* Accent & Status Colors */
-    --accent-color: #FF7F00;            /* Shopee Orange: For key call-to-actions */
-    --accent-hover-color: #FF6600;      /* Darker Orange */
-    --success-color: #2a9d8f;           /* Teal for success */
-    --danger-color: #e63946;            /* Red for errors/danger */
-    --warning-color: #fca311;           /* Amber for warnings */
-    --info-color: #17A2B8;              /* Cyan for info */
+    /* -- Accent & Status Colors: Vibrant, clear colors for user feedback and calls to action. */
+    --accent-color: #FF7F00;            /* Shopee Orange: For key call-to-actions, stands out. */
+    --accent-hover-color: #FF6600;      /* Darker Orange for hover states. */
+    --accent-glow: rgba(255, 127, 0, 0.4); /* Soft orange glow for buttons. */
+    
+    --success-color: #2a9d8f;           /* Teal for success messages. */
+    --danger-color: #e63946;            /* Red for errors and destructive actions. */
+    --warning-color: #fca311;           /* Amber for warnings and alerts. */
+    --info-color: #17A2B8;              /* Cyan for informational messages. */
 
-    /* Neutral Colors */
-    --text-color: #212121;              /* Near Black: For main text */
-    --light-text-color: #616161;        /* Muted Gray: For secondary text */
-    --placeholder-color: #9E9E9E;
-    --background-color: #F5F5F5;        /* Very Light Gray: Page background */
-    --card-background: #FFFFFF;         /* White: For cards and containers */
-    --border-color: #E0E0E0;            /* Light Gray: For borders */
-    --dark-section-bg: #263238;         /* Dark Blue-Gray: For Navbar, Footer */
+    /* -- Neutral Colors: The backbone of the design for text and backgrounds. */
+    --text-color: #212121;              /* Near Black: For main text, high readability. */
+    --light-text-color: #616161;        /* Muted Gray: For secondary text, descriptions. */
+    --placeholder-color: #9E9E9E;       /* For form input placeholders. */
+    --background-color: #F5F5F5;        /* Very Light Gray: Main page background. */
+    --card-background: #FFFFFF;         /* Pure White: For cards and containers. */
+    --border-color: #E0E0E0;            /* Light Gray: For borders and separators. */
+    --dark-section-bg: #263238;         /* Dark Blue-Gray: For Navbar, Footer. */
     --white-color: #FFFFFF;
 
-    /* Shadow Palette - Multi-layered for realistic depth */
+    /* =================================== */
+    /* ========= SHADOW PALETTE ========== */
+    /* =================================== */
+    /* -- Multi-layered shadows for realistic depth and hierarchy. */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.18);
     --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25);
     --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
 
-    /* Spacing & Radius System */
+    /* =================================== */
+    /* ========= SPACING SYSTEM ========== */
+    /* =================================== */
+    /* -- Consistent spacing for a harmonious layout. */
+    --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
     --spacing-xl: 32px;
     --spacing-xxl: 64px;
+
+    /* =================================== */
+    /* ======== BORDER RADIUS ============ */
+    /* =================================== */
+    /* -- Consistent corner rounding for a modern feel. */
     --border-radius-md: 8px;
     --border-radius-lg: 12px;
     --border-radius-xl: 16px;
     --border-radius-full: 9999px;
 
-    /* Transition & Animation */
+    /* =================================== */
+    /* ======= TRANSITION & ANIMATION ==== */
+    /* =================================== */
+    /* -- Defines the speed and feel of animations. */
     --transition-speed: 0.3s;
     --transition-timing: ease-in-out;
     --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
@@ -70,6 +92,7 @@ body {
     line-height: 1.7;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -77,6 +100,17 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.3;
 }
 
+a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: color var(--transition-speed) var(--transition-timing);
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+/* --- Buttons --- */
 .btn {
     border-radius: var(--border-radius-full);
     padding: 12px 30px;
@@ -209,13 +243,13 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
     color: var(--white-color);
-    box-shadow: 0 4px 8px rgba(255, 127, 0, 0.4);
+    box-shadow: 0 4px 8px var(--accent-glow);
 }
 
 .product-card .btn-add-to-cart:hover {
     background-color: var(--accent-hover-color);
     border-color: var(--accent-hover-color);
-    box-shadow: 0 6px 12px rgba(255, 102, 0, 0.5);
+    box-shadow: 0 6px 12px var(--accent-glow);
 }
 
 /* Footer */
@@ -382,6 +416,10 @@ footer {
 .modal-footer .btn-info { background-color: var(--info-color); border-color: var(--info-color); color: var(--white-color); }
 
 /* --- 6. Responsive Adjustments --- */
+@media (max-width: 991.98px) {
+    .hero-section h1 { font-size: 3rem; }
+}
+
 @media (max-width: 768px) {
     .hero-section h1 { font-size: 2.5rem; }
 }
