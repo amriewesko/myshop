@@ -44,136 +44,6 @@ function initAdminPage() {
 }
 
 // ==========================================================
-// =================== NEW NOTIFICATION SYSTEM ==============
-// ==========================================================
-
-/**
- * ระบบแจ้งเตือนที่สวยงามและทันสมัย
- * สามารถแสดงผลได้ทั้งแบบ Toast (มุมจอ) และ Modal (กลางจอ)
- * @param {string} message - ข้อความที่ต้องการแสดง
- * @param {string} [type='info'] - ประเภทการแจ้งเตือน: 'success', 'error', 'warning', 'info'
- * @param {boolean} [isConfirm=false] - ถ้าเป็น true จะแสดงเป็น Modal พร้อมปุ่มยืนยัน/ยกเลิก
- */
-function showAlert(message, type = 'info', isConfirm = false) {
-    if (isConfirm) {
-        // Use Modal for confirmation dialogs
-        return showConfirmationModal(message, type);
-    } else {
-        // Use Toast for simple notifications
-        showToast(message, type);
-        return Promise.resolve(); // Toasts don't wait for user input
-    }
-}
-
-function showToast(message, type = 'info') {
-    let toastContainer = getEl('toast-container');
-    if (!toastContainer) {
-        toastContainer = document.createElement('div');
-        toastContainer.id = 'toast-container';
-        document.body.appendChild(toastContainer);
-    }
-
-    const toast = document.createElement('div');
-    toast.className = `toast-notification toast-${type}`;
-
-    const icons = {
-        success: 'fa-check-circle',
-        error: 'fa-times-circle',
-        warning: 'fa-exclamation-triangle',
-        info: 'fa-info-circle'
-    };
-
-    toast.innerHTML = `
-        <i class="fas ${icons[type]} toast-icon"></i>
-        <div class="toast-content">
-            <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
-            <div class="toast-message">${message}</div>
-        </div>
-        <button class="toast-close-btn">&times;</button>
-    `;
-
-    toastContainer.appendChild(toast);
-
-    // Trigger animation
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 100);
-
-    // Auto-dismiss after 5 seconds
-    const timeoutId = setTimeout(() => {
-        closeToast(toast);
-    }, 5000);
-
-    // Close on click
-    toast.querySelector('.toast-close-btn').addEventListener('click', () => {
-        clearTimeout(timeoutId);
-        closeToast(toast);
-    });
-}
-
-function closeToast(toast) {
-    toast.classList.remove('show');
-    toast.addEventListener('transitionend', () => {
-        toast.remove();
-        const container = getEl('toast-container');
-        if (container && !container.hasChildNodes()) {
-            container.remove();
-        }
-    });
-}
-
-function showConfirmationModal(message, type = 'warning') {
-    return new Promise((resolve) => {
-        let modalOverlay = getEl('confirmation-modal-overlay');
-        if (modalOverlay) modalOverlay.remove(); // Remove old one if exists
-
-        modalOverlay = document.createElement('div');
-        modalOverlay.id = 'confirmation-modal-overlay';
-        modalOverlay.className = 'modal-overlay';
-        
-        const icons = {
-            warning: 'fa-exclamation-triangle',
-            error: 'fa-bomb', // For dangerous actions
-            info: 'fa-question-circle'
-        };
-
-        modalOverlay.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-icon-container modal-${type}">
-                    <i class="fas ${icons[type]}"></i>
-                </div>
-                <div class="modal-header">
-                    <h5 class="modal-title">โปรดยืนยันการกระทำ</h5>
-                </div>
-                <div class="modal-body">
-                    <p>${message}</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-action="cancel">ยกเลิก</button>
-                    <button class="btn btn-primary btn-${type}" data-action="ok">ตกลง</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modalOverlay);
-
-        setTimeout(() => modalOverlay.classList.add('show'), 10);
-
-        const closeModal = (result) => {
-            modalOverlay.classList.remove('show');
-            modalOverlay.addEventListener('transitionend', () => {
-                modalOverlay.remove();
-                resolve(result);
-            });
-        };
-
-        modalOverlay.querySelector('[data-action="ok"]').addEventListener('click', () => closeModal(true));
-        modalOverlay.querySelector('[data-action="cancel"]').addEventListener('click', () => closeModal(false));
-    });
-}
-
-
-// ==========================================================
 // =================== API & DATA HANDLING ==================
 // ==========================================================
 async function sendData(action, data = {}) {
@@ -194,13 +64,13 @@ async function sendData(action, data = {}) {
         
         const result = await response.json();
         if (result.reauth) {
-            showAlert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่', 'error');
+            showCustomAlert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่', 'error');
             handleLogout();
         }
         return result;
     } catch (error) {
         console.error("API Error:", error);
-        showAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
+        showCustomAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
         return { success: false, message: error.message };
     }
 }
@@ -243,13 +113,11 @@ function renderProducts(products) {
         const cardHtml = `
             <div class="col animate__animated animate__fadeInUp">
                 <div class="product-card">
-                    <div class="img-container">
-                        <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}" onerror="this.src='https://placehold.co/400x250/cccccc/333333?text=Error';">
-                    </div>
+                    <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}" onerror="this.src='https://placehold.co/400x250/cccccc/333333?text=Error';">
                     <div class="card-body">
                         <h5 class="card-title">${product.name}</h5>
                         <p class="price">฿${parseFloat(product.price).toFixed(2)}</p>
-                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-primary btn-add-to-cart w-100"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
+                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-add-to-cart w-100"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
                     </div>
                 </div>
             </div>`;
@@ -315,7 +183,7 @@ async function handleLogin() {
     const username = getEl('username-input').value.trim();
     const password = getEl('password-input').value.trim();
     if (!username || !password) {
-        return showAlert('กรุณากรอก Username และ Password', 'warning');
+        return showCustomAlert('กรุณากรอก Username และ Password', 'error');
     }
     show(getEl('loader'));
     try {
@@ -325,7 +193,7 @@ async function handleLogin() {
             sessionStorage.setItem('currentUser', JSON.stringify(result.user));
             checkLoginStatus();
         } else {
-            showAlert(result.message || 'Login failed', 'error');
+            showCustomAlert(result.message || 'Login failed', 'error');
         }
     } finally {
         hide(getEl('loader'));
@@ -336,7 +204,7 @@ function handleLogout() {
     sessionStorage.clear();
     currentUser = { username: '', role: '' };
     checkLoginStatus();
-    showAlert('ออกจากระบบแล้ว', 'info');
+    showCustomAlert('ออกจากระบบแล้ว', 'info');
 }
 
 // ==========================================================
@@ -347,11 +215,13 @@ function setupAdminEventListeners() {
     getEl('password-input')?.addEventListener('keypress', (e) => e.key === 'Enter' && handleLogin());
     getEl('logout-btn')?.addEventListener('click', handleLogout);
 
+    // Product Form
     getEl('product-form')?.addEventListener('submit', handleProductFormSubmit);
     getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
     getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
     getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
 
+    // Change Password Modal
     getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
 }
 
@@ -359,6 +229,7 @@ function setupAdminEventListeners() {
 // =================== ADMIN: PRODUCT MGMT ==================
 // ==========================================================
 async function loadAdminProducts() {
+    // A simple way to check if token is still valid before fetching public data
     const checkTokenResult = await sendData('secureGetUsers'); 
     if (checkTokenResult.success) { 
         const productResult = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
@@ -421,7 +292,7 @@ async function handleProductFormSubmit(e) {
     };
 
     if (!data.name || !data.category || !data.price) {
-        return showAlert('กรุณากรอกข้อมูลสินค้าให้ครบ', 'warning');
+        return showCustomAlert('กรุณากรอกข้อมูลสินค้าให้ครบ', 'error');
     }
     
     show(getEl('loader'));
@@ -441,11 +312,11 @@ async function handleProductFormSubmit(e) {
 
         const result = await sendData(action, data);
         if (result.success) {
-            showAlert(`บันทึกสินค้าเรียบร้อย`, 'success');
+            showCustomAlert(`บันทึกสินค้าเรียบร้อย`, 'success');
             clearProductForm();
             loadAdminProducts();
         } else {
-            showAlert(result.message, 'error');
+            showCustomAlert(result.message, 'error');
         }
     } finally {
         hide(getEl('loader'));
@@ -477,16 +348,14 @@ function editProduct(id) {
 }
 
 async function deleteProduct(id) {
-    const confirmed = await showAlert('คุณแน่ใจหรือไม่ที่จะลบสินค้านี้? การกระทำนี้ไม่สามารถย้อนกลับได้', 'error', true);
-    if (!confirmed) return;
-
+    if (!await showCustomAlert('ยืนยันการลบสินค้านี้?', 'warning', true)) return;
     show(getEl('loader'));
     const result = await sendData('secureDeleteProduct', { id });
     if (result.success) {
-        showAlert('ลบสินค้าแล้ว', 'success');
+        showCustomAlert('ลบสินค้าแล้ว', 'success');
         loadAdminProducts();
     } else {
-        showAlert(result.message, 'error');
+        showCustomAlert(result.message, 'error');
     }
     hide(getEl('loader'));
 }
@@ -558,10 +427,10 @@ async function handleChangePassword() {
     const confirmPassword = getEl('confirm-password-modal').value;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-        return showAlert('กรุณากรอกข้อมูลให้ครบทุกช่อง', 'warning');
+        return showCustomAlert('กรุณากรอกข้อมูลให้ครบทุกช่อง', 'error');
     }
     if (newPassword !== confirmPassword) {
-        return showAlert('รหัสผ่านใหม่ไม่ตรงกัน', 'error');
+        return showCustomAlert('รหัสผ่านใหม่ไม่ตรงกัน', 'error');
     }
 
     show(getEl('loader'));
@@ -576,8 +445,58 @@ async function handleChangePassword() {
         const modalEl = getEl('changePasswordModal');
         const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
         modal.hide();
-        showAlert('เปลี่ยนรหัสผ่านสำเร็จ', 'success');
+        showCustomAlert('เปลี่ยนรหัสผ่านสำเร็จ', 'success');
     } else {
-        showAlert(result.message, 'error');
+        showCustomAlert(result.message, 'error');
     }
+}
+
+// ==========================================================
+// =================== UTILITIES ============================
+// ==========================================================
+function showCustomAlert(message, type = 'info', isConfirm = false) {
+    return new Promise((resolve) => {
+        let modalOverlay = getEl('custom-modal-overlay');
+        if (!modalOverlay) {
+            modalOverlay = document.createElement('div');
+            modalOverlay.id = 'custom-modal-overlay';
+            modalOverlay.classList.add('custom-modal-overlay');
+            document.body.appendChild(modalOverlay);
+        }
+
+        const typeClass = { success: 'success', error: 'error', warning: 'warning' }[type] || 'info';
+
+        modalOverlay.innerHTML = `
+            <div class="custom-modal-content animate__animated animate__fadeInDown">
+                <div class="custom-modal-header ${typeClass}">
+                    <h5 class="custom-modal-title">${isConfirm ? 'โปรดยืนยัน' : 'แจ้งเตือน'}</h5>
+                    <button type="button" class="custom-modal-close">&times;</button>
+                </div>
+                <div class="custom-modal-body"><p>${message}</p></div>
+                <div class="custom-modal-footer">
+                    ${isConfirm ? `<button class="btn btn-secondary" data-action="cancel">ยกเลิก</button>` : ''}
+                    <button class="btn btn-primary" data-action="ok">ตกลง</button>
+                </div>
+            </div>`;
+        
+        show(modalOverlay);
+
+        const closeModal = (result) => {
+            const content = modalOverlay.querySelector('.custom-modal-content');
+            if(content) {
+                content.classList.replace('animate__fadeInDown', 'animate__fadeOutUp');
+                content.addEventListener('animationend', () => {
+                    hide(modalOverlay);
+                    resolve(result);
+                }, { once: true });
+            } else {
+                hide(modalOverlay);
+                resolve(result);
+            }
+        };
+
+        modalOverlay.querySelector('[data-action="ok"]')?.addEventListener('click', () => closeModal(true));
+        modalOverlay.querySelector('[data-action="cancel"]')?.addEventListener('click', () => closeModal(false));
+        modalOverlay.querySelector('.custom-modal-close')?.addEventListener('click', () => closeModal(false));
+    });
 }
