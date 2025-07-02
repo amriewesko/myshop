@@ -1,48 +1,47 @@
 /*
- * MyShop - Final Production Stylesheet
- * Version: 2.0 (Luxe Charcoal & Gold Theme)
+ * MyShop - Championship Edition Stylesheet
+ * Version: 3.0 (Professional & Dynamic Theme)
  * Author: Your Name / Gemini
- * Description: A comprehensive, high-quality stylesheet for the MyShop web application.
- * Includes a premium design, responsive adjustments, and a modern notification system.
+ * Description: A definitive, production-quality stylesheet incorporating advanced animations,
+ * a sophisticated design system, and a premium user experience for all devices.
 */
 
-/* --- 1. Global Styles and Variables --- */
+/* --- 1. Global Styles and Variables (The Design System Core) --- */
 :root {
-    /* Color Palette - Luxe, Professional, and High-Contrast */
-    --primary-color: #212529;           /* Charcoal Black: Main theme color */
-    --primary-light: #495057;           /* Lighter Grey: For secondary elements */
-    --primary-dark: #000000;            /* Pure Black: For strong emphasis */
-    
-    /* Accent Color - A rich, warm gold for calls to action and highlights */
-    --accent-color: #D4AF37;            /* Classic Gold */
-    --accent-gradient: linear-gradient(45deg, #DAAF37, #B8860B);
-    --accent-hover-color: #C7A435;
+    /* Color Palette - Modern, High-Contrast, and Professional */
+    --primary-color: #1A237E;           /* Deep Indigo: For main actions and branding */
+    --primary-light: #5C6BC0;           /* Lighter Indigo: For accents and hover states */
+    --primary-dark: #000051;            /* Very Dark Indigo: For strong emphasis */
+    --primary-gradient: linear-gradient(45deg, #3F51B5, #1A237E);
+    --primary-soft-bg: rgba(26, 35, 126, 0.08);
+    --primary-glow: rgba(63, 81, 181, 0.4);
+
+    /* Accent & Status Colors */
+    --accent-color: #FF7F00;            /* Shopee Orange: For key call-to-actions */
+    --accent-hover-color: #FF6600;      /* Darker Orange */
+    --success-color: #2a9d8f;           /* Teal for success */
+    --danger-color: #e63946;            /* Red for errors/danger */
+    --warning-color: #fca311;           /* Amber for warnings */
+    --info-color: #17A2B8;              /* Cyan for info */
 
     /* Neutral Colors */
-    --text-color: #343a40;              /* Dark Grey: For main text */
-    --light-text-color: #6c757d;        /* Muted Grey: For descriptions */
-    --background-color: #f8f9fa;        /* Off-white: Page background */
-    --card-background: #FFFFFF;         /* White: For cards */
-    --border-color: #dee2e6;            /* Light Gray: For borders */
+    --text-color: #212121;              /* Near Black: For main text */
+    --light-text-color: #616161;        /* Muted Gray: For secondary text */
+    --placeholder-color: #9E9E9E;
+    --background-color: #F5F5F5;        /* Very Light Gray: Page background */
+    --card-background: #FFFFFF;         /* White: For cards and containers */
+    --border-color: #E0E0E0;            /* Light Gray: For borders */
+    --dark-section-bg: #263238;         /* Dark Blue-Gray: For Navbar, Footer */
     --white-color: #FFFFFF;
 
-    /* Status & Notification Colors */
-    --success-color: #2a9d8f;
-    --success-bg: #e0f2f1;
-    --error-color: #e63946;
-    --error-bg: #fce8e6;
-    --warning-color: #fca311;
-    --warning-bg: #fff8e1;
-    --info-color: #1565c0;
-    --info-bg: #e3f2fd;
+    /* Shadow Palette - Multi-layered for realistic depth */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.18);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25);
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
 
-    /* Shadow Palette */
-    --shadow-sm: 0 2px 5px rgba(0,0,0,0.06);
-    --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
-    --shadow-lg: 0 15px 35px rgba(0,0,0,0.15);
-    --shadow-glow: 0 0 15px rgba(212, 175, 55, 0.3);
-
-    /* Spacing & Radius */
+    /* Spacing & Radius System */
     --spacing-sm: 8px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
@@ -50,11 +49,13 @@
     --spacing-xxl: 64px;
     --border-radius-md: 8px;
     --border-radius-lg: 12px;
-    --border-radius-full: 50px;
+    --border-radius-xl: 16px;
+    --border-radius-full: 9999px;
 
-    /* Transition */
+    /* Transition & Animation */
     --transition-speed: 0.3s;
-    --transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-timing: ease-in-out;
+    --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 /* --- 2. Base Styles & Typography --- */
@@ -64,17 +65,16 @@ html {
 
 body {
     font-family: 'Kanit', sans-serif;
-    background-color: var(--background-color);
     color: var(--text-color);
+    background-color: var(--background-color);
     line-height: 1.7;
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
-    color: var(--primary-color);
-    letter-spacing: 0.5px;
+    line-height: 1.3;
 }
 
 .btn {
@@ -88,21 +88,7 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
-}
-
-.btn::before { /* Shine Effect */
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left var(--transition-speed);
-}
-
-.btn:hover::before {
-    left: 100%;
+    z-index: 1;
 }
 
 .btn:hover {
@@ -111,114 +97,83 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-    background: var(--accent-gradient);
-    border-color: var(--accent-color);
-    color: var(--primary-dark);
+    background: var(--primary-gradient);
+    color: var(--white-color);
+    border: none;
 }
 
 .btn-primary:hover {
-    border-color: var(--accent-hover-color);
-    box-shadow: var(--shadow-lg), var(--shadow-glow);
-}
-
-.form-control {
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
-    padding: 10px 16px;
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-.form-control:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 0.25rem var(--shadow-glow);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
 }
 
 /* --- 3. Layout and Section Styles --- */
 
 /* Navbar */
 .navbar {
-    background-color: rgba(33, 37, 41, 0.95); /* Semi-transparent dark */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: var(--dark-section-bg);
     box-shadow: var(--shadow-md);
-    padding: var(--spacing-md) 0;
+    padding: var(--spacing-sm) 0;
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 1030;
+    border-bottom: 3px solid var(--primary-light);
 }
 
 .navbar-brand, .navbar .nav-link {
     color: var(--white-color) !important;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-}
-
-.navbar .nav-link {
-    position: relative;
-}
-
-.navbar .nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--accent-gradient);
-    transition: width var(--transition-speed) var(--transition-timing);
-    border-radius: 2px;
-}
-
-.navbar .nav-link:hover::after,
-.navbar .nav-link.active::after {
-    width: 80%;
 }
 
 /* Hero Section */
 .hero-section {
-    background-color: var(--primary-color);
-    background-image: 
-        radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.1), transparent 40%),
-        radial-gradient(circle at 80% 90%, rgba(212, 175, 55, 0.1), transparent 40%),
-        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background: var(--primary-gradient);
     color: var(--white-color);
     padding: var(--spacing-xxl) 0;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before, .hero-section::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    animation: hero-bubble-animation 15s infinite ease-in-out alternate;
+    z-index: 0;
+}
+.hero-section::before { width: 300px; height: 300px; top: -100px; left: -100px; }
+.hero-section::after { width: 400px; height: 400px; bottom: -150px; right: -150px; animation-delay: 2s; }
+
+@keyframes hero-bubble-animation {
+    from { transform: translateY(0) scale(1); }
+    to { transform: translateY(20px) scale(1.05); }
+}
+
+.hero-section > .container {
+    position: relative;
+    z-index: 1;
 }
 
 .hero-section h1 {
-    font-size: 3.5rem;
     font-weight: 800;
-    color: var(--white-color);
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-}
-
-.hero-section p {
-    font-size: 1.3rem;
-    color: rgba(255,255,255,0.8);
+    font-size: 3.5rem;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
 
 /* Product Cards */
 .product-card {
     background-color: var(--card-background);
-    border: none;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
     transition: all var(--transition-speed) var(--transition-timing);
     overflow: hidden;
     height: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 .product-card:hover {
-    transform: translateY(-10px) scale(1.02);
+    transform: translateY(-10px);
     box-shadow: var(--shadow-lg);
-}
-
-.product-card .img-container {
-    overflow: hidden;
-    position: relative;
 }
 
 .product-card img {
@@ -234,120 +189,69 @@ h1, h2, h3, h4, h5, h6 {
 .product-card .card-body {
     padding: var(--spacing-lg);
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
 }
 
 .product-card .card-title {
     font-weight: 700;
     font-size: 1.2rem;
-    color: var(--primary-color);
-    margin-bottom: var(--spacing-md);
-    flex-grow: 1;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-sm);
 }
 
 .product-card .price {
     font-size: 1.8rem;
     font-weight: 800;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-color);
     margin-bottom: var(--spacing-lg);
 }
 
 .product-card .btn-add-to-cart {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
     color: var(--white-color);
+    box-shadow: 0 4px 8px rgba(255, 127, 0, 0.4);
 }
 
 .product-card .btn-add-to-cart:hover {
-    background: var(--primary-dark);
-    border-color: var(--primary-dark);
+    background-color: var(--accent-hover-color);
+    border-color: var(--accent-hover-color);
+    box-shadow: 0 6px 12px rgba(255, 102, 0, 0.5);
 }
 
 /* Footer */
 footer {
-    background-color: var(--primary-color);
-    color: rgba(255, 255, 255, 0.8);
+    background-color: var(--dark-section-bg);
+    color: rgba(255, 255, 255, 0.7);
     padding: var(--spacing-xl) 0;
     margin-top: var(--spacing-xxl);
+    border-top: 3px solid var(--primary-light);
 }
 
-footer .social-icons a {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.5rem;
-    margin: 0 var(--spacing-md);
-    transition: color var(--transition-speed), transform var(--transition-speed);
+/* --- 4. Admin Panel & Login --- */
+#login-gate {
+    background: var(--primary-gradient);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-footer .social-icons a:hover {
-    color: var(--accent-color);
-    transform: translateY(-3px);
+#login-gate .card {
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding: var(--spacing-xl);
 }
 
-/* --- 4. Admin Panel Specific Styles --- */
 .admin-section {
     background-color: var(--card-background);
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
-    border-top: 4px solid;
-    border-image: var(--accent-gradient) 1;
-}
-
-#login-gate {
-    min-height: 100vh;
-    background: var(--primary-color);
-}
-
-#login-gate .card {
-    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
+    border-top: 5px solid;
+    border-image: var(--primary-gradient) 1;
 }
 
-.img-preview-container {
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-md);
-    min-height: 120px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-md);
-    background-color: var(--background-color);
-}
-
-.img-preview-wrapper {
-    position: relative;
-}
-
-.remove-img-btn {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: var(--error-color);
-    color: var(--white-color);
-    border: 2px solid var(--card-background);
-    border-radius: var(--border-radius-full);
-    width: 24px;
-    height: 24px;
-    font-size: 0.8rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-speed);
-}
-.remove-img-btn:hover {
-    transform: scale(1.1);
-    background-color: #c91828;
-}
-
-/* --- 5. Notification System Styles --- */
+/* --- 5. Notification System (Toast & Modal) --- */
 
 /* Toast Notifications */
 #toast-container {
@@ -371,8 +275,8 @@ footer .social-icons a:hover {
     padding: var(--spacing-md);
     border-left: 5px solid;
     opacity: 0;
-    transform: translateX(100%);
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transform: translateX(120%);
+    transition: all 0.5s var(--transition-timing-bounce);
 }
 
 .toast-notification.show {
@@ -386,40 +290,25 @@ footer .social-icons a:hover {
     margin-top: 4px;
 }
 
-.toast-content {
-    flex-grow: 1;
-}
-
-.toast-title {
-    font-weight: 700;
-    color: var(--text-color);
-    margin-bottom: 4px;
-}
-
-.toast-message {
-    font-size: 0.9rem;
-    color: var(--light-text-color);
-}
+.toast-content { flex-grow: 1; }
+.toast-title { font-weight: 700; }
+.toast-message { font-size: 0.9rem; color: var(--light-text-color); }
 
 .toast-close-btn {
     background: none;
     border: none;
-    color: var(--light-text-color);
     font-size: 1.5rem;
-    line-height: 1;
     cursor: pointer;
     opacity: 0.7;
     transition: opacity var(--transition-speed);
 }
-.toast-close-btn:hover {
-    opacity: 1;
-}
+.toast-close-btn:hover { opacity: 1; }
 
 .toast-success { border-color: var(--success-color); }
 .toast-success .toast-icon { color: var(--success-color); }
 
-.toast-error { border-color: var(--error-color); }
-.toast-error .toast-icon { color: var(--error-color); }
+.toast-error { border-color: var(--danger-color); }
+.toast-error .toast-icon { color: var(--danger-color); }
 
 .toast-warning { border-color: var(--warning-color); }
 .toast-warning .toast-icon { color: var(--warning-color); }
@@ -436,7 +325,6 @@ footer .social-icons a:hover {
     height: 100%;
     background-color: rgba(33, 37, 41, 0.6);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -452,14 +340,14 @@ footer .social-icons a:hover {
 .modal-overlay .modal-content {
     background-color: var(--card-background);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-xl);
     width: 90%;
     max-width: 450px;
     text-align: center;
     padding: var(--spacing-xl);
     transform: scale(0.7);
     opacity: 0;
-    transition: all var(--transition-speed) var(--transition-timing);
+    transition: all var(--transition-speed) var(--transition-timing-bounce);
 }
 
 .modal-overlay.show .modal-content {
@@ -479,21 +367,8 @@ footer .social-icons a:hover {
     color: var(--white-color);
 }
 .modal-icon-container.modal-warning { background-color: var(--warning-color); }
-.modal-icon-container.modal-error { background-color: var(--error-color); }
+.modal-icon-container.modal-error { background-color: var(--danger-color); }
 .modal-icon-container.modal-info { background-color: var(--info-color); }
-
-.modal-header .modal-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-color);
-    width: 100%;
-}
-
-.modal-body p {
-    color: var(--light-text-color);
-    font-size: 1rem;
-    margin: 0;
-}
 
 .modal-footer {
     margin-top: var(--spacing-xl);
@@ -501,25 +376,12 @@ footer .social-icons a:hover {
     gap: var(--spacing-md);
     justify-content: center;
 }
-
-.modal-footer .btn {
-    flex-grow: 1;
-}
-.modal-footer .btn-secondary {
-    background-color: var(--border-color);
-    color: var(--light-text-color);
-    border-color: var(--border-color);
-}
+.modal-footer .btn-secondary { background-color: var(--border-color); color: var(--light-text-color); border-color: var(--border-color); }
 .modal-footer .btn-warning { background-color: var(--warning-color); border-color: var(--warning-color); color: var(--white-color); }
-.modal-footer .btn-error { background-color: var(--error-color); border-color: var(--error-color); color: var(--white-color); }
+.modal-footer .btn-error { background-color: var(--danger-color); border-color: var(--danger-color); color: var(--white-color); }
 .modal-footer .btn-info { background-color: var(--info-color); border-color: var(--info-color); color: var(--white-color); }
 
-/* --- 6. Other Styles --- */
-::-webkit-scrollbar { width: 12px; }
-::-webkit-scrollbar-track { background: #e9ecef; }
-::-webkit-scrollbar-thumb { background: linear-gradient(var(--primary-light), var(--primary-color)); border-radius: var(--border-radius-full); }
-
-/* --- 7. Responsive Adjustments --- */
+/* --- 6. Responsive Adjustments --- */
 @media (max-width: 768px) {
     .hero-section h1 { font-size: 2.5rem; }
 }
@@ -532,9 +394,14 @@ footer .social-icons a:hover {
         right: 0;
         left: 0;
         padding: var(--spacing-md);
-        gap: var(--spacing-md);
     }
     .toast-notification {
+        width: 100%;
+    }
+    .modal-footer {
+        flex-direction: column;
+    }
+    .modal-footer .btn {
         width: 100%;
     }
 }
