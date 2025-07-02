@@ -23,13 +23,10 @@ const hide = (el) => el && el.classList.add('d-none');
 // =================== INITIALIZATION =======================
 // ==========================================================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DEBUG: DOM Content Loaded. Initializing page...");
     const path = window.location.pathname;
     if (path.includes('admin.html')) {
-        console.log("DEBUG: Admin page detected. Running initAdminPage().");
         initAdminPage();
     } else {
-        console.log("DEBUG: Public page detected. Running initPublicPage().");
         initPublicPage();
     }
 });
@@ -47,18 +44,145 @@ function initAdminPage() {
 }
 
 // ==========================================================
+// =================== NEW NOTIFICATION SYSTEM ==============
+// ==========================================================
+
+/**
+ * ระบบแจ้งเตือนที่สวยงามและทันสมัย
+ * สามารถแสดงผลได้ทั้งแบบ Toast (มุมจอ) และ Modal (กลางจอ)
+ * @param {string} message - ข้อความที่ต้องการแสดง
+ * @param {string} [type='info'] - ประเภทการแจ้งเตือน: 'success', 'error', 'warning', 'info'
+ * @param {boolean} [isConfirm=false] - ถ้าเป็น true จะแสดงเป็น Modal พร้อมปุ่มยืนยัน/ยกเลิก
+ */
+function showAlert(message, type = 'info', isConfirm = false) {
+    if (isConfirm) {
+        // Use Modal for confirmation dialogs
+        return showConfirmationModal(message, type);
+    } else {
+        // Use Toast for simple notifications
+        showToast(message, type);
+        return Promise.resolve(); // Toasts don't wait for user input
+    }
+}
+
+function showToast(message, type = 'info') {
+    let toastContainer = getEl('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+
+    toast.innerHTML = `
+        <i class="fas ${icons[type]} toast-icon"></i>
+        <div class="toast-content">
+            <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close-btn">&times;</button>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    // Trigger animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+
+    // Auto-dismiss after 5 seconds
+    const timeoutId = setTimeout(() => {
+        closeToast(toast);
+    }, 5000);
+
+    // Close on click
+    toast.querySelector('.toast-close-btn').addEventListener('click', () => {
+        clearTimeout(timeoutId);
+        closeToast(toast);
+    });
+}
+
+function closeToast(toast) {
+    toast.classList.remove('show');
+    toast.addEventListener('transitionend', () => {
+        toast.remove();
+        const container = getEl('toast-container');
+        if (container && !container.hasChildNodes()) {
+            container.remove();
+        }
+    });
+}
+
+function showConfirmationModal(message, type = 'warning') {
+    return new Promise((resolve) => {
+        let modalOverlay = getEl('confirmation-modal-overlay');
+        if (modalOverlay) modalOverlay.remove(); // Remove old one if exists
+
+        modalOverlay = document.createElement('div');
+        modalOverlay.id = 'confirmation-modal-overlay';
+        modalOverlay.className = 'modal-overlay';
+        
+        const icons = {
+            warning: 'fa-exclamation-triangle',
+            error: 'fa-bomb', // For dangerous actions
+            info: 'fa-question-circle'
+        };
+
+        modalOverlay.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-icon-container modal-${type}">
+                    <i class="fas ${icons[type]}"></i>
+                </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">โปรดยืนยันการกระทำ</h5>
+                </div>
+                <div class="modal-body">
+                    <p>${message}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-action="cancel">ยกเลิก</button>
+                    <button class="btn btn-primary btn-${type}" data-action="ok">ตกลง</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modalOverlay);
+
+        setTimeout(() => modalOverlay.classList.add('show'), 10);
+
+        const closeModal = (result) => {
+            modalOverlay.classList.remove('show');
+            modalOverlay.addEventListener('transitionend', () => {
+                modalOverlay.remove();
+                resolve(result);
+            });
+        };
+
+        modalOverlay.querySelector('[data-action="ok"]').addEventListener('click', () => closeModal(true));
+        modalOverlay.querySelector('[data-action="cancel"]').addEventListener('click', () => closeModal(false));
+    });
+}
+
+
+// ==========================================================
 // =================== API & DATA HANDLING ==================
 // ==========================================================
 async function sendData(action, data = {}) {
-    console.log(`DEBUG: sendData called. Action: ${action}`, data);
     try {
         const body = {
             action: action,
             token: sessionStorage.getItem('sessionToken'),
             data: data
         };
-        console.log("DEBUG: Sending request to Apps Script with body:", body);
-
         const response = await fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             mode: 'cors',
@@ -66,139 +190,27 @@ async function sendData(action, data = {}) {
             body: JSON.stringify(body)
         });
 
-        console.log("DEBUG: Fetch response received from Apps Script.", response);
-
-        if (!response.ok) {
-            console.error(`DEBUG: HTTP error! status: ${response.status}`);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const result = await response.json();
-        console.log("DEBUG: Parsed JSON result from Apps Script:", result);
-
         if (result.reauth) {
-            console.warn("DEBUG: Server requested re-authentication.");
-            showCustomAlert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่', 'error');
+            showAlert('Session หมดอายุ กรุณาเข้าสู่ระบบใหม่', 'error');
             handleLogout();
         }
         return result;
     } catch (error) {
-        console.error("DEBUG: API Error in sendData function:", error);
-        showCustomAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
+        console.error("API Error:", error);
+        showAlert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message, 'error');
         return { success: false, message: error.message };
     }
 }
-
-// ==========================================================
-// =================== ADMIN: AUTHENTICATION ================
-// ==========================================================
-async function handleLogin() {
-    console.log("DEBUG: handleLogin function started.");
-    
-    const usernameInput = getEl('username-input');
-    const passwordInput = getEl('password-input');
-    
-    if (!usernameInput || !passwordInput) {
-        console.error("DEBUG: Login form inputs not found!");
-        return;
-    }
-
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-    
-    console.log(`DEBUG: Username: '${username}', Password: '${password.substring(0,1)}...'`);
-
-    if (!username || !password) {
-        console.log("DEBUG: Username or Password is empty.");
-        return showCustomAlert('กรุณากรอก Username และ Password', 'error');
-    }
-
-    const loader = getEl('loader');
-    if(loader) show(loader);
-    console.log("DEBUG: Loader shown. Preparing to send login data...");
-
-    try {
-        const result = await sendData('secureLogin', { username, password });
-        console.log("DEBUG: Login result received in handleLogin:", result);
-
-        if (result && result.success) {
-            console.log("DEBUG: Login successful. Storing token and user data.");
-            sessionStorage.setItem('sessionToken', result.token);
-            sessionStorage.setItem('currentUser', JSON.stringify(result.user));
-            checkLoginStatus();
-        } else {
-            console.error("DEBUG: Login failed. Server message:", result ? result.message : "No result object");
-            showCustomAlert(result ? result.message : 'Login failed: No response from server', 'error');
-        }
-    } catch (error) {
-        console.error("DEBUG: An error occurred during the login process in handleLogin:", error);
-    } finally {
-        if(loader) hide(loader);
-        console.log("DEBUG: Loader hidden. handleLogin finished.");
-    }
-}
-
-function checkLoginStatus() {
-    console.log("DEBUG: checkLoginStatus called.");
-    const token = sessionStorage.getItem('sessionToken');
-    const user = JSON.parse(sessionStorage.getItem('currentUser'));
-    if (token && user) {
-        console.log("DEBUG: User is logged in.", user);
-        currentUser = user;
-        show(getEl('admin-panel'));
-        hide(getEl('login-gate'));
-        show(getEl('user-dropdown'));
-        getEl('username-display').textContent = currentUser.username;
-        loadAdminProducts();
-    } else {
-        console.log("DEBUG: User is not logged in.");
-        hide(getEl('admin-panel'));
-        show(getEl('login-gate'));
-        hide(getEl('user-dropdown'));
-    }
-}
-
-function handleLogout() {
-    console.log("DEBUG: handleLogout called.");
-    sessionStorage.clear();
-    currentUser = { username: '', role: '' };
-    checkLoginStatus();
-    showCustomAlert('ออกจากระบบแล้ว', 'info');
-}
-
-// ==========================================================
-// =================== ADMIN: EVENT LISTENERS ===============
-// ==========================================================
-function setupAdminEventListeners() {
-    console.log("DEBUG: setupAdminEventListeners called.");
-    const loginBtn = getEl('secure-login-btn');
-    if (loginBtn) {
-        loginBtn.addEventListener('click', handleLogin);
-        console.log("DEBUG: Login button event listener attached.");
-    } else {
-        console.error("DEBUG: Login button ('secure-login-btn') not found!");
-    }
-
-    getEl('password-input')?.addEventListener('keypress', (e) => e.key === 'Enter' && handleLogin());
-    getEl('logout-btn')?.addEventListener('click', handleLogout);
-    getEl('product-form')?.addEventListener('submit', handleProductFormSubmit);
-    getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
-    getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
-    getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
-    getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
-    console.log("DEBUG: All admin event listeners attached.");
-}
-
-
-// --- The rest of the functions remain the same, only the debugging logs are added to the login flow ---
-// --- You can copy the rest of your app.js (single user version) below this line ---
 
 // ==========================================================
 // =================== PUBLIC PAGE LOGIC ====================
 // ==========================================================
 async function loadProducts() {
     const loader = getEl('loader');
-    if(loader) show(loader);
+    show(loader);
     try {
         const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
         const result = await response.json();
@@ -209,7 +221,7 @@ async function loadProducts() {
     } catch (error) {
         console.error("Error loading products:", error);
     } finally {
-        if(loader) hide(loader);
+        hide(loader);
     }
 }
 
@@ -231,11 +243,13 @@ function renderProducts(products) {
         const cardHtml = `
             <div class="col animate__animated animate__fadeInUp">
                 <div class="product-card">
-                    <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}" onerror="this.src='https://placehold.co/400x250/cccccc/333333?text=Error';">
+                    <div class="img-container">
+                        <img src="${firstImageUrl}" class="card-img-top" alt="${product.name}" onerror="this.src='https://placehold.co/400x250/cccccc/333333?text=Error';">
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title">${product.name}</h5>
                         <p class="price">฿${parseFloat(product.price).toFixed(2)}</p>
-                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-add-to-cart w-100"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
+                        ${product.shopee_url ? `<a href="${product.shopee_url}" target="_blank" class="btn btn-primary btn-add-to-cart w-100"><i class="fas fa-shopping-cart me-2"></i>สั่งซื้อที่ Shopee</a>` : ''}
                     </div>
                 </div>
             </div>`;
@@ -278,10 +292,73 @@ async function fetchAndRenderCategories() {
 }
 
 // ==========================================================
+// =================== ADMIN: AUTHENTICATION ================
+// ==========================================================
+function checkLoginStatus() {
+    const token = sessionStorage.getItem('sessionToken');
+    const user = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (token && user) {
+        currentUser = user;
+        show(getEl('admin-panel'));
+        hide(getEl('login-gate'));
+        show(getEl('user-dropdown'));
+        getEl('username-display').textContent = currentUser.username;
+        loadAdminProducts();
+    } else {
+        hide(getEl('admin-panel'));
+        show(getEl('login-gate'));
+        hide(getEl('user-dropdown'));
+    }
+}
+
+async function handleLogin() {
+    const username = getEl('username-input').value.trim();
+    const password = getEl('password-input').value.trim();
+    if (!username || !password) {
+        return showAlert('กรุณากรอก Username และ Password', 'warning');
+    }
+    show(getEl('loader'));
+    try {
+        const result = await sendData('secureLogin', { username, password });
+        if (result.success) {
+            sessionStorage.setItem('sessionToken', result.token);
+            sessionStorage.setItem('currentUser', JSON.stringify(result.user));
+            checkLoginStatus();
+        } else {
+            showAlert(result.message || 'Login failed', 'error');
+        }
+    } finally {
+        hide(getEl('loader'));
+    }
+}
+
+function handleLogout() {
+    sessionStorage.clear();
+    currentUser = { username: '', role: '' };
+    checkLoginStatus();
+    showAlert('ออกจากระบบแล้ว', 'info');
+}
+
+// ==========================================================
+// =================== ADMIN: EVENT LISTENERS ===============
+// ==========================================================
+function setupAdminEventListeners() {
+    getEl('secure-login-btn')?.addEventListener('click', handleLogin);
+    getEl('password-input')?.addEventListener('keypress', (e) => e.key === 'Enter' && handleLogin());
+    getEl('logout-btn')?.addEventListener('click', handleLogout);
+
+    getEl('product-form')?.addEventListener('submit', handleProductFormSubmit);
+    getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
+    getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
+    getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
+
+    getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
+}
+
+// ==========================================================
 // =================== ADMIN: PRODUCT MGMT ==================
 // ==========================================================
 async function loadAdminProducts() {
-    // A simple way to check if token is still valid before fetching public data
     const checkTokenResult = await sendData('secureGetUsers'); 
     if (checkTokenResult.success) { 
         const productResult = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
@@ -344,7 +421,7 @@ async function handleProductFormSubmit(e) {
     };
 
     if (!data.name || !data.category || !data.price) {
-        return showCustomAlert('กรุณากรอกข้อมูลสินค้าให้ครบ', 'error');
+        return showAlert('กรุณากรอกข้อมูลสินค้าให้ครบ', 'warning');
     }
     
     show(getEl('loader'));
@@ -364,11 +441,11 @@ async function handleProductFormSubmit(e) {
 
         const result = await sendData(action, data);
         if (result.success) {
-            showCustomAlert(`บันทึกสินค้าเรียบร้อย`, 'success');
+            showAlert(`บันทึกสินค้าเรียบร้อย`, 'success');
             clearProductForm();
             loadAdminProducts();
         } else {
-            showCustomAlert(result.message, 'error');
+            showAlert(result.message, 'error');
         }
     } finally {
         hide(getEl('loader'));
@@ -400,14 +477,16 @@ function editProduct(id) {
 }
 
 async function deleteProduct(id) {
-    if (!await showCustomAlert('ยืนยันการลบสินค้านี้?', 'warning', true)) return;
+    const confirmed = await showAlert('คุณแน่ใจหรือไม่ที่จะลบสินค้านี้? การกระทำนี้ไม่สามารถย้อนกลับได้', 'error', true);
+    if (!confirmed) return;
+
     show(getEl('loader'));
     const result = await sendData('secureDeleteProduct', { id });
     if (result.success) {
-        showCustomAlert('ลบสินค้าแล้ว', 'success');
+        showAlert('ลบสินค้าแล้ว', 'success');
         loadAdminProducts();
     } else {
-        showCustomAlert(result.message, 'error');
+        showAlert(result.message, 'error');
     }
     hide(getEl('loader'));
 }
@@ -479,10 +558,10 @@ async function handleChangePassword() {
     const confirmPassword = getEl('confirm-password-modal').value;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-        return showCustomAlert('กรุณากรอกข้อมูลให้ครบทุกช่อง', 'error');
+        return showAlert('กรุณากรอกข้อมูลให้ครบทุกช่อง', 'warning');
     }
     if (newPassword !== confirmPassword) {
-        return showCustomAlert('รหัสผ่านใหม่ไม่ตรงกัน', 'error');
+        return showAlert('รหัสผ่านใหม่ไม่ตรงกัน', 'error');
     }
 
     show(getEl('loader'));
@@ -497,58 +576,8 @@ async function handleChangePassword() {
         const modalEl = getEl('changePasswordModal');
         const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
         modal.hide();
-        showCustomAlert('เปลี่ยนรหัสผ่านสำเร็จ', 'success');
+        showAlert('เปลี่ยนรหัสผ่านสำเร็จ', 'success');
     } else {
-        showCustomAlert(result.message, 'error');
+        showAlert(result.message, 'error');
     }
-}
-
-// ==========================================================
-// =================== UTILITIES ============================
-// ==========================================================
-function showCustomAlert(message, type = 'info', isConfirm = false) {
-    return new Promise((resolve) => {
-        let modalOverlay = getEl('custom-modal-overlay');
-        if (!modalOverlay) {
-            modalOverlay = document.createElement('div');
-            modalOverlay.id = 'custom-modal-overlay';
-            modalOverlay.classList.add('custom-modal-overlay');
-            document.body.appendChild(modalOverlay);
-        }
-
-        const typeClass = { success: 'success', error: 'error', warning: 'warning' }[type] || 'info';
-
-        modalOverlay.innerHTML = `
-            <div class="custom-modal-content animate__animated animate__fadeInDown">
-                <div class="custom-modal-header ${typeClass}">
-                    <h5 class="custom-modal-title">${isConfirm ? 'โปรดยืนยัน' : 'แจ้งเตือน'}</h5>
-                    <button type="button" class="custom-modal-close">&times;</button>
-                </div>
-                <div class="custom-modal-body"><p>${message}</p></div>
-                <div class="custom-modal-footer">
-                    ${isConfirm ? `<button class="btn btn-secondary" data-action="cancel">ยกเลิก</button>` : ''}
-                    <button class="btn btn-primary" data-action="ok">ตกลง</button>
-                </div>
-            </div>`;
-        
-        show(modalOverlay);
-
-        const closeModal = (result) => {
-            const content = modalOverlay.querySelector('.custom-modal-content');
-            if(content) {
-                content.classList.replace('animate__fadeInDown', 'animate__fadeOutUp');
-                content.addEventListener('animationend', () => {
-                    hide(modalOverlay);
-                    resolve(result);
-                }, { once: true });
-            } else {
-                hide(modalOverlay);
-                resolve(result);
-            }
-        };
-
-        modalOverlay.querySelector('[data-action="ok"]')?.addEventListener('click', () => closeModal(true));
-        modalOverlay.querySelector('[data-action="cancel"]')?.addEventListener('click', () => closeModal(false));
-        modalOverlay.querySelector('.custom-modal-close')?.addEventListener('click', () => closeModal(false));
-    });
 }
