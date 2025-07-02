@@ -5,7 +5,7 @@
 // Make sure this URL is correct and your Apps Script is deployed as a Web App
 // IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
 // This URL will be used by the public-facing index.html to fetch products and categories.
-const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbzYC0Ao9CLiOUc-v7DrWqrxXQMkfkLo_GfWi8jHRyhjw0iSdw17B_cr_BxxesOcALJz/exec'; // Placeholder, replace with your actual URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYC0Ao9CLiOUc-v7DrWqrxXQMkfkLo_GfWi8jHRyhjw0iSdw17B_cr_BxxesOcALJz/exec'; // Placeholder, replace with your actual URL
 
 // Removed ADMIN_SECRET_KEY as admin functionality is now handled by a separate, authenticated Apps Script Web App.
 // ==========================================================\r\n
