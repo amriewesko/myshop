@@ -27,9 +27,13 @@
     --accent-glow: rgba(255, 127, 0, 0.4); /* Soft orange glow for buttons. */
     
     --success-color: #2a9d8f;           /* Teal for success messages. */
+    --success-bg: #e0f2f1;
     --danger-color: #e63946;            /* Red for errors and destructive actions. */
+    --danger-bg: #fce8e6;
     --warning-color: #fca311;           /* Amber for warnings and alerts. */
+    --warning-bg: #fff8e1;
     --info-color: #17A2B8;              /* Cyan for informational messages. */
+    --info-bg: #e3f2fd;
 
     /* -- Neutral Colors: The backbone of the design for text and backgrounds. */
     --text-color: #212121;              /* Near Black: For main text, high readability. */
@@ -311,6 +315,39 @@ footer {
     opacity: 0;
     transform: translateX(120%);
     transition: all 0.5s var(--transition-timing-bounce);
+    position: relative;
+    overflow: hidden;
+}
+
+.toast-notification::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background-color: rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.toast-notification::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background-color: var(--type-color, var(--info-color));
+    transform: scaleX(0);
+    transform-origin: left;
+    z-index: 2;
+    animation: toast-progress 5s linear forwards;
+}
+
+@keyframes toast-progress {
+    to {
+        transform: scaleX(1);
+    }
 }
 
 .toast-notification.show {
@@ -322,9 +359,32 @@ footer {
     font-size: 1.5rem;
     margin-right: var(--spacing-md);
     margin-top: 4px;
+    animation: pop-in 0.5s var(--transition-timing-bounce) 0.2s forwards;
+    opacity: 0;
+    transform: scale(0.5);
 }
 
-.toast-content { flex-grow: 1; }
+@keyframes pop-in {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.toast-content { 
+    flex-grow: 1;
+    animation: fade-in-up 0.5s ease-out 0.3s forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+@keyframes fade-in-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .toast-title { font-weight: 700; }
 .toast-message { font-size: 0.9rem; color: var(--light-text-color); }
 
@@ -338,16 +398,16 @@ footer {
 }
 .toast-close-btn:hover { opacity: 1; }
 
-.toast-success { border-color: var(--success-color); }
+.toast-success { --type-color: var(--success-color); border-color: var(--success-color); background-color: var(--success-bg); }
 .toast-success .toast-icon { color: var(--success-color); }
 
-.toast-error { border-color: var(--danger-color); }
+.toast-error { --type-color: var(--danger-color); border-color: var(--danger-color); background-color: var(--danger-bg); }
 .toast-error .toast-icon { color: var(--danger-color); }
 
-.toast-warning { border-color: var(--warning-color); }
+.toast-warning { --type-color: var(--warning-color); border-color: var(--warning-color); background-color: var(--warning-bg); }
 .toast-warning .toast-icon { color: var(--warning-color); }
 
-.toast-info { border-color: var(--info-color); }
+.toast-info { --type-color: var(--info-color); border-color: var(--info-color); background-color: var(--info-bg); }
 .toast-info .toast-icon { color: var(--info-color); }
 
 /* Confirmation Modal */
@@ -399,10 +459,18 @@ footer {
     justify-content: center;
     font-size: 2.5rem;
     color: var(--white-color);
+    animation: icon-pulse 2s infinite;
 }
-.modal-icon-container.modal-warning { background-color: var(--warning-color); }
-.modal-icon-container.modal-error { background-color: var(--danger-color); }
-.modal-icon-container.modal-info { background-color: var(--info-color); }
+
+@keyframes icon-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,0,0,0.2); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0,0,0,0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+}
+
+.modal-icon-container.modal-warning { background: linear-gradient(45deg, #fca311, #ffb300); }
+.modal-icon-container.modal-error { background: linear-gradient(45deg, #e63946, #d00000); }
+.modal-icon-container.modal-info { background: linear-gradient(45deg, #17A2B8, #0077b6); }
 
 .modal-footer {
     margin-top: var(--spacing-xl);
