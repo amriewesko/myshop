@@ -1,54 +1,50 @@
 /*
  * MyShop - The Masterpiece Edition Stylesheet
- * Version: 5.0 (Definitive, Production-Quality Theme)
+ * Version: 6.0 (Definitive, Production-Quality Theme)
  * Author: Your Name / Gemini
  * Description: The ultimate, production-quality stylesheet. This version incorporates a
  * comprehensive design system, advanced graphics, fluid animations, and a pixel-perfect
  * responsive experience across all devices, crafted with maximum intention and detail.
 */
 
-/* --- 1. Global Styles and Variables (The Design System Core) --- */
+/* --- 1. ระบบตัวแปร (Design System Core) --- */
 :root {
     /* =================================== */
-    /* ========= COLOR PALETTE =========== */
+    /* ========= ชุดสี (Color Palette) =========== */
     /* =================================== */
 
-    /* -- Primary Colors: Deep, sophisticated blues for branding and key actions. */
-    --primary-color: #1A237E;           /* Deep Indigo: Main theme color, strong and professional. */
-    --primary-light: #5C6BC0;           /* Lighter Indigo: For accents, links, and hover states. */
-    --primary-dark: #000051;            /* Very Dark Indigo: For strong emphasis and dark mode elements. */
+    /* -- สีหลัก: สีน้ำเงินเข้มที่ดูสุขุมและเป็นมืออาชีพ -- */
+    --primary-color: #1A237E;           /* Deep Indigo: สีหลักของธีม แข็งแกร่งและเป็นมืออาชีพ */
+    --primary-light: #5C6BC0;           /* Lighter Indigo: สำหรับส่วนเน้นและสถานะ Hover */
+    --primary-dark: #000051;            /* Very Dark Indigo: สำหรับการเน้นข้อความที่เข้มข้น */
     --primary-gradient: linear-gradient(45deg, #3F51B5, #1A237E);
-    --primary-soft-bg: rgba(26, 35, 126, 0.08); /* Subtle tint for backgrounds on hover. */
-    --primary-glow: rgba(63, 81, 181, 0.4);   /* Soft glow for focus states on form elements. */
+    --primary-soft-bg: rgba(26, 35, 126, 0.08); /* สีพื้นหลังจางๆ สำหรับ Hover */
+    --primary-glow: rgba(63, 81, 181, 0.4);   /* แสงเรืองๆ สำหรับสถานะ Focus */
 
-    /* -- Accent & Status Colors: Vibrant, clear colors for user feedback and calls to action. */
-    --accent-color: #FF7F00;            /* Shopee Orange: For key call-to-actions, stands out. */
-    --accent-hover-color: #FF6600;      /* Darker Orange for hover states. */
-    --accent-glow: rgba(255, 127, 0, 0.4); /* Soft orange glow for buttons. */
+    /* -- สีเน้นและสีสถานะ: สีที่สดใสและชัดเจนสำหรับแจ้งเตือนและปุ่มสำคัญ -- */
+    --accent-color: #FF7F00;            /* Shopee Orange: สำหรับปุ่มที่ต้องการให้โดดเด่น */
+    --accent-hover-color: #FF6600;      /* สีส้มเข้มสำหรับ Hover */
+    --accent-glow: rgba(255, 127, 0, 0.4); /* แสงเรืองๆ สีส้ม */
     
-    --success-color: #2a9d8f;           /* Teal for success messages. */
-    --success-bg: #e0f2f1;
-    --danger-color: #e63946;            /* Red for errors and destructive actions. */
-    --danger-bg: #fce8e6;
-    --warning-color: #fca311;           /* Amber for warnings and alerts. */
-    --warning-bg: #fff8e1;
-    --info-color: #17A2B8;              /* Cyan for informational messages. */
-    --info-bg: #e3f2fd;
+    --success-color: #2a9d8f;           /* สีเขียวอมฟ้าสำหรับ "สำเร็จ" */
+    --danger-color: #e63946;            /* สีแดงสำหรับ "ผิดพลาด" หรือการกระทำที่อันตราย */
+    --warning-color: #fca311;           /* สีเหลืองอำพันสำหรับ "คำเตือน" */
+    --info-color: #17A2B8;              /* สีฟ้าเทอร์ควอยซ์สำหรับ "ข้อมูล" */
 
-    /* -- Neutral Colors: The backbone of the design for text and backgrounds. */
-    --text-color: #212121;              /* Near Black: For main text, high readability. */
-    --light-text-color: #616161;        /* Muted Gray: For secondary text, descriptions. */
-    --placeholder-color: #9E9E9E;       /* For form input placeholders. */
-    --background-color: #F5F5F5;        /* Very Light Gray: Main page background. */
-    --card-background: #FFFFFF;         /* Pure White: For cards and containers. */
-    --border-color: #E0E0E0;            /* Light Gray: For borders and separators. */
-    --dark-section-bg: #263238;         /* Dark Blue-Gray: For Navbar, Footer. */
+    /* -- สีกลาง: เป็นกระดูกสันหลังของดีไซน์สำหรับข้อความและพื้นหลัง -- */
+    --text-color: #212121;              /* สีเทาเกือบดำ: สำหรับข้อความหลัก อ่านง่าย */
+    --light-text-color: #616161;        /* สีเทาจาง: สำหรับข้อความรอง คำอธิบาย */
+    --placeholder-color: #9E9E9E;       /* สำหรับข้อความ Placeholder ในฟอร์ม */
+    --background-color: #F5F5F5;        /* สีเทาอ่อนมาก: สำหรับพื้นหลังของหน้าเว็บ */
+    --card-background: #FFFFFF;         /* สีขาว: สำหรับการ์ดและคอนเทนเนอร์ */
+    --border-color: #E0E0E0;            /* สีเทาอ่อน: สำหรับเส้นขอบและเส้นแบ่ง */
+    --dark-section-bg: #263238;         /* สีเทาน้ำเงินเข้ม: สำหรับ Navbar, Footer */
     --white-color: #FFFFFF;
 
     /* =================================== */
-    /* ========= SHADOW PALETTE ========== */
+    /* ========= ชุดเงา (Shadow Palette) ========== */
     /* =================================== */
-    /* -- Multi-layered shadows for realistic depth and hierarchy. */
+    /* -- เงาหลายชั้นเพื่อสร้างมิติและความสมจริง -- */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.18);
@@ -56,9 +52,9 @@
     --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
 
     /* =================================== */
-    /* ========= SPACING SYSTEM ========== */
+    /* ========= ระบบระยะห่าง (Spacing System) ========== */
     /* =================================== */
-    /* -- Consistent spacing for a harmonious layout. */
+    /* -- ระยะห่างที่สอดคล้องกันเพื่อการจัดวางที่สวยงาม -- */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
@@ -67,24 +63,24 @@
     --spacing-xxl: 64px;
 
     /* =================================== */
-    /* ======== BORDER RADIUS ============ */
+    /* ======== ขอบมน (Border Radius) ============ */
     /* =================================== */
-    /* -- Consistent corner rounding for a modern feel. */
+    /* -- ความโค้งมนที่สอดคล้องกันเพื่อความรู้สึกที่ทันสมัย -- */
     --border-radius-md: 8px;
     --border-radius-lg: 12px;
     --border-radius-xl: 16px;
     --border-radius-full: 9999px;
 
     /* =================================== */
-    /* ======= TRANSITION & ANIMATION ==== */
+    /* ======= การเปลี่ยนผ่านและอนิเมชัน (Transition & Animation) ==== */
     /* =================================== */
-    /* -- Defines the speed and feel of animations. */
+    /* -- กำหนดความเร็วและความรู้สึกของอนิเมชัน -- */
     --transition-speed: 0.3s;
     --transition-timing: ease-in-out;
     --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
-/* --- 2. Base Styles & Typography --- */
+/* --- 2. สไตล์พื้นฐานและตัวอักษร --- */
 html {
     scroll-behavior: smooth;
 }
@@ -114,7 +110,7 @@ a:hover {
     color: var(--primary-color);
 }
 
-/* --- Buttons --- */
+/* --- ปุ่ม (Buttons) --- */
 .btn {
     border-radius: var(--border-radius-full);
     padding: 12px 30px;
@@ -144,9 +140,9 @@ a:hover {
     box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
 }
 
-/* --- 3. Layout and Section Styles --- */
+/* --- 3. การจัดวางและส่วนต่างๆ --- */
 
-/* Navbar */
+/* แถบนำทาง (Navbar) */
 .navbar {
     background-color: var(--dark-section-bg);
     box-shadow: var(--shadow-md);
@@ -161,7 +157,7 @@ a:hover {
     color: var(--white-color) !important;
 }
 
-/* Hero Section */
+/* ส่วนหัว (Hero Section) */
 .hero-section {
     background: var(--primary-gradient);
     color: var(--white-color);
@@ -198,7 +194,7 @@ a:hover {
     text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
 
-/* Product Cards */
+/* การ์ดสินค้า (Product Cards) */
 .product-card {
     background-color: var(--card-background);
     border: 1px solid var(--border-color);
@@ -256,7 +252,7 @@ a:hover {
     box-shadow: 0 6px 12px var(--accent-glow);
 }
 
-/* Footer */
+/* ส่วนท้าย (Footer) */
 footer {
     background-color: var(--dark-section-bg);
     color: rgba(255, 255, 255, 0.7);
@@ -265,7 +261,7 @@ footer {
     border-top: 3px solid var(--primary-light);
 }
 
-/* --- 4. Admin Panel & Login --- */
+/* --- 4. ส่วนผู้ดูแลระบบและหน้าล็อกอิน --- */
 #login-gate {
     background: var(--primary-gradient);
     min-height: 100vh;
@@ -289,7 +285,7 @@ footer {
     border-image: var(--primary-gradient) 1;
 }
 
-/* --- 5. Notification System (Toast & Modal) --- */
+/* --- 5. ระบบแจ้งเตือน (Notification System) --- */
 
 /* Toast Notifications */
 #toast-container {
