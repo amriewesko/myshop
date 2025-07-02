@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet
- * Version: 7.0 (Fun, Friendly, Professional & Fully Responsive)
+ * Version: 8.0 (With Real Stickers!)
  * Author: Your Name / Gemini
  * Description: The ultimate, production-quality stylesheet based on the iconic Doraemon theme.
  * This version incorporates a comprehensive design system, advanced graphics, stickers,
@@ -24,7 +24,7 @@
 
     /* -- สีกลาง: สำหรับพื้นหลังและข้อความ -- */
     --text-color: #333333;              /* สีเทาเข้มสำหรับตัวอักษร อ่านง่าย */
-    --light-text-color: #777777;        /* สีเทาอ่อนสำหรับคำอธิบาย */
+    --light-text-color: #555555;        /* สีเทาอ่อนสำหรับคำอธิบาย */
     --background-color: #F0F8FF;        /* สีฟ้าอ่อนๆ เหมือนท้องฟ้า */
     --card-background: #FFFFFF;         /* สีขาว เหมือนท้องและใบหน้า */
     --border-color: #E0E0E0;            /* สีเทาสำหรับเส้นขอบ */
@@ -72,8 +72,11 @@ body {
     font-family: 'Kanit', sans-serif;
     color: var(--text-color);
     background-color: var(--background-color);
-    /* เพิ่มพื้นหลังลายก้อนเมฆเบาๆ */
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18.2c0-3.4 2.8-6.2 6.2-6.2s6.2 2.8 6.2 6.2c0 3.4-2.8 6.2-6.2 6.2s-6.2-2.8-6.2-6.2zM33.8 31c0-3.4 2.8-6.2 6.2-6.2s6.2 2.8 6.2 6.2c0 3.4-2.8 6.2-6.2 6.2s-6.2-2.8-6.2-6.2zM56.5 43.8c0-3.4 2.8-6.2 6.2-6.2s6.2 2.8 6.2 6.2c0 3.4-2.8 6.2-6.2 6.2s-6.2-2.8-6.2-6.2zM79.2 56.5c0-3.4 2.8-6.2 6.2-6.2s6.2 2.8 6.2 6.2c0 3.4-2.8 6.2-6.2 6.2s-6.2-2.8-6.2-6.2z' fill='%23009EE3' fill-opacity='0.1'/%3E%3C/svg%3E");
+    /* พื้นหลังลายท้องฟ้าจากรูปที่ให้มา */
+    background-image: url('https://lh3.googleusercontent.com/d/1tdt0PtNCXUQUrMy1D1fh7HKh_WBkJRWz');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
     line-height: 1.7;
     overflow-x: hidden;
 }
@@ -131,19 +134,23 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, #87CEEB, #E0F7FA); /* สีท้องฟ้าอ่อนๆ */
+    background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)); /* Overlay to not fully hide the body background */
     color: var(--dora-blue-dark);
     padding: var(--spacing-xxl) 0;
     text-align: center;
-    border-bottom: 10px solid var(--card-background);
-    border-radius: 0 0 50% 50% / 0 0 10% 10%; /* ทำให้เหมือนขอบฟ้าโค้ง */
+    position: relative;
     margin-bottom: var(--spacing-xl);
+    padding-top: 200px; /* Add padding to make space for the sticker */
 }
 
 .hero-section h1 {
     font-weight: 800;
     font-size: 3.5rem;
     color: var(--dora-blue-dark);
+    text-shadow: 2px 2px 5px rgba(255,255,255,0.7);
+}
+.hero-section p.lead {
+    text-shadow: 1px 1px 3px rgba(255,255,255,0.7);
 }
 
 /* Product Cards */
@@ -192,12 +199,12 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: var(--spacing-lg);
 }
 
-.product-card .btn-add-to-cart {
+.btn-add-to-cart {
     background-color: var(--dora-red);
     color: var(--white-color);
 }
 
-.product-card .btn-add-to-cart:hover {
+.btn-add-to-cart:hover {
     background-color: var(--dora-red-dark);
 }
 
@@ -258,101 +265,86 @@ footer {
     75% { transform: rotate(-10deg); }
 }
 
+/* --- 5. สติกเกอร์โดราเอมอน (Stickers) --- */
 
-/* --- 5. สติกเกอร์โดราเอมอน --- */
-#doraemon-sticker {
+/* Welcome sticker in Hero section */
+.hero-sticker {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    max-width: 50%;
+    z-index: 10;
+}
+
+/* Flying sticker */
+#flying-doraemon-sticker {
     position: fixed;
-    bottom: -20px;
+    bottom: 20px;
+    right: 100px; /* Adjust position to not overlap bell */
+    width: 180px;
+    z-index: 999;
+    transition: transform 0.5s ease-in-out;
+    animation: bobbing 5s infinite ease-in-out;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+}
+
+@keyframes bobbing {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+/* Relaxing sticker in footer */
+.footer-doraemon {
+    position: absolute;
+    bottom: 0;
     right: 20px;
     width: 150px;
-    height: 150px;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(50,50)'%3E%3Cpath d='M0-45a45 45 0 1 1 0 90a45 45 0 1 1 0-90z' fill='%23009ee3'/%3E%3Cpath d='M0-38a38 38 0 1 0 0 76a38 38 0 1 0 0-76z' fill='%23fff'/%3E%3Ccircle cx='-10' cy='-10' r='8' fill='%23000'/%3E%3Ccircle cx='10' cy='-10' r='8' fill='%23000'/%3E%3Ccircle cx='-10' cy='-10' r='3' fill='%23fff'/%3E%3Ccircle cx='10' cy='-10' r='3' fill='%23fff'/%3E%3Ccircle cx='0' cy='-2' r='5' fill='%23d82129'/%3E%3Cpath d='M-20 5h40a20 20 0 0 1-40 0z' fill='%23fff'/%3E%3Cpath d='M0 0v15' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M-15 8 L-5 12 M-15 13 L-5 15 M-15 18 L-5 18 M15 8 L5 12 M15 13 L5 15 M15 18 L5 18' stroke='%23000' stroke-width='1'/%3E%3C/g%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    z-index: 999;
-    transition: transform 0.5s var(--transition-timing-bounce);
-    transform: translateY(200px); /* ซ่อนไว้ด้านล่าง */
-    pointer-events: auto; /* ทำให้คลิกได้ */
-    cursor: pointer;
+    transform: translateY(25%); /* Make it sit on the edge */
+    z-index: 1;
 }
 
-#doraemon-sticker.show {
-    transform: translateY(0); /* แสดงเมื่อเลื่อนลง */
+/* Surprised sticker for no products found */
+.no-product-sticker {
+    width: 150px;
+    margin-bottom: 1rem;
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
 }
 
-#doraemon-sticker:hover {
-    animation: wave-hand 0.5s ease-in-out 3;
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
-@keyframes wave-hand {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(15deg); }
+/* --- 6. Responsive Adjustments --- */
+@media (max-width: 991.98px) {
+    .hero-section h1 { font-size: 3rem; }
+    .hero-sticker { width: 200px; }
 }
 
-/* --- 6. ระบบแจ้งเตือน (Notification System) --- */
-
-/* Toast Notifications */
-#toast-container {
-    position: fixed;
-    top: var(--spacing-lg);
-    right: var(--spacing-lg);
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+@media (max-width: 768px) {
+    .hero-section { padding-top: 150px; }
+    .hero-section h1 { font-size: 2.5rem; }
+    .hero-sticker { width: 180px; }
+    #flying-doraemon-sticker { width: 150px; right: 20px; }
+    .footer-doraemon { width: 120px; }
 }
 
-.toast-notification {
-    width: 350px;
-    max-width: 90vw;
-    background-color: var(--card-background);
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg);
-    display: flex;
-    align-items: center;
-    padding: var(--spacing-md);
-    border: 2px solid;
-    opacity: 0;
-    transform: translateX(120%);
-    transition: all 0.5s var(--transition-timing-bounce);
+@media (max-width: 576px) {
+    body { background-position: top center; }
+    .hero-section { padding-top: 120px; }
+    .hero-section h1 { font-size: 2rem; }
+    .hero-sticker { width: 150px; }
+    #flying-doraemon-sticker { width: 120px; }
+    .footer-doraemon { display: none; } /* Hide on very small screens to avoid clutter */
 }
 
-.toast-notification.show {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.toast-icon {
-    font-size: 2rem;
-    margin-right: var(--spacing-md);
-}
-
-.toast-content { flex-grow: 1; }
-.toast-title { font-weight: 700; font-size: 1.1rem; }
-.toast-message { font-size: 0.9rem; color: var(--light-text-color); }
-
-.toast-close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    opacity: 0.7;
-}
-
-.toast-success { border-color: var(--success-color); }
-.toast-success .toast-icon { color: var(--success-color); }
-
-.toast-error { border-color: var(--danger-color); }
-.toast-error .toast-icon { color: var(--danger-color); }
-
-.toast-warning { border-color: var(--warning-color); }
-.toast-warning .toast-icon { color: var(--warning-color); }
-
-.toast-info { border-color: var(--info-color); }
-.toast-info .toast-icon { color: var(--info-color); }
-
-/* Confirmation Modal */
-.modal-overlay {
+/* Fallback for old custom modal if it's still used by JS */
+.custom-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -364,82 +356,38 @@ footer {
     align-items: center;
     justify-content: center;
     z-index: 1999;
-    opacity: 0;
-    transition: opacity var(--transition-speed) ease-in-out;
-}
-
-.modal-overlay.show {
     opacity: 1;
 }
-
-.modal-content {
+.custom-modal-overlay.d-none {
+    opacity: 0;
+    pointer-events: none;
+}
+.custom-modal-content {
     background-color: var(--card-background);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-lg);
     width: 90%;
     max-width: 450px;
-    text-align: center;
     padding: var(--spacing-xl);
-    transform: scale(0.7);
-    opacity: 0;
-    transition: all var(--transition-speed) var(--transition-timing-bounce);
+    border: 3px solid var(--dora-blue);
 }
-
-.modal-overlay.show .modal-content {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.modal-icon-container {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin: 0 auto var(--spacing-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
+.custom-modal-header {
+    padding: var(--spacing-md);
+    margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg);
     color: var(--white-color);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.modal-icon-container.modal-warning { background-color: var(--warning-color); }
-.modal-icon-container.modal-error { background-color: var(--danger-color); }
-.modal-icon-container.modal-info { background-color: var(--info-color); }
+.custom-modal-header.success { background-color: var(--success-color); }
+.custom-modal-header.error { background-color: var(--danger-color); }
+.custom-modal-header.warning { background-color: var(--warning-color); }
+.custom-modal-header.info { background-color: var(--info-color); }
 
-.modal-footer {
-    margin-top: var(--spacing-xl);
+.custom-modal-footer {
+    margin-top: var(--spacing-lg);
     display: flex;
     gap: var(--spacing-md);
-    justify-content: center;
-}
-.modal-footer .btn-secondary { background-color: var(--border-color); color: var(--light-text-color); border: none; }
-.modal-footer .btn-warning { background-color: var(--warning-color); color: var(--text-color); border: none; }
-.modal-footer .btn-error { background-color: var(--danger-color); color: var(--white-color); border: none; }
-
-/* --- 7. Responsive Adjustments --- */
-@media (max-width: 991.98px) {
-    .hero-section h1 { font-size: 3rem; }
-}
-
-@media (max-width: 768px) {
-    .hero-section h1 { font-size: 2.5rem; }
-}
-
-@media (max-width: 576px) {
-    .hero-section h1 { font-size: 2rem; }
-    #toast-container {
-        width: 100%;
-        top: 0;
-        right: 0;
-        left: 0;
-        padding: var(--spacing-md);
-    }
-    .toast-notification {
-        width: 100%;
-    }
-    .modal-footer {
-        flex-direction: column;
-    }
-    .modal-footer .btn {
-        width: 100%;
-    }
+    justify-content: flex-end;
 }
