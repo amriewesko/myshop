@@ -34,14 +34,37 @@ document.addEventListener('DOMContentLoaded', () => {
 function initPublicPage() {
     loadProducts();
     fetchAndRenderCategories();
-    getEl('search-input')?.addEventListener('input', (e) => filterAndSearchProducts(e.target.value));
-    getEl('category-select')?.addEventListener('change', (e) => filterAndSearchProducts(null, e.target.value));
+    setupPublicEventListeners(); // NEW FUNCTION
 }
 
 function initAdminPage() {
     checkLoginStatus();
     setupAdminEventListeners();
 }
+
+// ==========================================================
+// =================== PUBLIC EVENT LISTENERS ===============
+// ==========================================================
+function setupPublicEventListeners() {
+    getEl('search-input')?.addEventListener('input', (e) => filterAndSearchProducts(e.target.value));
+    getEl('category-select')?.addEventListener('change', (e) => filterAndSearchProducts(null, e.target.value));
+
+    // --- NEW: Scroll listener for animations ---
+    // This handles the visibility of the back-to-top bell and the flying Doraemon sticker
+    const backToTopButton = getEl('back-to-top');
+    const flyingDoraemon = getEl('flying-doraemon-sticker');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            show(backToTopButton);
+            show(flyingDoraemon);
+        } else {
+            hide(backToTopButton);
+            hide(flyingDoraemon);
+        }
+    }, { passive: true }); // Use passive listener for better scroll performance
+}
+
 
 // ==========================================================
 // =================== API & DATA HANDLING ==================
@@ -460,9 +483,9 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
         if (!modalOverlay) {
             modalOverlay = document.createElement('div');
             modalOverlay.id = 'custom-modal-overlay';
-            modalOverlay.classList.add('custom-modal-overlay');
             document.body.appendChild(modalOverlay);
         }
+        modalOverlay.className = 'custom-modal-overlay'; // Reset classes
 
         const typeClass = { success: 'success', error: 'error', warning: 'warning' }[type] || 'info';
 
