@@ -1,17 +1,12 @@
 // ==========================================================
 // =================== CONFIGURATION ========================
 // ==========================================================
-// !!! Google Apps Script URLs (Deployed Web App URLs) !!!
-// IMPORTANT: REPLACE THESE PLACEHOLDERS WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URLs
-// PUBLIC_APPS_SCRIPT_URL: สำหรับการอ่านข้อมูล (doGet) - Deploy ด้วย "Who has access: Anyone"
-const PUBLIC_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytw2TOBevOIQ8gMx6fj20pZ7TcQ8RY9t8p-WrSbDzCL4jPkXT-ZasgLsZo48_BV6Sa/exec'; 
+// !!! Google Apps Script URL (Deployed Web App URL) !!!
+// Make sure this URL is correct and your Apps Script is deployed as a Web App
+// IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL DEPLOYED GOOGLE APPS SCRIPT URL (e.g., ends with /exec)
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbwSqbVqXIlFa2OmteGWcT09cwXk52m4hrRJEqjTEOJC5XQnea2t5algwcRQ7kP4PbU-/exec'; // Placeholder, replace with your actual URL
 
-// ADMIN_APPS_SCRIPT_URL: สำหรับการเขียนข้อมูล (doPost) - Deploy ด้วย "Who has access: Only myself"
-const ADMIN_APPS_SCRIPT_URL = 'https://script.google.com/a/macros/yru.ac.th/s/AKfycbwVyZaF2BqZVRv8KBUB4nUMtvJM8fEjFTel07GOBRbkrhzoqFGbaNTvIbYsNafqFVrA/exec'; // *** สำคัญ: ต้องแทนที่ด้วย URL ของ Admin Web App ของคุณ ***
 
-// ADMIN_SECRET_KEY ถูกลบออกทั้งหมดเพื่อความปลอดภัยสูงสุด
-// การยืนยันตัวตนสำหรับหน้า Admin จะถูกจัดการโดย Google Account ของคุณเองเมื่อ Deploy Apps Script
-// ==========================================================
 
 // Global variables to store product data and current states
 let allProducts = [];
@@ -120,19 +115,11 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
  * @returns {Promise<object>} The JSON response from the Apps Script.
  */
 async function sendData(action, data = {}, method = 'POST') {
-    let requestUrl;
     let requestBody = {};
-
-    // กำหนด URL ที่จะเรียกใช้ตาม Action
-    if (action === 'getProducts' || action === 'getCategories') {
-        requestUrl = PUBLIC_APPS_SCRIPT_URL;
-    } else { // addProduct, updateProduct, deleteProduct, uploadImage
-        requestUrl = ADMIN_APPS_SCRIPT_URL;
-    }
 
     try {
         if (method === 'GET') {
-            const url = new URL(requestUrl);
+            const url = new URL(APPS_SCRIPT_URL);
             url.searchParams.append('action', action);
             // Append all data properties as search params for GET requests
             for (const key in data) {
@@ -146,14 +133,16 @@ async function sendData(action, data = {}, method = 'POST') {
             }
             return await response.json();
 
-        } else { // POST method
+        } else {
+            // For POST requests (addProduct, updateProduct, deleteProduct, uploadImage)
             requestBody = {
+                secretKey: sessionStorage.getItem('secretKey'),
                 action: action,
                 data: data
             };
         }
 
-        const response = await fetch(requestUrl, {
+        const response = await fetch(APPS_SCRIPT_URL, {
             method: method,
             mode: 'cors',
             headers: {
@@ -270,7 +259,7 @@ async function loadProducts() {
     if (noResultsEl) hide(noResultsEl);
 
     try {
-        const response = await sendData('getProducts', {}, 'GET'); // ใช้ PUBLIC_APPS_SCRIPT_URL
+        const response = await sendData('getProducts', {}, 'GET');
         if (response.success && response.data) {
             allProducts = response.data;
             filterAndSearchProducts();
@@ -305,13 +294,17 @@ async function fetchAndRenderCategories() {
     const categorySelect = getEl('category-select'); // Use the select element directly
     if (!categorySelect) return;
 
-    // Clear existing dynamic options, keep the first "All" option ("หมวดหมู่ทั้งหมด")
-    while (categorySelect.children.length > 1) {
-        categorySelect.removeChild(categorySelect.lastChild);
-    }
+    // Clear existing options, keep the "All" option if desired
+    // For a dynamic select, you might clear all then re-add.
+    // For now, assuming static options are fine or they are dynamically populated elsewhere.
 
-    const result = await sendData('getCategories', {}, 'GET'); // ใช้ PUBLIC_APPS_SCRIPT_URL
+    const result = await sendData('getCategories', {}, 'GET');
     if (result && result.success && result.categories) {
+        // Clear existing dynamic options, keep the first "All" option if present
+        while (categorySelect.children.length > 1) { // Keep the first option ("หมวดหมู่ทั้งหมด")
+            categorySelect.removeChild(categorySelect.lastChild);
+        }
+
         result.categories.forEach(category => {
             const option = document.createElement('option');
             option.value = category;
@@ -392,10 +385,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================
 
 // DOM Elements for Admin Panel
-// adminLoginGate, passwordInput, loginBtn, logoutBtn are no longer needed for client-side password login
-// const adminLoginGate = getEl('login-gate');
+const adminLoginGate = getEl('login-gate');
 const adminPanel = getEl('admin-panel');
-
+const passwordInput = getEl('password-input');
+const loginBtn = getEl('login-btn');
+const logoutBtn = getEl('logout-btn');
 
 const productForm = getEl('product-form');
 const productIdInput = getEl('product-id');
@@ -418,32 +412,66 @@ let adminProducts = []; // Stores products for admin table
 
 /**
  * Initializes the admin page: checks login status, sets up events.
- * Simplified to directly show the admin panel. Google's authentication will handle access.
  */
 function initAdminPage() {
-    // ไม่มี login gate ในฝั่ง Client-side อีกต่อไป
-    // หน้า Admin จะแสดงผลทันที และ Google Apps Script จะจัดการการยืนยันตัวตนเมื่อเรียกใช้ฟังก์ชัน Admin
-    show(adminPanel);
-    // hide(adminLoginGate); // adminLoginGate ถูกลบออกไปแล้ว
-
+    checkLoginStatus();
     setupAdminEventListeners();
     loadAdminProducts(); // Load products for admin table on page load
 }
 
 /**
- * checkLoginStatus, handleLogin, handleLogout are no longer needed as client-side password login is removed.
- * Google's authentication handles the access.
+ * Checks if the user is logged in (via sessionStorage) and toggles UI.
  */
-// function checkLoginStatus() {}
-// async function handleLogin() {}
-// function handleLogout() {}
+function checkLoginStatus() {
+    if (sessionStorage.getItem('loggedIn') === 'true' && sessionStorage.getItem('secretKey') === ADMIN_SECRET_KEY) {
+        show(adminPanel);
+        hide(adminLoginGate);
+    } else {
+        hide(adminPanel);
+        show(adminLoginGate);
+    }
+}
 
+/**
+ * Handles admin login.
+ */
+async function handleLogin() {
+    const enteredPassword = passwordInput.value;
+    if (enteredPassword === ADMIN_SECRET_KEY) {
+        sessionStorage.setItem('loggedIn', 'true');
+        sessionStorage.setItem('secretKey', ADMIN_SECRET_KEY);
+        showCustomAlert('เข้าสู่ระบบสำเร็จ!', 'success');
+        checkLoginStatus();
+        passwordInput.value = ''; // Clear password field
+        loadAdminProducts(); // Load products after successful login
+    } else {
+        showCustomAlert('รหัสผ่านไม่ถูกต้อง!', 'error');
+    }
+}
+
+/**
+ * Handles admin logout.
+ */
+function handleLogout() {
+    sessionStorage.removeItem('loggedIn');
+    sessionStorage.removeItem('secretKey');
+    showCustomAlert('ออกจากระบบแล้ว', 'info');
+    checkLoginStatus();
+}
 
 /**
  * Sets up all event listeners for the admin page.
- * Removed event listeners related to client-side password login.
  */
 function setupAdminEventListeners() {
+    if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+    if (passwordInput) { // Allow Enter key to login
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+    }
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     if (productForm) productForm.addEventListener('submit', handleProductFormSubmit);
     if (clearBtn) clearBtn.addEventListener('click', clearProductForm);
     if (adminSearchInput) adminSearchInput.addEventListener('input', filterAdminProducts);
@@ -552,7 +580,7 @@ function renderNewImagePreviews() {
                 showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
                     if (confirmed) {
                         productImages.splice(indexToRemove, 1);
-                        renderExistingImagePreviews(productImages); // Re-render only existing images
+                        renderExistingImagePreviews(); // Re-render only existing images
                     }
                 });
             });
@@ -571,7 +599,7 @@ function renderExistingImagePreviews(imageUrls) {
 
     // Ensure productImages array reflects what's being displayed (and potentially saved)
     productImages = imageUrls.map(url => {
-        // Convert old Google Drive 'uc' URLs to 'lh3' format here
+        // Convert old Google Drive 'uc' URLs to 'lh3' format for consistency
         if (url.includes('drive.google.com/uc?export=view&id=')) {
             const fileIdMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
             if (fileIdMatch && fileIdMatch[1]) {
@@ -579,10 +607,7 @@ function renderExistingImagePreviews(imageUrls) {
             }
         }
         return url;
-    }).filter(url => url); // Filter out any empty/null strings
-    // Note: The Apps Script now returns uc?export=view URLs, so this conversion might be less critical
-    // but it's good to keep for consistency with how lh3 URLs are often preferred for direct display.
-
+    }).filter(url => url); // Filter out any empty/null URLs
 
     productImages.forEach((url, index) => {
         const imgDiv = document.createElement('div');
@@ -599,7 +624,7 @@ function renderExistingImagePreviews(imageUrls) {
             showCustomAlert('คุณแน่ใจหรือไม่ที่ต้องการลบรูปภาพนี้?', 'warning', true).then(confirmed => {
                 if (confirmed) {
                     productImages.splice(indexToRemove, 1);
-                    renderExistingImagePreviews(productImages); // Re-render only existing images
+                    renderExistingImagePreviews(productImages); // Re-render to update indices
                 }
             });
         });
@@ -653,7 +678,7 @@ async function handleProductFormSubmit(event) {
                     fileName: selectedFileNames[i] || `product_image_${Date.now()}_${i}.png`,
                     mimeType: `image/${selectedFileNames[i].split('.').pop()}` // Infer MIME type from extension
                 };
-                const uploadResponse = await sendData('uploadImage', imageData); // ใช้ ADMIN_APPS_SCRIPT_URL
+                const uploadResponse = await sendData('uploadImage', imageData);
                 if (uploadResponse.success && uploadResponse.url) {
                     uploadedImageUrls.push(uploadResponse.url); // Add newly uploaded URL
                 } else {
@@ -676,7 +701,7 @@ async function handleProductFormSubmit(event) {
         }
 
 
-        const response = await sendData(action, data); // ใช้ ADMIN_APPS_SCRIPT_URL
+        const response = await sendData(action, data);
 
         if (response.success) {
             showCustomAlert(`สินค้าถูก${productId ? 'อัปเดต' : 'เพิ่ม'}เรียบร้อยแล้ว!`, 'success');
@@ -719,7 +744,7 @@ async function loadAdminProducts() {
     hide(adminProductList);
 
     try {
-        const response = await sendData('getProducts', {}, 'GET'); // ใช้ PUBLIC_APPS_SCRIPT_URL
+        const response = await sendData('getProducts', {}, 'GET');
         if (response.success && response.data) {
             adminProducts = response.data;
             renderAdminProducts(adminProducts);
@@ -896,7 +921,7 @@ async function confirmDeleteProduct(id) {
 async function deleteProduct(id) {
     show(adminLoader);
     try {
-        const response = await sendData('deleteProduct', { id: id }); // ใช้ ADMIN_APPS_SCRIPT_URL
+        const response = await sendData('deleteProduct', { id: id });
         if (response.success) {
             showCustomAlert('สินค้าถูกลบเรียบร้อยแล้ว!', 'success');
             loadAdminProducts();
