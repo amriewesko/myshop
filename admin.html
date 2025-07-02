@@ -4,179 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Shop | ผู้ดูแลระบบ</title>
-    <!-- Bootstrap CSS for responsive design and components -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts - Kanit for modern typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Animate.css for subtle entrance animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <!-- Custom Stylesheet (ensure this is loaded last to override Bootstrap defaults) -->
-    <link rel="stylesheet" href="style.css">
 
-    <!-- เพิ่ม Meta Security Headers ที่นี่ -->
-    <!-- Content Security Policy (CSP) -->
-    <!-- CSP ช่วยจำกัดแหล่งที่มาของทรัพยากรที่เบราว์เซอร์อนุญาตให้โหลดและรันได้ ลดความเสี่ยงของ XSS -->
-    <!-- ปรับ script-src, style-src, img-src, connect-src ให้ครอบคลุมทุก Domain ที่คุณใช้ -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://script.google.com;
+        script-src 'self' https://cdn.jsdelivr.net https://script.google.com;
         style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
         font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
-        img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://placehold.co;
+        img-src 'self' https: data:;
         connect-src 'self' https://script.google.com;
-        object-src 'none';
-        media-src 'none';
-        frame-src 'none';
+        frame-ancestors 'none';
+        form-action 'self';
+        base-uri 'self';
     ">
-    <!-- X-Content-Type-Options: ป้องกันการที่เบราว์เซอร์จะพยายาม "เดา" ชนิดของ Content -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <!-- X-Frame-Options: ป้องกันไม่ให้เว็บไซต์ถูกฝังใน iframe ของเว็บไซต์อื่น (Clickjacking) -->
-    <meta http-equiv="X-Frame-Options" content="DENY">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navbar: Top navigation bar for brand and admin link -->
     <nav class="navbar navbar-expand-lg navbar-dark animate__animated animate__fadeInDown">
-        <div class="container-fluid container-max-width">
-            <a class="navbar-brand fw-bold" href="index.html">My Shop</a>
+        <div class="container-fluid container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store"></i> AMRIE_633
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">กลับสู่หน้าร้านค้า</a>
+                        <a class="nav-link" href="index.html">หน้าแรก</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="admin.html">ผู้ดูแลระบบ</a>
+                    </li>
+                    <li class="nav-item ms-lg-3 d-none" id="logout-btn-container">
+                        <button class="btn btn-outline-light btn-sm mt-2 mt-lg-0" id="logout-btn">
+                            <i class="fas fa-sign-out-alt me-2"></i>ออกจากระบบ
+                        </button>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container container-max-width my-5">
-        <!-- Login Gate -->
-        <section id="login-gate" class="animate__animated animate__fadeIn" style="display: block;">
-            <div class="card shadow-lg p-4 p-md-5 mx-auto" style="max-width: 500px; border-radius: var(--border-radius-lg);">
-                <h2 class="card-title text-center mb-4 fw-bold text-primary">เข้าสู่ระบบผู้ดูแลระบบ</h2>
-                <form id="adminLoginForm">
-                    <div class="mb-4">
-                        <label for="adminSecretKeyInput" class="form-label">รหัสลับ</label>
-                        <input type="password" class="form-control form-control-lg" id="adminSecretKeyInput" placeholder="กรอกรหัสลับของคุณ" required>
+    <div class="admin-wrapper">
+        <section id="login-gate" class="d-flex-center">
+            <div class="card shadow-lg animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">เข้าสู่ระบบผู้ดูแลระบบ</h2>
+                    <p class="card-text text-center mb-4">กรุณากรอกรหัสผ่านเพื่อเข้าถึง</p>
+                    <div class="mb-3">
+                        <input type="password" class="form-control form-control-lg" id="password-input" placeholder="รหัสผ่าน" required autocomplete="current-password">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100">เข้าสู่ระบบ</button>
-                </form>
+                    <button id="login-btn" class="btn btn-primary btn-lg w-100"><i class="fas fa-sign-in-alt me-2"></i>เข้าสู่ระบบ</button>
+                </div>
             </div>
         </section>
 
-        <!-- Admin Panel (initially hidden) -->
-        <section id="admin-panel" class="animate__animated animate__fadeIn d-none">
-            <h2 class="text-center mb-4 fw-bold text-primary">แผงควบคุมผู้ดูแลระบบ</h2>
+        <main id="admin-panel" class="container my-5 admin-content d-none">
+            <h1 class="text-center mb-5 text-primary">แผงควบคุมผู้ดูแลระบบ</h1>
 
-            <!-- Product Form -->
-            <div class="card shadow-lg p-4 mb-5" style="border-radius: var(--border-radius-lg);">
-                <h3 id="productFormTitle" class="card-title text-center mb-4 fw-bold">เพิ่มสินค้าใหม่</h3>
-                <form id="productForm">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="productId" class="form-label">ID สินค้า (สร้างอัตโนมัติ)</label>
-                            <input type="text" class="form-control" id="productId" readonly>
+            <section class="admin-section mb-5">
+                <h4 class="mb-4"><i class="fas fa-box-seam me-2"></i>จัดการสินค้า</h4>
+                <form id="product-form" class="mb-4" autocomplete="off">
+                    <h5 id="form-title" class="mb-3 text-primary">เพิ่มสินค้าใหม่</h5>
+                    <input type="hidden" id="product-id">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">ชื่อสินค้า <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="productName" class="form-label">ชื่อสินค้า</label>
-                            <input type="text" class="form-control" id="productName" required>
+                        <div class="col-md-6">
+                            <label for="category" class="form-label">หมวดหมู่ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="category" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">ราคา (บาท) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="price" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="shopeeLink" class="form-label">ลิงก์ Shopee</label>
+                            <input type="url" class="form-control" id="shopeeLink">
+                        </div>
+                        <div class="col-12">
+                            <label for="imageFileInput" class="form-label">รูปภาพสินค้า <span class="text-muted">(อัปโหลดไฟล์ใหม่)</span></label>
+                            <input type="file" class="form-control" id="imageFileInput" accept="image/*" multiple>
+                        </div>
+                        <div class="col-12">
+                            <p class="form-label mb-2">รูปภาพปัจจุบัน:</p>
+                            <div id="imagePreview" class="admin-form-section .img-preview-container">
+                                <p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพที่เลือก</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="productCategory" class="form-label">หมวดหมู่</label>
-                            <input type="text" class="form-control" id="productCategory" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="productPrice" class="form-label">ราคา (บาท)</label>
-                            <input type="number" class="form-control" id="productPrice" step="0.01" min="0" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productShopeeUrl" class="form-label">ลิงก์ Shopee (ถ้ามี)</label>
-                        <input type="url" class="form-control" id="productShopeeUrl" placeholder="https://shopee.co.th/...">
-                    </div>
-                    <div class="mb-4">
-                        <label for="productImages" class="form-label">รูปภาพสินค้า (เลือกได้หลายรูป)</label>
-                        <input type="file" class="form-control" id="productImages" accept="image/*" multiple>
-                        <div id="imagePreviewContainer" class="mt-3 d-flex flex-wrap gap-2">
-                            <!-- Image previews will be displayed here -->
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center gap-3">
-                        <button type="submit" id="productSubmitBtn" class="btn btn-primary btn-lg px-4">เพิ่มสินค้า</button>
-                        <button type="button" id="productCancelBtn" class="btn btn-secondary btn-lg px-4 d-none">ยกเลิก</button>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="button" id="clear-btn" class="btn btn-secondary me-2"><i class="fas fa-redo-alt me-2"></i>ล้างฟอร์ม</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>บันทึกสินค้า</button>
                     </div>
                 </form>
-            </div>
 
-            <!-- Product List Table -->
-            <div class="card shadow-lg p-4" style="border-radius: var(--border-radius-lg);">
-                <h3 class="card-title text-center mb-4 fw-bold">รายการสินค้า</h3>
-                <div class="d-flex justify-content-end mb-3">
-                    <button id="addProductBtn" class="btn btn-success">
-                        <i class="fas fa-plus-circle me-2"></i>เพิ่มสินค้าใหม่
-                    </button>
+                <hr class="my-5">
+
+                <h5 class="mb-3 text-primary"><i class="fas fa-list me-2"></i>รายการสินค้าทั้งหมด</h5>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="admin-search-input" placeholder="ค้นหาสินค้า...">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>ID</th>
-                                <th>ชื่อสินค้า</th>
-                                <th>หมวดหมู่</th>
-                                <th>ราคา</th>
-                                <th>รูปภาพ</th>
-                                <th>ลิงก์ Shopee</th>
-                                <th>จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminProductTableBody">
-                            <!-- Product rows will be loaded here by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="adminLoader" class="text-center my-5 d-none">
+
+                <div id="loader" class="text-center py-5 d-none">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">กำลังโหลด...</span>
                     </div>
-                    <p class="mt-2 text-muted">กำลังโหลดสินค้า...</p>
+                    <p class="mt-3 text-muted">กำลังโหลด...</p>
                 </div>
-                <div id="adminNoProductsMessage" class="text-center my-5 d-none">
-                    <p class="text-muted">ไม่พบสินค้าในระบบ</p>
-                </div>
+
+                <div id="admin-product-list" class="table-responsive">
+                    </div>
             </section>
         </main>
     </div>
 
-    <!-- Scroll-to-Top Button -->
-    <a href="#" id="back-to-top" class="btn btn-primary rounded-circle shadow d-none">
-        <i class="fas fa-arrow-up"></i>
-    </a>
+    <a href="#" id="back-to-top" class="d-none"><i class="fas fa-arrow-up"></i></a>
 
-    <!-- Footer: Site information and social media links -->
-    <footer class="text-white text-center py-4 mt-5">
+    <footer class="text-white text-center py-4 mt-auto">
         <div class="container">
             <p class="mb-0">&copy; 2025 My Shop. All rights reserved.</p>
             <div class="social-icons mt-3">
-                <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
-                <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
-                <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="fab fa-twitter fa-lg"></i></a>
-                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in fa-lg"></i></a>
             </div>
         </div>
     </footer>
 
-    <!-- Custom Modal Overlay (hidden by default) -->
     <div id="custom-modal-overlay" class="custom-modal-overlay"></div>
 
-    <!-- Bootstrap Bundle with Popper for components and interactivity -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JavaScript for site functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="app.js"></script>
 </body>
 </html>
