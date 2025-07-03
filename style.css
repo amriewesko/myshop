@@ -1,7 +1,7 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 9.0 (Gadget Frame Update)
- * Description: The ultimate, production-quality stylesheet based on the iconic Doraemon theme.
+ * Version: 10.0 (Pro Upgrade)
+ * Description: The ultimate, production-quality stylesheet with professional UI/UX enhancements.
 */
 
 /* --- 1. ระบบตัวแปร (Design System Core) - ธีมโดราเอมอน --- */
@@ -150,18 +150,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
     backdrop-filter: blur(5px);
 }
 
-/* Product Cards */
+/* === Product Cards (อัปเกรด) === */
 .product-card {
+    border-radius: var(--border-radius-lg);
+    background-color: var(--card-background);
+    box-shadow: var(--shadow-md);
+    border: 2px solid transparent; /* เตรียมพื้นที่สำหรับ border ตอน hover */
     transition: all var(--transition-speed) var(--transition-timing);
     overflow: hidden;
     height: 100%;
-    position: relative; /* Add for sticker positioning */
+    position: relative;
 }
+
 .product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--dora-yellow);
+    transform: translateY(-8px); /* ขยับขึ้นเล็กน้อย */
+    border-color: rgba(0, 158, 227, 0.5); /* แสดงขอบสีฟ้าอ่อนๆ */
+    box-shadow: 0 12px 28px rgba(0, 158, 227, 0.2), 0 8px 10px rgba(0, 158, 227, 0.1); /* เอฟเฟกต์ Glow สีฟ้า */
 }
+
 .product-card img {
     aspect-ratio: 1 / 1;
     object-fit: cover;
@@ -346,15 +352,10 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     align-items: center;
     justify-content: center;
     z-index: 1999;
-    opacity: 0;
     transition: opacity var(--transition-speed) ease-in-out;
-    pointer-events: none;
 }
 .custom-modal-overlay.d-none { display: none !important; }
-.custom-modal-overlay:not(.d-none) {
-    opacity: 1;
-    pointer-events: auto;
-}
+
 .custom-modal-content {
     background-color: var(--card-background);
     border-radius: var(--border-radius-lg);
@@ -379,7 +380,79 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 .custom-modal-close { background: none; border: none; font-size: 1.5rem; color: var(--white-color); opacity: 0.8; }
 .custom-modal-footer { margin-top: 24px; display: flex; gap: 16px; justify-content: flex-end; }
 
-/* --- 8. Responsive Adjustments --- */
+/* --- 8. ระบบแจ้งเตือนแบบ Toast (อัปเกรด) --- */
+#toast-container {
+    position: fixed;
+    top: 80px; /* ระยะห่างจาก Navbar */
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none; /* Allow clicks to pass through container */
+}
+
+.toast-notification {
+    width: 320px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-left: 5px solid var(--info-color);
+    animation: toast-fade-in 0.5s var(--transition-timing-bounce);
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: auto; /* Re-enable clicks on the toast itself */
+}
+
+.toast-notification.hiding {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.toast-icon {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.toast-content p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.toast-close-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--light-text-color);
+    cursor: pointer;
+}
+
+/* Toast Types */
+.toast-notification.success { border-left-color: var(--success-color); }
+.toast-notification.success .toast-icon { color: var(--success-color); }
+.toast-notification.error { border-left-color: var(--danger-color); }
+.toast-notification.error .toast-icon { color: var(--danger-color); }
+.toast-notification.warning { border-left-color: var(--warning-color); }
+.toast-notification.warning .toast-icon { color: var(--warning-color); }
+
+@keyframes toast-fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* --- 9. Responsive Adjustments --- */
 @media (max-width: 991.98px) {
     .hero-section h1 { font-size: 3rem; }
     .main-content-frame { padding: 16px; }
@@ -395,4 +468,15 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     .hero-section h1 { font-size: 2rem; }
     .modal-footer { flex-direction: column; }
     .modal-footer .btn { width: 100%; }
+    #toast-container {
+        right: 0;
+        left: 0;
+        align-items: center;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .toast-notification {
+        width: 100%;
+    }
 }
