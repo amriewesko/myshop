@@ -8,9 +8,9 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjGn_mnY58mqVm
 // ==========================================================
 let allProducts = [];
 let currentUser = { username: '', role: '' };
-let selectedFileBase64 = [];
-let selectedFileNames = [];
-let productImages = []; // Stores URLs of existing images for the product being edited
+let selectedFileBase64 = null; // Changed to single value
+let selectedFileName = null;   // Changed to single value
+let existingImageUrl = null;   // Changed to single value
 
 // ==========================================================
 // =================== DOM ELEMENT GETTERS ==================
@@ -62,7 +62,6 @@ function initScrollWidgets() {
 
 function initGlobalEventListeners() {
     document.body.addEventListener('click', function(event) {
-        // Find the closest toggle button
         const toggleBtn = event.target.closest('.toggle-password-btn');
         if (toggleBtn) {
             const icon = toggleBtn.querySelector('i');
@@ -79,7 +78,6 @@ function initGlobalEventListeners() {
         }
     });
 }
-
 
 // ==========================================================
 // =================== API & DATA HANDLING ==================
@@ -209,15 +207,6 @@ function checkLoginStatus() {
         hide(getEl('login-gate'));
         show(getEl('user-dropdown'));
         getEl('username-display').textContent = currentUser.username;
-        
-        // Handle Superadmin features
-        if (currentUser.role === 'SUPERADMIN') {
-            show(getEl('user-management-tab'));
-            loadAdminUsers();
-        } else {
-            hide(getEl('user-management-tab'));
-        }
-
         loadAdminProducts();
     } else {
         hide(getEl('admin-panel'));
@@ -250,7 +239,7 @@ async function handleLogin() {
 function handleLogout() {
     sessionStorage.clear();
     currentUser = { username: '', role: '' };
-    window.location.reload(); // Reload to reset state cleanly
+    window.location.reload();
 }
 
 // ==========================================================
@@ -266,7 +255,7 @@ function setupAdminEventListeners() {
     getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
     getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
     
-    // REVAMPED Image Uploader Events
+    // Image Uploader Events
     const dropzone = getEl('image-dropzone');
     if (dropzone) {
         dropzone.addEventListener('dragenter', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
@@ -280,10 +269,25 @@ function setupAdminEventListeners() {
         getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
     }
 
-
     // Change Password Modal
     getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
 }
+
+// ==========================================================
+// =================== ADMIN: DASHBOARD (NEW) ===============
+// ==========================================================
+function updateDashboardStats() {
+    // Total Products
+    getEl('stat-total-products').textContent = allProducts.length;
+
+    // Total Categories
+    const categories = new Set(allProducts.map(p => p.category));
+    getEl('stat-total-categories').textContent = categories.size;
+
+    // Current User
+    getEl('stat-current-user').textContent = currentUser.username;
+}
+
 
 // ==========================================================
 // =================== ADMIN: PRODUCT MGMT ==================
@@ -296,6 +300,7 @@ async function loadAdminProducts() {
         if (products.success) {
             allProducts = products.data;
             renderAdminProducts(allProducts);
+            updateDashboardStats(); // Update dashboard after products are loaded
         }
     }
 }
@@ -313,7 +318,6 @@ function renderAdminProducts(products, searchTerm = '') {
         );
     }
 
-    // REVAMPED Table HTML
     const tableHtml = `
         <table class="admin-table">
             <thead><tr><th>รูป</th><th>ชื่อสินค้า</th><th>ราคา</th><th class="text-end">การกระทำ</th></tr></thead>
@@ -361,23 +365,24 @@ async function handleProductFormSubmit(e) {
     
     show(getEl('loader'));
     try {
-        let uploadedImageUrls = [];
-        if (selectedFileBase64.length > 0) {
-            for (let i = 0; i < selectedFileBase64.length; i++) {
-                const uploadResult = await sendData('secureUploadImage', {
-                    imageData: selectedFileBase64[i],
-                    fileName: selectedFileNames[i],
-                    mimeType: `image/${selectedFileNames[i].split('.').pop()}`
-                });
-                if (uploadResult.success) {
-                    uploadedImageUrls.push(uploadResult.url);
-                } else {
-                     showCustomAlert(`เกิดข้อผิดพลาดในการอัปโหลดรูป: ${selectedFileNames[i]}`, 'error');
-                }
+        let finalImageUrl = existingImageUrl || ''; // Start with existing image if available
+
+        // If a new file was selected, upload it and overwrite the URL
+        if (selectedFileBase64 && selectedFileName) {
+            const uploadResult = await sendData('secureUploadImage', {
+                imageData: selectedFileBase64,
+                fileName: selectedFileName,
+                mimeType: `image/${selectedFileName.split('.').pop()}`
+            });
+            if (uploadResult.success) {
+                finalImageUrl = uploadResult.url;
+            } else {
+                showCustomAlert(`เกิดข้อผิดพลาดในการอัปโหลดรูป`, 'error');
+                hide(getEl('loader'));
+                return;
             }
         }
-        // Combine existing (un-deleted) images with newly uploaded ones
-        data.image_url = [...productImages, ...uploadedImageUrls].join(',');
+        data.image_url = finalImageUrl;
 
         const result = await sendData(action, data);
         if (result.success) {
@@ -397,15 +402,15 @@ function clearProductForm() {
     getEl('product-id').value = '';
     getEl('form-title').textContent = 'เพิ่มสินค้าใหม่';
     getEl('save-btn-text').textContent = 'บันทึก';
-    productImages = [];
-    selectedFileBase64 = [];
-    selectedFileNames = [];
-    renderImagePreviews();
+    clearImageState();
 }
 
 function editProduct(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
+    
+    clearImageState(); // Clear previous state first
+
     getEl('product-id').value = product.id;
     getEl('name').value = product.name;
     getEl('category').value = product.category;
@@ -414,12 +419,9 @@ function editProduct(id) {
     getEl('form-title').textContent = `แก้ไขสินค้า`;
     getEl('save-btn-text').textContent = 'บันทึกการแก้ไข';
     
-    // Reset and populate image arrays
-    productImages = String(product.image_url || '').split(',').filter(Boolean); // Filter out empty strings
-    selectedFileBase64 = [];
-    selectedFileNames = [];
-
+    existingImageUrl = String(product.image_url || '').split(',')[0].filter(Boolean);
     renderImagePreviews();
+
     getEl('product-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -437,26 +439,30 @@ async function deleteProduct(id) {
 }
 
 
-// --- REVAMPED IMAGE UPLOADER FUNCTIONS ---
+// --- REVAMPED IMAGE UPLOADER FUNCTIONS (SINGLE FILE) ---
 function handleImageFileChange(event) {
-    const files = event.target.files;
-    if (!files) return;
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-    Array.from(files).forEach(file => {
-        // Prevent duplicates
-        if (selectedFileNames.includes(file.name)) return;
+    // Clear previous state and process the new file
+    clearImageState();
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            selectedFileBase64.push(e.target.result.split(',')[1]);
-            selectedFileNames.push(file.name);
-            renderImagePreviews();
-        };
-        reader.readAsDataURL(file);
-    });
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        selectedFileBase64 = e.target.result.split(',')[1];
+        selectedFileName = file.name;
+        renderImagePreviews();
+    };
+    reader.readAsDataURL(file);
     
-    // Clear the input value to allow re-selecting the same file
-    event.target.value = '';
+    event.target.value = ''; // Allow re-selecting the same file
+}
+
+function clearImageState() {
+    selectedFileBase64 = null;
+    selectedFileName = null;
+    existingImageUrl = null;
+    renderImagePreviews();
 }
 
 function renderImagePreviews() {
@@ -464,62 +470,44 @@ function renderImagePreviews() {
     const dropzone = getEl('image-dropzone');
     if (!container || !dropzone) return;
 
-    container.innerHTML = ''; // Clear existing previews
+    container.innerHTML = '';
+    let imageToRender = null;
+    let imageName = '';
 
-    // Combine existing and new images for rendering
-    const allImages = [
-        ...productImages.map(url => ({ type: 'existing', src: url, name: url.split('/').pop() })),
-        ...selectedFileBase64.map((b64, i) => ({ type: 'new', src: `data:image/jpeg;base64,${b64}`, name: selectedFileNames[i] }))
-    ];
-
-    if (allImages.length === 0) {
-        dropzone.classList.remove('has-files');
-        return;
+    if (selectedFileBase64) {
+        imageToRender = `data:image/jpeg;base64,${selectedFileBase64}`;
+        imageName = selectedFileName;
+    } else if (existingImageUrl) {
+        imageToRender = existingImageUrl;
+        imageName = existingImageUrl.split('/').pop();
     }
-    
-    dropzone.classList.add('has-files');
 
-    allImages.forEach((img, index) => {
+    if (imageToRender) {
+        dropzone.classList.add('has-files');
         const wrapper = document.createElement('div');
         wrapper.className = 'dz-preview-item';
         wrapper.innerHTML = `
-            <img src="${img.src}" alt="Preview">
-            <div class="file-name" title="${img.name}">${img.name}</div>
-            <button type="button" class="dz-remove-btn" data-index="${index}" data-type="${img.type}">&times;</button>
+            <img src="${imageToRender}" alt="Preview">
+            <div class="file-name" title="${imageName}">${imageName}</div>
+            <button type="button" class="dz-remove-btn">&times;</button>
         `;
         container.appendChild(wrapper);
-    });
 
-    // Add event listeners to the new remove buttons
-    container.querySelectorAll('.dz-remove-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent dropzone click
-            const index = parseInt(e.target.dataset.index);
-            const type = e.target.dataset.type;
-
-            if (type === 'existing') {
-                // Remove from the `productImages` array
-                productImages.splice(index, 1);
-            } else {
-                // Adjust index for the `selectedFile...` arrays
-                const newIndex = index - productImages.length;
-                selectedFileBase64.splice(newIndex, 1);
-                selectedFileNames.splice(newIndex, 1);
-            }
-            renderImagePreviews(); // Re-render the previews
+        // Add event listener to the new remove button
+        container.querySelector('.dz-remove-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearImageState(); // This is now the single point of removal
         });
-    });
+
+    } else {
+        dropzone.classList.remove('has-files');
+    }
 }
 
 
 // ==========================================================
-// =================== ADMIN: USER & PASSWORD MGMT =========
+// =================== ADMIN: PASSWORD MGMT =================
 // ==========================================================
-async function loadAdminUsers() {
-    // This function would be filled out if user management was fully implemented
-    // For now, it's a placeholder to show/hide the tab
-}
-
 async function handleChangePassword() {
     const currentPassword = getEl('current-password').value;
     const newPassword = getEl('new-password-modal').value;
@@ -554,7 +542,6 @@ async function handleChangePassword() {
 // =================== UTILITIES (UPGRADED) =================
 // ==========================================================
 function showCustomAlert(message, type = 'info', isConfirm = false) {
-    // --- CONFIRMATION MODAL (For critical actions) ---
     if (isConfirm) {
         return new Promise((resolve) => {
             let modalOverlay = getEl('custom-modal-overlay');
@@ -563,7 +550,7 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
                 modalOverlay.id = 'custom-modal-overlay';
                 document.body.appendChild(modalOverlay);
             }
-            modalOverlay.className = 'custom-modal-overlay'; // Reset classes and show
+            modalOverlay.className = 'custom-modal-overlay';
 
             const typeClass = { success: 'success', error: 'error', warning: 'warning' }[type] || 'info';
             const iconClass = { success: 'fas fa-check-circle', error: 'fas fa-times-circle', warning: 'fas fa-exclamation-triangle' }[type] || 'fas fa-info-circle';
@@ -601,7 +588,6 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
         });
     }
 
-    // --- MODERN TOAST NOTIFICATION (For general feedback) ---
     let toastContainer = getEl('toast-container');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
