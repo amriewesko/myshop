@@ -116,7 +116,7 @@ async function sendData(action, data = {}) {
 // ==========================================================
 async function loadProducts() {
     const loader = getEl('loader');
-    show(loader);
+    if(loader) show(loader);
     try {
         const response = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
         const result = await response.json();
@@ -127,7 +127,7 @@ async function loadProducts() {
     } catch (error) {
         console.error("Error loading products:", error);
     } finally {
-        hide(loader);
+        if(loader) hide(loader);
     }
 }
 
@@ -138,10 +138,10 @@ function renderProducts(products) {
     container.innerHTML = '';
     
     if (products.length === 0) {
-        show(noProductsEl);
+        if(noProductsEl) show(noProductsEl);
         return;
     }
-    hide(noProductsEl);
+    if(noProductsEl) hide(noProductsEl);
 
     products.forEach(product => {
         const imageUrls = String(product.image_url || '').split(',');
@@ -173,7 +173,7 @@ function filterAndSearchProducts(searchTerm = null, category = null) {
         const lowerSearch = currentSearch.toLowerCase();
         filtered = filtered.filter(p => 
             p.name.toLowerCase().includes(lowerSearch) ||
-            p.id.toLowerCase().includes(lowerSearch)
+            String(p.id).toLowerCase().includes(lowerSearch)
         );
     }
     renderProducts(filtered);
@@ -186,6 +186,7 @@ async function fetchAndRenderCategories() {
         const response = await fetch(`${APPS_SCRIPT_URL}?action=getCategories`);
         const result = await response.json();
         if (result.success) {
+            select.innerHTML = '<option value="ทั้งหมด" selected>ทั้งหมด</option>'; // Clear old options
             result.categories.forEach(cat => {
                 select.insertAdjacentHTML('beforeend', `<option value="${cat}">${cat}</option>`);
             });
@@ -403,14 +404,19 @@ function clearProductForm() {
     getEl('form-title').textContent = 'เพิ่มสินค้าใหม่';
     getEl('save-btn-text').textContent = 'บันทึก';
     clearImageState();
+    renderImagePreviews(); // Update UI to show empty state
 }
 
+// BUG FIX: Rewrote the editProduct function to handle state correctly
 function editProduct(id) {
-    const product = allProducts.find(p => p.id == id); // Use == for potential type difference
+    const product = allProducts.find(p => String(p.id) === String(id));
     if (!product) return;
-    
-    clearProductForm(); // Clear form completely before populating
 
+    // 1. Manually reset form and clear image state
+    getEl('product-form').reset();
+    clearImageState();
+
+    // 2. Populate form fields
     getEl('product-id').value = product.id;
     getEl('name').value = product.name;
     getEl('category').value = product.category;
@@ -418,14 +424,18 @@ function editProduct(id) {
     getEl('shopeeLink').value = product.shopee_url || '';
     getEl('form-title').textContent = `แก้ไขสินค้า`;
     getEl('save-btn-text').textContent = 'บันทึกการแก้ไข';
-    
-    // BUG FIX: Correctly assign existing image URL
-    existingImageUrl = (String(product.image_url || '').split(',')[0]) || null;
-    
+
+    // 3. Set the existing image URL state
+    const url = String(product.image_url || '').split(',')[0].trim();
+    existingImageUrl = url ? url : null;
+
+    // 4. Render the preview with the new state
     renderImagePreviews();
 
+    // 5. Scroll to the form
     getEl('product-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
 
 async function deleteProduct(id) {
     if (!await showCustomAlert('ยืนยันการลบสินค้านี้?', 'warning', true)) return;
@@ -463,7 +473,6 @@ function clearImageState() {
     selectedFileBase64 = null;
     selectedFileName = null;
     existingImageUrl = null;
-    renderImagePreviews(); // Re-render to show the empty state
 }
 
 function renderImagePreviews() {
@@ -494,10 +503,12 @@ function renderImagePreviews() {
         `;
         container.appendChild(wrapper);
 
-        // BUG FIX: Correctly add event listener to the remove button
+        // BUG FIX: Add listener to the newly created button
         container.querySelector('.dz-remove-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.preventDefault(); // Stop any default button action
+            e.stopPropagation(); // Stop click from bubbling to the dropzone
             clearImageState();
+            renderImagePreviews(); // Re-render to show the empty state
         });
 
     } else {
