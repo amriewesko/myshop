@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initPublicPage();
     }
     initScrollWidgets();
+    initGlobalEventListeners(); 
 });
 
 function initPublicPage() {
@@ -59,27 +60,23 @@ function initScrollWidgets() {
     });
 }
 
-function initPasswordToggles() {
-    const toggleIcons = document.querySelectorAll('.toggle-password');
-    toggleIcons.forEach(icon => {
-        // Ensure we don't add duplicate listeners
-        if (icon.dataset.listenerAttached) return;
-
-        icon.addEventListener('click', () => {
+function initGlobalEventListeners() {
+    document.body.addEventListener('click', function(event) {
+        if (event.target.classList.contains('toggle-password')) {
+            const icon = event.target;
             const passwordInput = icon.previousElementSibling;
+
             if (passwordInput && passwordInput.tagName === 'INPUT') {
-                // Toggle the type
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
                 
-                // Toggle the icon
                 icon.classList.toggle('fa-eye');
                 icon.classList.toggle('fa-eye-slash');
             }
-        });
-        icon.dataset.listenerAttached = 'true';
+        }
     });
 }
+
 
 // ==========================================================
 // =================== API & DATA HANDLING ==================
@@ -261,16 +258,12 @@ function setupAdminEventListeners() {
 
     // Change Password Modal
     getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
-    
-    // Initialize password toggles
-    initPasswordToggles();
 }
 
 // ==========================================================
 // =================== ADMIN: PRODUCT MGMT ==================
 // ==========================================================
 async function loadAdminProducts() {
-    // A simple way to check if token is still valid before fetching public data
     const checkTokenResult = await sendData('secureGetUsers'); 
     if (checkTokenResult.success) { 
         const productResult = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
@@ -421,6 +414,9 @@ function handleImageFileChange(event) {
 
 function renderImagePreviews() {
     const container = getEl('imagePreview');
+    const dropzone = getEl('image-dropzone');
+    if (!container || !dropzone) return;
+
     container.innerHTML = '';
     const allImageSources = [
         ...productImages,
@@ -428,9 +424,11 @@ function renderImagePreviews() {
     ];
 
     if (allImageSources.length === 0) {
-        container.innerHTML = '<p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพ</p>';
+        dropzone.classList.remove('has-files');
         return;
     }
+    
+    dropzone.classList.add('has-files');
 
     allImageSources.forEach((src, index) => {
         const isExisting = index < productImages.length;
@@ -445,6 +443,7 @@ function renderImagePreviews() {
 
     container.querySelectorAll('.remove-img-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent dropzone click
             const index = parseInt(e.target.dataset.index);
             const type = e.target.dataset.type;
             if (type === 'existing') {
@@ -577,7 +576,6 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
             toastEl.classList.add('hiding');
             toastEl.addEventListener('transitionend', () => {
                 toastEl.remove();
-                // This check is optional: removes the container if it's empty
                 if (getEl('toast-container') && getEl('toast-container').children.length === 0) {
                      getEl('toast-container').remove();
                 }
@@ -587,6 +585,6 @@ function showCustomAlert(message, type = 'info', isConfirm = false) {
 
     toast.querySelector('.toast-close-btn').addEventListener('click', closeToast);
 
-    setTimeout(closeToast, 5000); // Auto-dismiss after 5 seconds
-    return Promise.resolve(true); // Return a resolved promise for functions that might await it
+    setTimeout(closeToast, 5000);
+    return Promise.resolve(true);
 }
