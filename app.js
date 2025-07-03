@@ -468,49 +468,100 @@ async function handleChangePassword() {
 }
 
 // ==========================================================
-// =================== UTILITIES ============================
+// =================== UTILITIES (UPGRADED) =================
 // ==========================================================
 function showCustomAlert(message, type = 'info', isConfirm = false) {
-    return new Promise((resolve) => {
-        let modalOverlay = getEl('custom-modal-overlay');
-        if (!modalOverlay) {
-            modalOverlay = document.createElement('div');
-            modalOverlay.id = 'custom-modal-overlay';
-            document.body.appendChild(modalOverlay);
-        }
-        modalOverlay.classList.remove('d-none');
+    // --- CONFIRMATION MODAL (For critical actions) ---
+    if (isConfirm) {
+        return new Promise((resolve) => {
+            let modalOverlay = getEl('custom-modal-overlay');
+            if (!modalOverlay) {
+                modalOverlay = document.createElement('div');
+                modalOverlay.id = 'custom-modal-overlay';
+                document.body.appendChild(modalOverlay);
+            }
+            modalOverlay.className = 'custom-modal-overlay'; // Reset classes and show
 
-        const typeClass = { success: 'success', error: 'error', warning: 'warning' }[type] || 'info';
-
-        modalOverlay.innerHTML = `
-            <div class="custom-modal-content animate__animated animate__fadeInDown">
-                <div class="custom-modal-header ${typeClass}">
-                    <h5 class="custom-modal-title">${isConfirm ? 'โปรดยืนยัน' : 'แจ้งเตือน'}</h5>
-                    <button type="button" class="custom-modal-close">&times;</button>
-                </div>
-                <div class="custom-modal-body"><p>${message}</p></div>
-                <div class="custom-modal-footer">
-                    ${isConfirm ? `<button class="btn btn-secondary" data-action="cancel">ยกเลิก</button>` : ''}
-                    <button class="btn btn-primary" data-action="ok">ตกลง</button>
-                </div>
-            </div>`;
-        
-        const closeModal = (result) => {
-            const content = modalOverlay.querySelector('.custom-modal-content');
-            if(content) {
-                content.classList.replace('animate__fadeInDown', 'animate__fadeOutUp');
-                content.addEventListener('animationend', () => {
+            const typeClass = { success: 'success', error: 'error', warning: 'warning' }[type] || 'info';
+            const iconClass = { success: 'fas fa-check-circle', error: 'fas fa-times-circle', warning: 'fas fa-exclamation-triangle' }[type] || 'fas fa-info-circle';
+            
+            modalOverlay.innerHTML = `
+                <div class="custom-modal-content animate__animated animate__fadeInDown">
+                    <div class="custom-modal-header ${typeClass}">
+                        <h5 class="custom-modal-title"><i class="${iconClass} me-2"></i>โปรดยืนยัน</h5>
+                        <button type="button" class="custom-modal-close" data-action="cancel">&times;</button>
+                    </div>
+                    <div class="custom-modal-body"><p>${message}</p></div>
+                    <div class="custom-modal-footer">
+                        <button class="btn btn-secondary" data-action="cancel">ยกเลิก</button>
+                        <button class="btn btn-primary" data-action="ok">ตกลง</button>
+                    </div>
+                </div>`;
+            
+            const closeModal = (result) => {
+                const content = modalOverlay.querySelector('.custom-modal-content');
+                if (content) {
+                    content.classList.replace('animate__fadeInDown', 'animate__fadeOutUp');
+                    content.addEventListener('animationend', () => {
+                        modalOverlay.classList.add('d-none');
+                        resolve(result);
+                    }, { once: true });
+                } else {
                     modalOverlay.classList.add('d-none');
                     resolve(result);
-                }, { once: true });
-            } else {
-                modalOverlay.classList.add('d-none');
-                resolve(result);
-            }
-        };
+                }
+            };
 
-        modalOverlay.querySelector('[data-action="ok"]')?.addEventListener('click', () => closeModal(true));
-        modalOverlay.querySelector('[data-action="cancel"]')?.addEventListener('click', () => closeModal(false));
-        modalOverlay.querySelector('.custom-modal-close')?.addEventListener('click', () => closeModal(false));
-    });
+            modalOverlay.querySelector('[data-action="ok"]').addEventListener('click', () => closeModal(true));
+            modalOverlay.querySelector('[data-action="cancel"]').addEventListener('click', () => closeModal(false));
+            modalOverlay.querySelector('.custom-modal-close').addEventListener('click', () => closeModal(false));
+        });
+    }
+
+    // --- MODERN TOAST NOTIFICATION (For general feedback) ---
+    let toastContainer = getEl('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toastId = 'toast-' + Date.now();
+    const toast = document.createElement('div');
+    toast.id = toastId;
+    toast.className = `toast-notification ${type}`;
+
+    const iconClass = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-times-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-info-circle'
+    }[type];
+
+    toast.innerHTML = `
+        <div class="toast-icon"><i class="${iconClass}"></i></div>
+        <div class="toast-content"><p>${message}</p></div>
+        <button class="toast-close-btn">&times;</button>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    const closeToast = () => {
+        const toastEl = getEl(toastId);
+        if (toastEl) {
+            toastEl.classList.add('hiding');
+            toastEl.addEventListener('transitionend', () => {
+                toastEl.remove();
+                // This check is optional: removes the container if it's empty
+                if (getEl('toast-container') && getEl('toast-container').children.length === 0) {
+                     getEl('toast-container').remove();
+                }
+            }, { once: true });
+        }
+    };
+
+    toast.querySelector('.toast-close-btn').addEventListener('click', closeToast);
+
+    setTimeout(closeToast, 5000); // Auto-dismiss after 5 seconds
+    return Promise.resolve(true); // Return a resolved promise for functions that might await it
 }
