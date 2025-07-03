@@ -8,9 +8,9 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjGn_mnY58mqVm
 // ==========================================================
 let allProducts = [];
 let currentUser = { username: '', role: '' };
-let selectedFileBase64 = null; // Changed to single value
-let selectedFileName = null;   // Changed to single value
-let existingImageUrl = null;   // Changed to single value
+let selectedFileBase64 = null; // For new image upload
+let selectedFileName = null;   // For new image upload
+let existingImageUrl = null;   // For image that comes with the product on edit
 
 // ==========================================================
 // =================== DOM ELEMENT GETTERS ==================
@@ -277,11 +277,12 @@ function setupAdminEventListeners() {
 // =================== ADMIN: DASHBOARD (NEW) ===============
 // ==========================================================
 function updateDashboardStats() {
+    if (!getEl('stat-total-products')) return; // Exit if not on admin page
     // Total Products
     getEl('stat-total-products').textContent = allProducts.length;
 
     // Total Categories
-    const categories = new Set(allProducts.map(p => p.category));
+    const categories = new Set(allProducts.map(p => p.category).filter(Boolean));
     getEl('stat-total-categories').textContent = categories.size;
 
     // Current User
@@ -314,7 +315,7 @@ function renderAdminProducts(products, searchTerm = '') {
         const lowerSearch = searchTerm.toLowerCase();
         filteredProducts = products.filter(p => 
             p.name.toLowerCase().includes(lowerSearch) || 
-            p.id.toLowerCase().includes(lowerSearch)
+            String(p.id).toLowerCase().includes(lowerSearch)
         );
     }
 
@@ -365,9 +366,8 @@ async function handleProductFormSubmit(e) {
     
     show(getEl('loader'));
     try {
-        let finalImageUrl = existingImageUrl || ''; // Start with existing image if available
+        let finalImageUrl = existingImageUrl || '';
 
-        // If a new file was selected, upload it and overwrite the URL
         if (selectedFileBase64 && selectedFileName) {
             const uploadResult = await sendData('secureUploadImage', {
                 imageData: selectedFileBase64,
@@ -406,20 +406,22 @@ function clearProductForm() {
 }
 
 function editProduct(id) {
-    const product = allProducts.find(p => p.id === id);
+    const product = allProducts.find(p => p.id == id); // Use == for potential type difference
     if (!product) return;
     
-    clearImageState(); // Clear previous state first
+    clearProductForm(); // Clear form completely before populating
 
     getEl('product-id').value = product.id;
     getEl('name').value = product.name;
     getEl('category').value = product.category;
     getEl('price').value = product.price;
-    getEl('shopeeLink').value = product.shopee_url;
+    getEl('shopeeLink').value = product.shopee_url || '';
     getEl('form-title').textContent = `แก้ไขสินค้า`;
     getEl('save-btn-text').textContent = 'บันทึกการแก้ไข';
     
-    existingImageUrl = String(product.image_url || '').split(',')[0].filter(Boolean);
+    // BUG FIX: Correctly assign existing image URL
+    existingImageUrl = (String(product.image_url || '').split(',')[0]) || null;
+    
     renderImagePreviews();
 
     getEl('product-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -444,8 +446,7 @@ function handleImageFileChange(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Clear previous state and process the new file
-    clearImageState();
+    clearImageState(); // Clear previous state to ensure only one image is handled
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -455,14 +456,14 @@ function handleImageFileChange(event) {
     };
     reader.readAsDataURL(file);
     
-    event.target.value = ''; // Allow re-selecting the same file
+    event.target.value = '';
 }
 
 function clearImageState() {
     selectedFileBase64 = null;
     selectedFileName = null;
     existingImageUrl = null;
-    renderImagePreviews();
+    renderImagePreviews(); // Re-render to show the empty state
 }
 
 function renderImagePreviews() {
@@ -479,7 +480,7 @@ function renderImagePreviews() {
         imageName = selectedFileName;
     } else if (existingImageUrl) {
         imageToRender = existingImageUrl;
-        imageName = existingImageUrl.split('/').pop();
+        imageName = existingImageUrl.split('/').pop().split('?')[0]; // Clean URL for display
     }
 
     if (imageToRender) {
@@ -493,10 +494,10 @@ function renderImagePreviews() {
         `;
         container.appendChild(wrapper);
 
-        // Add event listener to the new remove button
+        // BUG FIX: Correctly add event listener to the remove button
         container.querySelector('.dz-remove-btn').addEventListener('click', (e) => {
             e.stopPropagation();
-            clearImageState(); // This is now the single point of removal
+            clearImageState();
         });
 
     } else {
