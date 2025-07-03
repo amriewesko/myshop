@@ -51,7 +51,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="password-input" class="form-label">รหัสผ่าน</label>
-                        <input type="password" class="form-control form-control-lg" id="password-input" placeholder="Password" required>
+                        <div class="position-relative">
+                            <input type="password" class="form-control form-control-lg" id="password-input" placeholder="Password" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
                     </div>
                     <button id="secure-login-btn" class="btn btn-primary btn-lg w-100"><i class="fas fa-sign-in-alt me-2"></i>เข้าสู่ระบบ</button>
                 </div>
@@ -94,7 +97,13 @@
                     <input type="hidden" id="user-form-username">
                     <div class="row g-3">
                         <div class="col-md-6"><label for="new-username" class="form-label">ชื่อผู้ใช้ <span class="text-danger">*</span></label><input type="text" class="form-control" id="new-username" required></div>
-                        <div class="col-md-6"><label for="new-password" class="form-label">รหัสผ่าน <span id="password-req" class="text-danger">*</span></label><input type="password" class="form-control" id="new-password" placeholder="เว้นว่างไว้หากไม่ต้องการเปลี่ยน"></div>
+                        <div class="col-md-6">
+                            <label for="new-password" class="form-label">รหัสผ่าน <span id="password-req" class="text-danger">*</span></label>
+                            <div class="position-relative">
+                                <input type="password" class="form-control" id="new-password" placeholder="เว้นว่างไว้หากไม่ต้องการเปลี่ยน">
+                                <i class="fas fa-eye toggle-password"></i>
+                            </div>
+                        </div>
                         <div class="col-md-6"><label for="user-role" class="form-label">สิทธิ์ <span class="text-danger">*</span></label><select id="user-role" class="form-select"><option value="EDITOR">Editor</option><option value="SUPERADMIN">Superadmin</option></select></div>
                         <div class="col-md-6"><label for="user-status" class="form-label">สถานะ <span class="text-danger">*</span></label><select id="user-status" class="form-select"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
                     </div>
@@ -121,15 +130,24 @@
             <form id="change-password-form">
               <div class="mb-3">
                 <label for="current-password" class="form-label">รหัสผ่านปัจจุบัน</label>
-                <input type="password" class="form-control" id="current-password" required>
+                <div class="position-relative">
+                    <input type="password" class="form-control" id="current-password" required>
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
               </div>
               <div class="mb-3">
                 <label for="new-password-modal" class="form-label">รหัสผ่านใหม่</label>
-                <input type="password" class="form-control" id="new-password-modal" required>
+                <div class="position-relative">
+                    <input type="password" class="form-control" id="new-password-modal" required>
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
               </div>
               <div class="mb-3">
                 <label for="confirm-password-modal" class="form-label">ยืนยันรหัสผ่านใหม่</label>
-                <input type="password" class="form-control" id="confirm-password-modal" required>
+                <div class="position-relative">
+                    <input type="password" class="form-control" id="confirm-password-modal" required>
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
               </div>
             </form>
           </div>
