@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Shop | แผงควบคุมขั้นสูง</title>
+    <title>My Shop | ผู้ดูแลระบบ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="admin-body">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark animate__animated animate__fadeInDown">
         <div class="container-fluid container">
             <a class="navbar-brand" href="index.html"><i class="fas fa-store"></i> AMRIE_633</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="index.html">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="admin.html">ผู้ดูแลระบบ</a></li>
+                    <li id="user-management-nav" class="nav-item d-none"><a class="nav-link" href="#user-management-section">จัดการผู้ใช้</a></li>
                     <li class="nav-item dropdown d-none" id="user-dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle me-1"></i> <span id="username-display"></span>
@@ -41,148 +42,209 @@
     <div class="admin-wrapper">
         <!-- Login Gate -->
         <section id="login-gate" class="d-flex-center">
-            <div class="card shadow-lg animate__animated animate__fadeInUp">
-                <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <img src="https://lh3.googleusercontent.com/d/1lCktO2fzuMWRzUuJBx9XZSAM9q7Lq4YB" alt="Doraemon Icon" style="width: 100px;">
-                        <h2 class="card-title text-center mt-3">แผงควบคุมร้านค้า</h2>
-                        <p class="text-muted">กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
-                    </div>
+            <div class="login-card animate__animated animate__fadeInUp">
+                <div class="login-card-header">
+                    <img src="https://lh3.googleusercontent.com/d/1lCktO2fzuMWRzUuJBx9XZSAM9q7Lq4YB" alt="Doraemon Icon" class="login-dora-icon">
+                    <h2 class="text-center">แผงควบคุม</h2>
+                    <p class="text-center text-muted">สำหรับผู้ดูแลระบบเท่านั้น</p>
+                </div>
+                <div class="login-card-body">
                     <div class="mb-3">
                         <label for="username-input" class="form-label">ชื่อผู้ใช้</label>
-                        <input type="text" class="form-control form-control-lg" id="username-input" placeholder="Username" required>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control form-control-lg" id="username-input" placeholder="Username" required>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="password-input" class="form-label">รหัสผ่าน</label>
-                        <div class="position-relative">
+                        <div class="input-group">
+                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control form-control-lg" id="password-input" placeholder="Password" required>
-                            <i class="fas fa-eye toggle-password"></i>
+                            <button class="btn btn-outline-secondary toggle-password-btn" type="button"><i class="fas fa-eye"></i></button>
                         </div>
                     </div>
-                    <button id="secure-login-btn" class="btn btn-primary btn-lg w-100 mt-3"><i class="fas fa-sign-in-alt me-2"></i>เข้าสู่ระบบ</button>
+                    <button id="secure-login-btn" class="btn btn-primary-admin btn-lg w-100 mt-3"><i class="fas fa-sign-in-alt me-2"></i>เข้าสู่ระบบ</button>
                 </div>
             </div>
         </section>
 
-        <!-- Admin Panel (Main Content) - Redesigned -->
+        <!-- Admin Panel (Main Content) -->
         <main id="admin-panel" class="container my-5 admin-content d-none">
-            
-            <!-- NEW: Tab Navigation -->
-            <ul class="nav nav-tabs admin-tabs" id="adminTab" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-content" type="button" role="tab"><i class="fas fa-tachometer-alt me-2"></i>แดชบอร์ด</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-content" type="button" role="tab"><i class="fas fa-box-seam me-2"></i>จัดการสินค้า</button>
-              </li>
-              <li class="nav-item" role="presentation" id="user-management-nav-tab">
-                <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-content" type="button" role="tab"><i class="fas fa-users-cog me-2"></i>จัดการผู้ใช้</button>
-              </li>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                 <h1 class="text-primary mb-0">แผงควบคุมผู้ดูแล</h1>
+                 <div id="admin-welcome" class="d-flex align-items-center">
+                     <!-- Welcome message can be added here if needed -->
+                 </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs admin-tabs mb-4" id="adminTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-tab-pane" type="button" role="tab" aria-controls="products-tab-pane" aria-selected="true">
+                        <i class="fas fa-box-seam me-2"></i>จัดการสินค้า
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation" id="user-management-tab">
+                    <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-tab-pane" type="button" role="tab" aria-controls="users-tab-pane" aria-selected="false">
+                        <i class="fas fa-users-cog me-2"></i>จัดการผู้ใช้งาน
+                    </button>
+                </li>
             </ul>
 
             <!-- Tab Content -->
             <div class="tab-content" id="adminTabContent">
-              
-              <!-- Dashboard Content -->
-              <div class="tab-pane fade show active" id="dashboard-content" role="tabpanel">
-                <div class="admin-card-body">
-                    <div class="row g-4" id="dashboard-stats">
-                        <!-- Stat cards will be rendered here by JS -->
-                        <div class="col-md-6 col-lg-4">
-                            <div class="dashboard-stat-card loading"></div>
+                <!-- Product Management Pane -->
+                <div class="tab-pane fade show active" id="products-tab-pane" role="tabpanel" aria-labelledby="products-tab" tabindex="0">
+                    <div class="row g-4">
+                        <!-- Left Column: Product Form -->
+                        <div class="col-lg-5">
+                            <div class="admin-card">
+                                <form id="product-form">
+                                    <h4 id="form-title" class="card-title-admin mb-4">เพิ่มสินค้าใหม่</h4>
+                                    <input type="hidden" id="product-id">
+                                    
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">ชื่อสินค้า <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label">หมวดหมู่ <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="category" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="price" class="form-label">ราคา (บาท) <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="price" step="0.01" min="0" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="shopeeLink" class="form-label">ลิงก์ Shopee</label>
+                                        <input type="url" class="form-control" id="shopeeLink">
+                                    </div>
+
+                                    <!-- Revamped Image Uploader -->
+                                    <div class="mb-3">
+                                        <label class="form-label">รูปภาพสินค้า</label>
+                                        <div id="image-dropzone" class="image-dropzone-revamped">
+                                            <div class="dz-message">
+                                                <i class="fas fa-cloud-upload-alt"></i>
+                                                <p><strong>ลากและวางไฟล์ที่นี่</strong><br>หรือคลิกเพื่อเลือกไฟล์</p>
+                                                <small class="text-muted">แนะนำขนาด 1:1 (เช่น 800x800px)</small>
+                                            </div>
+                                            <div id="imagePreview" class="dz-preview-container">
+                                                <!-- Previews will be rendered here by JS -->
+                                            </div>
+                                            <input type="file" id="imageFileInput" accept="image/*" multiple class="dz-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex gap-2 mt-4">
+                                        <button type="submit" class="btn btn-primary-admin flex-grow-1"><i class="fas fa-save me-2"></i><span id="save-btn-text">บันทึก</span></button>
+                                        <button type="button" id="clear-product-form-btn" class="btn btn-secondary-admin"><i class="fas fa-redo-alt"></i></button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="dashboard-stat-card loading"></div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="dashboard-stat-card loading"></div>
+
+                        <!-- Right Column: Product List -->
+                        <div class="col-lg-7">
+                            <div class="admin-card">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                     <h4 class="card-title-admin mb-0">รายการสินค้าทั้งหมด</h4>
+                                     <div class="input-group" style="max-width: 250px;">
+                                        <input type="text" class="form-control" id="admin-search-input" placeholder="ค้นหาสินค้า...">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    </div>
+                                </div>
+                                <div id="admin-product-list" class="table-responsive">
+                                    <!-- Admin product table will be rendered here -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-              </div>
 
-              <!-- Product Management Content -->
-              <div class="tab-pane fade" id="products-content" role="tabpanel">
-                <div class="admin-card-body">
-                    <!-- Product Form Card -->
-                    <div class="card admin-card mb-5">
-                        <div class="card-header">
-                            <h5 id="form-title" class="mb-0"><i class="fas fa-plus-circle me-2"></i>เพิ่มสินค้าใหม่</h5>
-                        </div>
-                        <div class="card-body">
-                            <form id="product-form">
-                                <input type="hidden" id="product-id">
-                                <div class="row g-4">
-                                    <div class="col-lg-6">
-                                        <h6 class="form-section-title">รายละเอียดสินค้า</h6>
-                                        <div class="mb-3"><label for="name" class="form-label">ชื่อสินค้า <span class="text-danger">*</span></label><input type="text" class="form-control" id="name" required></div>
-                                        <div class="mb-3"><label for="category" class="form-label">หมวดหมู่ <span class="text-danger">*</span></label><input type="text" class="form-control" id="category" required></div>
-                                        <div class="mb-3"><label for="price" class="form-label">ราคา (บาท) <span class="text-danger">*</span></label><input type="number" class="form-control" id="price" step="0.01" min="0" required></div>
-                                        <div class="mb-3"><label for="shopeeLink" class="form-label">ลิงก์ Shopee</label><input type="url" class="form-control" id="shopeeLink" placeholder="https://shopee.co.th/product/..."></div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <h6 class="form-section-title">รูปภาพสินค้า (รูปแรกคือภาพปก)</h6>
-                                        <div id="image-dropzone" class="image-dropzone"><div class="image-dropzone-prompt"><i class="fas fa-cloud-upload-alt"></i><p><strong>ลากและวางไฟล์ที่นี่</strong><br><span class="text-muted">หรือคลิกเพื่อเลือกไฟล์</span></p></div><input type="file" id="imageFileInput" accept="image/*" multiple class="image-dropzone-input"></div>
-                                        <div id="imagePreview" class="img-preview-container mt-3"></div>
+                <!-- User Management Pane -->
+                <div class="tab-pane fade" id="users-tab-pane" role="tabpanel" aria-labelledby="users-tab" tabindex="0">
+                     <div class="admin-card">
+                        <h4 class="card-title-admin mb-4"><i class="fas fa-users-cog me-2"></i>จัดการผู้ใช้งาน</h4>
+                        <form id="user-form" class="mb-5">
+                            <h5 id="user-form-title" class="mb-3 text-primary">เพิ่มผู้ใช้ใหม่</h5>
+                            <input type="hidden" id="user-form-username">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-3"><label for="new-username" class="form-label">ชื่อผู้ใช้ <span class="text-danger">*</span></label><input type="text" class="form-control" id="new-username" required></div>
+                                <div class="col-md-3">
+                                    <label for="new-password" class="form-label">รหัสผ่าน <span id="password-req" class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="new-password" placeholder="เว้นว่างไว้หากไม่ต้องการเปลี่ยน">
+                                        <button class="btn btn-outline-secondary toggle-password-btn" type="button"><i class="fas fa-eye"></i></button>
                                     </div>
                                 </div>
-                                <hr class="my-4">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button type="button" id="clear-product-form-btn" class="btn btn-secondary"><i class="fas fa-redo-alt me-2"></i>ล้างฟอร์ม</button>
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>บันทึกสินค้า</button>
+                                <div class="col-md-2"><label for="user-role" class="form-label">สิทธิ์ <span class="text-danger">*</span></label><select id="user-role" class="form-select"><option value="EDITOR">Editor</option><option value="SUPERADMIN">Superadmin</option></select></div>
+                                <div class="col-md-2"><label for="user-status" class="form-label">สถานะ <span class="text-danger">*</span></label><select id="user-status" class="form-select"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+                                <div class="col-md-2">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary-admin flex-grow-1"><i class="fas fa-user-plus me-2"></i>บันทึก</button>
+                                        <button type="button" id="clear-user-form-btn" class="btn btn-secondary-admin"><i class="fas fa-redo-alt"></i></button>
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- Product List Card -->
-                    <div class="card admin-card">
-                        <div class="card-header"><h5 class="mb-0"><i class="fas fa-list me-2"></i>รายการสินค้าทั้งหมด</h5></div>
-                        <div class="card-body">
-                            <div class="input-group mb-3"><span class="input-group-text"><i class="fas fa-search"></i></span><input type="text" class="form-control" id="admin-search-input" placeholder="ค้นหาสินค้าด้วยชื่อ หรือ ID..."></div>
-                            <div id="admin-product-list" class="table-responsive"></div>
-                        </div>
+                            </div>
+                        </form>
+                        <h5 class="mb-3 text-primary"><i class="fas fa-users me-2"></i>รายชื่อผู้ใช้ทั้งหมด</h5>
+                        <div id="admin-user-list" class="table-responsive"></div>
                     </div>
                 </div>
-              </div>
-
-              <!-- User Management Content -->
-              <div class="tab-pane fade" id="users-content" role="tabpanel">
-                 <div class="admin-card-body">
-                    <div class="card admin-card">
-                        <div class="card-header"><h5 class="mb-0"><i class="fas fa-users-cog me-2"></i>จัดการผู้ใช้งาน</h5></div>
-                        <div class="card-body">
-                            <form id="user-form" class="mb-4">
-                                <!-- User form content remains the same -->
-                            </form>
-                            <hr>
-                            <h5 class="mb-3 text-primary"><i class="fas fa-users me-2"></i>รายชื่อผู้ใช้ทั้งหมด</h5>
-                            <div id="admin-user-list" class="table-responsive"></div>
-                        </div>
-                    </div>
-                 </div>
-              </div>
             </div>
         </main>
     </div>
     
-    <!-- Modals (Unchanged) -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1">
-      <div class="modal-dialog"><div class="modal-content">
-          <div class="modal-header"><h5 class="modal-title">เปลี่ยนรหัสผ่าน</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <!-- Modals -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordModalLabel">เปลี่ยนรหัสผ่านของคุณ</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
           <div class="modal-body">
             <form id="change-password-form">
-              <div class="mb-3"><label for="current-password" class="form-label">รหัสผ่านปัจจุบัน</label><div class="position-relative"><input type="password" class="form-control" id="current-password" required><i class="fas fa-eye toggle-password"></i></div></div>
-              <div class="mb-3"><label for="new-password-modal" class="form-label">รหัสผ่านใหม่</label><div class="position-relative"><input type="password" class="form-control" id="new-password-modal" required><i class="fas fa-eye toggle-password"></i></div></div>
-              <div class="mb-3"><label for="confirm-password-modal" class="form-label">ยืนยันรหัสผ่านใหม่</label><div class="position-relative"><input type="password" class="form-control" id="confirm-password-modal" required><i class="fas fa-eye toggle-password"></i></div></div>
+              <div class="mb-3">
+                <label for="current-password" class="form-label">รหัสผ่านปัจจุบัน</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="current-password" required>
+                    <button class="btn btn-outline-secondary toggle-password-btn" type="button"><i class="fas fa-eye"></i></button>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="new-password-modal" class="form-label">รหัสผ่านใหม่</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="new-password-modal" required>
+                    <button class="btn btn-outline-secondary toggle-password-btn" type="button"><i class="fas fa-eye"></i></button>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="confirm-password-modal" class="form-label">ยืนยันรหัสผ่านใหม่</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="confirm-password-modal" required>
+                    <button class="btn btn-outline-secondary toggle-password-btn" type="button"><i class="fas fa-eye"></i></button>
+                </div>
+              </div>
             </form>
           </div>
-          <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button><button type="button" class="btn btn-primary" id="submit-change-password-btn">บันทึก</button></div>
-      </div></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+            <button type="button" class="btn btn-primary" id="submit-change-password-btn">บันทึกรหัสผ่าน</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Loader, Footer, etc -->
-    <div id="loader" class="d-none text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-3 text-muted">กำลังประมวลผล...</p></div>
-    <footer class="text-white text-center py-4 mt-5"><div class="footer-doraemon"></div><div class="container"><p class="mb-0">&copy; 2025 My Shop. All rights reserved.</p></div></footer>
+    <!-- Loader and Footer -->
+    <div id="loader" class="d-none text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-3 text-muted">กำลังประมวลผล...</p></div>
+    <footer class="text-white text-center py-3 mt-auto">
+        <div class="container"><p class="mb-0">&copy; 2025 My Shop Admin Panel. All rights reserved.</p></div>
+    </footer>
+    
+    <!-- Custom Modal Overlay (for confirmation dialogs) -->
     <div id="custom-modal-overlay" class="custom-modal-overlay d-none"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
