@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 11.0 (Admin Dashboard & Single Image Upload)
+ * Version: 11.1 (Bug Fixes & Polish)
  * Description: The ultimate, production-quality stylesheet with professional UI/UX and full mobile responsiveness.
 */
 
@@ -316,6 +316,17 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 
 .admin-wrapper {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* BUG FIX: Login centering */
+#login-gate.d-flex-center {
+    flex-grow: 1; /* Make the login section take up available space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
 }
 
 /* === Login Card (Revamped) === */
@@ -452,12 +463,14 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     font-size: 1.5rem;
     color: var(--white-color);
     margin-right: 1.5rem;
+    flex-shrink: 0;
 }
 .icon-products { background: linear-gradient(135deg, #29B6F6, #0288D1); }
 .icon-categories { background: linear-gradient(135deg, #FFEE58, #FBC02D); }
 .icon-user { background: linear-gradient(135deg, #9CCC65, #689F38); }
 .stat-info {
     line-height: 1.2;
+    min-width: 0;
 }
 .stat-title {
     font-size: 0.9rem;
@@ -471,6 +484,9 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     font-weight: 700;
     color: var(--text-color);
     margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -820,15 +836,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         width: 140px;
         height: 140px;
     }
-    .modern-form-layout {
-        flex-direction: column;
-    }
-    .product-form-sticker {
-        width: 120px;
-        height: 120px;
-        top: -30px;
-        right: -20px;
-    }
 }
 
 /* หน้าจอขนาดเล็ก (มือถือแนวนอน) */
@@ -904,15 +911,5 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     .toast-notification {
         width: 100%;
         max-width: 400px;
-    }
-
-    .product-form-sticker {
-        width: 90px;
-        height: 90px;
-        top: -20px;
-        right: -15px;
-    }
-    .modern-form-card {
-        padding: 1.5rem;
     }
 }
