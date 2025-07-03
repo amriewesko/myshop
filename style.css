@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 10.3 (Modern Admin Form)
+ * Version: 11.0 (Admin Dashboard & Single Image Upload)
  * Description: The ultimate, production-quality stylesheet with professional UI/UX and full mobile responsiveness.
 */
 
@@ -91,7 +91,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
     box-shadow: 0 0 0 0.25rem rgba(0, 158, 227, 0.25);
 }
 
-/* --- 4. การจัดวางและส่วนต่างๆ --- */
+/* --- 4. การจัดวางและส่วนต่างๆ (หน้าร้าน) --- */
 
 /* Navbar */
 .navbar {
@@ -200,7 +200,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
     opacity: 1;
 }
 
-
 /* No Products Found Message */
 #no-products-found { padding: 32px; }
 #no-products-found::before {
@@ -306,9 +305,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 #doraemon-sticker:hover {
     transform: translateY(-10px) rotate(5deg) !important;
 }
-
-/* --- 6. หน้าผู้ดูแลระบบ --- */
-/* --- CSS ที่เพิ่มเข้ามาสำหรับหน้า Admin Revamped --- */
 
 /* --- 6. หน้าผู้ดูแลระบบ (Revamped) --- */
 .admin-body {
@@ -430,6 +426,54 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     border-bottom: 3px solid var(--dora-blue);
 }
 
+/* === Dashboard Stat Cards (NEW) === */
+.stat-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--dora-blue);
+}
+.stat-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--white-color);
+    margin-right: 1.5rem;
+}
+.icon-products { background: linear-gradient(135deg, #29B6F6, #0288D1); }
+.icon-categories { background: linear-gradient(135deg, #FFEE58, #FBC02D); }
+.icon-user { background: linear-gradient(135deg, #9CCC65, #689F38); }
+.stat-info {
+    line-height: 1.2;
+}
+.stat-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--light-text-color);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0;
+}
+
+
 /* === Revamped Image Uploader === */
 .image-dropzone-revamped {
     position: relative;
@@ -478,9 +522,9 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 .dz-preview-container {
     position: relative;
     z-index: 2;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 1rem;
+    display: flex; /* Changed for single item */
+    justify-content: center;
+    align-items: center;
 }
 .dz-preview-item {
     position: relative;
@@ -491,10 +535,11 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     padding: 0.5rem;
     text-align: center;
     animation: zoomIn 0.3s ease;
+    width: 150px; /* Fixed width for single item */
 }
 .dz-preview-item img {
     width: 100%;
-    height: 70px;
+    height: 120px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 0.5rem;
@@ -650,7 +695,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 }
 
 
-
 /* --- 7. ระบบแจ้งเตือน (Custom Modal) --- */
 .custom-modal-overlay {
     position: fixed;
@@ -776,7 +820,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         width: 140px;
         height: 140px;
     }
-    /* Modern Form Responsive */
     .modern-form-layout {
         flex-direction: column;
     }
@@ -863,7 +906,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         max-width: 400px;
     }
 
-    /* Modern Form Sticker on mobile */
     .product-form-sticker {
         width: 90px;
         height: 90px;
