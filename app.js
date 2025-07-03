@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         initPublicPage();
     }
+    initScrollWidgets();
     initGlobalEventListeners(); 
 });
 
@@ -42,6 +43,21 @@ function initPublicPage() {
 function initAdminPage() {
     checkLoginStatus();
     setupAdminEventListeners();
+}
+
+function initScrollWidgets() {
+    const backToTopButton = getEl('back-to-top');
+    const doraemonSticker = getEl('doraemon-sticker');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            backToTopButton?.classList.add('show');
+            doraemonSticker?.classList.add('show');
+        } else {
+            backToTopButton?.classList.remove('show');
+            doraemonSticker?.classList.remove('show');
+        }
+    });
 }
 
 function initGlobalEventListeners() {
@@ -273,38 +289,24 @@ function renderAdminProducts(products, searchTerm = '') {
     }
 
     const tableHtml = `
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>รูป</th>
-                    <th>ชื่อ</th>
-                    <th>ราคา</th>
-                    <th>การกระทำ</th>
-                </tr>
-            </thead>
+        <table class="table table-hover">
+            <thead><tr><th>ID</th><th>รูป</th><th>ชื่อ</th><th>ราคา</th><th>การกระทำ</th></tr></thead>
             <tbody>
                 ${filteredProducts.map(p => {
                     const imageUrls = String(p.image_url || '').split(',');
-                    const firstImg = imageUrls[0]?.trim() || 'https://placehold.co/50x50/eeeeee/333333?text=NoImg';
+                    const firstImg = imageUrls[0]?.trim() || 'https://placehold.co/50x50/cccccc/333333?text=NoImg';
                     return `
                         <tr>
-                            <td data-label="ID">${p.id}</td>
-                            <td data-label="รูป"><img src="${firstImg}" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover; border-radius: 4px;"></td>
-                            <td data-label="ชื่อ">${p.name}</td>
-                            <td data-label="ราคา">${parseFloat(p.price).toFixed(2)}</td>
-                            <td data-label="การกระทำ">
-                                <div class="action-btn-group">
-                                    <button class="btn-action btn-edit" onclick="editProduct('${p.id}')">
-                                        <i class="fas fa-edit"></i><span>แก้ไข</span>
-                                    </button>
-                                    <button class="btn-action btn-delete" onclick="deleteProduct('${p.id}')">
-                                        <i class="fas fa-trash"></i><span>ลบ</span>
-                                    </button>
-                                </div>
+                            <td>${p.id}</td>
+                            <td><img src="${firstImg}" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;"></td>
+                            <td>${p.name}</td>
+                            <td>${parseFloat(p.price).toFixed(2)}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>`;
-                }).join('') || '<tr><td colspan="5" class="text-center" style="padding: 2rem;">ไม่พบสินค้า</td></tr>'}
+                }).join('') || '<tr><td colspan="5" class="text-center">ไม่พบสินค้า</td></tr>'}
             </tbody>
         </table>`;
     container.innerHTML = tableHtml;
@@ -412,7 +414,8 @@ function handleImageFileChange(event) {
 
 function renderImagePreviews() {
     const container = getEl('imagePreview');
-    if (!container) return;
+    const dropzone = getEl('image-dropzone');
+    if (!container || !dropzone) return;
 
     container.innerHTML = '';
     const allImageSources = [
@@ -421,9 +424,11 @@ function renderImagePreviews() {
     ];
 
     if (allImageSources.length === 0) {
-        container.innerHTML = '<p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพ</p>';
+        dropzone.classList.remove('has-files');
         return;
     }
+    
+    dropzone.classList.add('has-files');
 
     allImageSources.forEach((src, index) => {
         const isExisting = index < productImages.length;
@@ -438,6 +443,7 @@ function renderImagePreviews() {
 
     container.querySelectorAll('.remove-img-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent dropzone click
             const index = parseInt(e.target.dataset.index);
             const type = e.target.dataset.type;
             if (type === 'existing') {
