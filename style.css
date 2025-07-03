@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 10.0 (Pro Upgrade)
+ * Version: 10.1 (Password Toggle Update)
  * Description: The ultimate, production-quality stylesheet with professional UI/UX enhancements.
 */
 
@@ -340,6 +340,21 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     font-size: 14px; line-height: 1;
     box-shadow: var(--shadow-sm);
 }
+/* === Password Toggle Eye Icon (เพิ่มใหม่) === */
+.position-relative .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--light-text-color);
+    transition: color var(--transition-speed);
+    z-index: 5;
+}
+.toggle-password:hover {
+    color: var(--dora-blue);
+}
+
 
 /* --- 7. ระบบแจ้งเตือน (Custom Modal) --- */
 .custom-modal-overlay {
