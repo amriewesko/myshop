@@ -1,507 +1,666 @@
-/* style.css - Complete and Enhanced Version for Competition */
+/*
+ * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
+ * Version: 10.3 (Modern Admin Form)
+ * Description: The ultimate, production-quality stylesheet with professional UI/UX and full mobile responsiveness.
+*/
 
-/* --- 1. Global Styles and Variables (Color, Shadow, Spacing Variables for Theme Management) --- */
+/* --- 1. ระบบตัวแปร (Design System Core) - ธีมโดราเอมอน --- */
 :root {
-    /* Color Palette - Modern & Harmonious */
-    /* Primary Colors: Deeper, more sophisticated blues for main actions and branding */
-    --primary-color: #1A237E;           /* Deep Indigo: Main theme color, strong and professional */
-    --primary-light: #5C6BC0;           /* Lighter Indigo: For subtle accents or lighter primary elements */
-    --primary-dark: #000051;            /* Very Dark Indigo: For hover states or strong emphasis */
-    --primary-gradient-start: #3F51B5;  /* Indigo 500 for gradients */
-    --primary-gradient-end: #1A237E;    /* Deep Indigo for gradients */
-    --primary-soft-bg: rgba(26, 35, 126, 0.08); /* Slightly more prominent light primary tint for backgrounds */
-    --primary-glow: rgba(63, 81, 181, 0.4); /* Soft glow for focus states */
-
-    /* Accent Colors: Vibrant but balanced greens for positive actions, success, CTAs */
-    --accent-color: #4CAF50;            /* Green: For call-to-action buttons (e.g., success states) */
-    --accent-hover-color: #388E3C;      /* Darker Green for hover */
-    --accent-light: #81C784;            /* Lighter green for subtle highlights */
-    --accent-glow: rgba(76, 175, 80, 0.3); /* Soft glow for accent elements */
-
-    /* Warning & Danger: Standard, clear colors for alerts and critical actions */
-    --warning-color: #FFC107;           /* Yellow: For warning messages or prominent elements like stars */
-    --warning-dark: #FFA000;            /* Darker yellow for warning hover */
-    --danger-color: #DC3545;            /* Red: For error messages or destructive actions */
-    --danger-dark: #C82333;             /* Darker red for danger hover */
-    --info-color: #17A2B8;              /* Teal/Cyan: For informational messages */
-    --info-dark: #117A8B;               /* Darker teal for info hover */
-
-    /* Neutral Colors - For text and backgrounds, ensuring readability and modern feel */
-    --text-color: #212121;              /* Dark Gray: Main text color, strong contrast */
-    --light-text-color: #616161;        /* Muted Gray: Secondary text, descriptions, softer look */
-    --placeholder-color: #9E9E9E;       /* Placeholder text color */
-    --background-color: #F5F5F5;        /* Very Light Gray: Page background, clean and airy */
-    --secondary-background: #EEEEEE;    /* Slightly darker background for alternating sections */
-    --card-background: #FFFFFF;         /* White: Background for cards and containers, pure and clean */
-    --border-color: #E0E0E0;            /* Light Gray: For input fields, separators, subtle definition */
-    --dark-section-bg: #263238;         /* Dark Blue-Gray: For Navbar, Footer, Admin panel elements, premium feel */
-    --white-color: #FFFFFF;             /* Pure White */
-    --black-color: #000000;             /* Pure Black */
-
-    /* Shadow Palette - Multi-layered, subtle shadows for depth and professionalism */
-    --shadow-xs: 0 0.5px 1.5px rgba(0, 0, 0, 0.08); /* Extra small, very subtle */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Small, subtle */
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08); /* Medium, general use, slightly more pronounced */
-    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.1); /* Large, for elevated elements, more depth */
-    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.15); /* Extra large, for modals/popups, strong depth */
-    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06); /* Inset shadow for depth */
-    --shadow-text: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
-
-    /* Spacing System - Consistent and scalable */
-    --spacing-xxs: 2px;
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-    --spacing-xxl: 48px;
-    --spacing-xxxl: 64px;
-    --spacing-jumbo: 96px;
-
-    /* Border Radius - Soft and modern edges */
-    --border-radius-none: 0;
-    --border-radius-xs: 2px;
-    --border-radius-sm: 4px;
-    --border-radius-md: 8px;
-    --border-radius-lg: 12px;
-    --border-radius-xl: 16px;
-    --border-radius-full: 9999px; /* For pills, circles */
-
-    /* Transition - Smooth visual changes */
-    --transition-speed-fast: 0.15s;
+    --dora-blue: #009EE3;
+    --dora-blue-dark: #007AB8;
+    --dora-red: #D82129;
+    --dora-red-dark: #B91C22;
+    --dora-yellow: #F7D617;
+    --dora-yellow-dark: #F2C40A;
+    --text-color: #333333;
+    --light-text-color: #777777;
+    --background-color: #F0F8FF;
+    --card-background: #FFFFFF;
+    --border-color: #E0E0E0;
+    --white-color: #FFFFFF;
+    --success-color: #28a745;
+    --danger-color: var(--dora-red);
+    --warning-color: var(--dora-yellow);
+    --info-color: #17a2b8;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+    --border-radius-full: 9999px;
     --transition-speed: 0.3s;
-    --transition-speed-slow: 0.5s;
     --transition-timing: ease-in-out;
-    --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55); /* For bouncy effects */
-    --transition-timing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* For smoother, accelerating effects */
+    --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
-/* --- 2. Base Styles (Apply variables to common HTML elements) --- */
-html {
-    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
-    background: var(--background-color);
-    background-attachment: fixed; /* Keep background fixed during scroll */
-}
-
+/* --- 2. สไตล์พื้นฐานและตัวอักษร --- */
+html { scroll-behavior: smooth; }
 body {
-    font-family: 'Kanit', sans-serif; /* Ensuring Kanit is applied broadly */
-    color: var(--text-color);
-    background-color: transparent; /* Body background is now transparent to show HTML background */
-    line-height: 1.6;
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    -webkit-font-smoothing: antialiased; /* Smoother font rendering */
-    -moz-osx-font-smoothing: grayscale; /* Smoother font rendering */
-}
-
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
     font-family: 'Kanit', sans-serif;
     color: var(--text-color);
-    line-height: 1.2;
-    margin-top: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-    font-weight: 700; /* Default bold for headings */
-    text-shadow: var(--shadow-text); /* Subtle text shadow for headings */
-    position: relative; /* For potential pseudo-elements for decoration */
-}
-
-h1 { font-size: 2.8rem; font-weight: 800; }
-h2 { font-size: 2.2rem; }
-h3 { font-size: 1.8rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.2rem; }
-h6 { font-size: 1rem; }
-
-p {
-    margin-bottom: var(--spacing-md);
-    font-size: 1rem;
+    background-color: var(--background-color);
     line-height: 1.7;
+    overflow-x: hidden;
 }
+h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
 
-strong {
-    font-weight: 600; /* Semi-bold for strong text */
-}
+/* --- 3. ส่วนประกอบทั่วไป --- */
 
-/* Links */
-a {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: color var(--transition-speed) var(--transition-timing);
-    outline: none; /* Remove default outline */
-}
-
-a:hover {
-    color: var(--primary-dark);
-    text-decoration: underline; /* Underline on hover for better UX */
-}
-
-a:focus {
-    outline: 2px solid var(--primary-light); /* Clear focus indicator */
-    outline-offset: 2px;
-}
-
-/* Global button styles for consistency and advanced effects */
+/* Buttons */
 .btn {
+    border-radius: var(--border-radius-full);
+    padding: 12px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all var(--transition-speed) var(--transition-timing);
+    border: none;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+.btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: var(--shadow-lg);
+}
+.btn-primary, .btn-add-to-cart { background-color: var(--dora-red); color: var(--white-color) !important; }
+.btn-primary:hover, .btn-add-to-cart:hover { background-color: var(--dora-red-dark); }
+.btn-secondary { background-color: #6c757d; color: var(--white-color); }
+.btn-secondary:hover { background-color: #5a6268; }
+.btn-warning { background-color: var(--dora-yellow); color: var(--text-color); }
+.btn-warning:hover { background-color: var(--dora-yellow-dark); }
+.btn-danger { background-color: var(--dora-red); color: var(--white-color); }
+.btn-danger:hover { background-color: var(--dora-red-dark); }
+
+/* Cards & Forms */
+.card {
+    border: 3px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    background-color: var(--card-background);
+}
+.form-control, .form-select {
     border-radius: var(--border-radius-md);
-    padding: var(--spacing-sm) var(--spacing-lg); /* Slightly more horizontal padding */
-    font-weight: 600; /* Semi-bold for buttons */
-    transition: all var(--transition-speed) var(--transition-timing-smooth); /* Smoother transition */
-    box-shadow: var(--shadow-sm); /* Subtle shadow for all buttons */
-    cursor: pointer;
-    border: 1px solid transparent; /* Ensure consistent border */
-    text-transform: uppercase; /* Uppercase text for professionalism */
-    letter-spacing: 0.05em; /* Subtle letter spacing */
-    position: relative; /* For pseudo-element effects */
-    overflow: hidden; /* Hide overflow from pseudo-elements */
-    z-index: 1; /* Ensure button is above other content for z-index issues with pseudo-elements */
+    padding: 12px 15px;
+    border: 2px solid var(--border-color);
+    transition: all var(--transition-speed) var(--transition-timing);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--dora-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 158, 227, 0.25);
 }
 
-/* Ripple/Shine effect for buttons on hover */
-.btn::before {
+/* --- 4. การจัดวางและส่วนต่างๆ --- */
+
+/* Navbar */
+.navbar {
+    background-color: var(--dora-blue);
+    box-shadow: var(--shadow-md);
+    position: sticky; top: 0; z-index: 1030;
+    border-bottom: 5px solid var(--dora-red);
+}
+.navbar-brand, .navbar .nav-link { color: var(--white-color) !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    padding: 60px 0;
+    text-align: center;
+    color: var(--white-color);
+    background-image: url('https://lh3.googleusercontent.com/d/1aS3qWjz8UFwO6ucQ_qiuLN3yAOPX5mV6');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+.hero-section::before {
     content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 122, 184, 0.5);
+    z-index: 1;
+}
+.hero-section .container { position: relative; z-index: 2; }
+#hero-doraemon-img {
+    width: 200px;
+    max-width: 50%;
+    margin-bottom: 20px;
+    filter: drop-shadow(0px 5px 15px rgba(0,0,0,0.3));
+    animation: float-animation 6s ease-in-out infinite;
+}
+@keyframes float-animation {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+.hero-section h1 {
+    font-weight: 800;
+    font-size: 3.5rem;
+    color: var(--white-color);
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+}
+
+/* === กรอบแสดงสินค้า (สไตล์ใหม่) === */
+.main-content-frame {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 4px solid var(--dora-blue);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-inset), 0 0 25px rgba(0, 158, 227, 0.4);
+    backdrop-filter: blur(5px);
+}
+
+/* === Product Cards (อัปเกรด) === */
+.product-card {
+    border-radius: var(--border-radius-lg);
+    background-color: var(--card-background);
+    box-shadow: var(--shadow-md);
+    border: 2px solid transparent; /* เตรียมพื้นที่สำหรับ border ตอน hover */
+    transition: all var(--transition-speed) var(--transition-timing);
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-8px); /* ขยับขึ้นเล็กน้อย */
+    border-color: rgba(0, 158, 227, 0.5); /* แสดงขอบสีฟ้าอ่อนๆ */
+    box-shadow: 0 12px 28px rgba(0, 158, 227, 0.2), 0 8px 10px rgba(0, 158, 227, 0.1); /* เอฟเฟกต์ Glow สีฟ้า */
+}
+
+.product-card img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.product-card:hover img { transform: scale(1.1); }
+.product-card .card-body { padding: 16px; text-align: center; }
+.product-card .card-title { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-color); }
+.product-card .price { font-size: 1.8rem; font-weight: 800; color: var(--dora-blue); margin-bottom: 16px; }
+
+/* === สติกเกอร์ตกใจบนการ์ดสินค้า (สไตล์ใหม่) === */
+.product-card::after {
+    content: '';
+    position: absolute;
+    bottom: 55px; /* ปรับตำแหน่งให้อยู่ใกล้ปุ่ม */
+    right: -15px; /* ยื่นออกมาจากขอบขวาเล็กน้อย */
+    width: 70px;
+    height: 70px;
+    background-image: url('https://lh3.googleusercontent.com/d/1u8SpHoiFABHhFEGOJntUa_ZLmHrDDriF'); /* รูปท่าตกใจ */
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 10;
+    transform: rotate(15deg) scale(0);
+    opacity: 0;
+    transition: all 0.3s var(--transition-timing-bounce);
+    pointer-events: none;
+}
+.product-card:hover::after {
+    transform: rotate(15deg) scale(1);
+    opacity: 1;
+}
+
+
+/* No Products Found Message */
+#no-products-found { padding: 32px; }
+#no-products-found::before {
+    content: '';
+    display: block;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 16px;
+    background-image: url('https://lh3.googleusercontent.com/d/1u8SpHoiFABHhFEGOJntUa_ZLmHrDDriF');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#no-products-found i.fa-box-open { display: none; }
+
+/* Footer */
+footer {
+    background-color: var(--dora-blue);
+    color: rgba(255, 255, 255, 0.9);
+    padding-top: 60px; /* Make space for doraemon */
+    padding-bottom: 20px;
+    margin-top: 64px;
+    position: relative;
+    border-top: 5px solid var(--dora-red);
+}
+.footer-doraemon {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    height: 120px;
+    background-image: url('https://lh3.googleusercontent.com/d/1_KEx580WL57sR-gSnRrU6fBMiNfu9civ');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    pointer-events: none;
+}
+footer .social-icons a { color: var(--white-color); margin: 0 10px; transition: color var(--transition-speed); }
+footer .social-icons a:hover { color: var(--dora-yellow); }
+
+/* --- 5. วิดเจ็ตและองค์ประกอบพิเศษ --- */
+
+/* Back to Top Button (Bell) */
+#back-to-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 60px; height: 60px;
+    background-color: var(--dora-yellow);
+    border-radius: 50%; display: flex;
+    align-items: center; justify-content: center;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000; border: 4px solid #a67c00;
+    text-decoration: none;
+    animation: bell-swing 3s infinite ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.5);
+    transition: all 0.4s var(--transition-timing-bounce);
+}
+#back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+#back-to-top::before {
+    content: ''; position: absolute;
+    width: 80%; height: 2px;
+    background-color: #a67c00; top: 65%;
+}
+#back-to-top i { display: none; }
+#back-to-top:hover {
+    animation-play-state: paused;
+    transform: translateY(-5px) scale(1.1) !important;
+}
+@keyframes bell-swing {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    75% { transform: rotate(-10deg); }
+}
+
+/* Doraemon Sticker */
+#doraemon-sticker {
+    position: fixed;
+    bottom: 20px; right: 100px;
+    width: 180px; height: 180px;
+    background-image: url('https://lh3.googleusercontent.com/d/1qeqmCHDXcgrYHUg7cslCYSzWFtVL02eF');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 999;
+    transition: transform 0.5s var(--transition-timing-bounce);
+    transform: translateY(250px);
+    pointer-events: auto;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+}
+#doraemon-sticker.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+#doraemon-sticker:hover {
+    transform: translateY(-10px) rotate(5deg) !important;
+}
+
+/* --- 6. หน้าผู้ดูแลระบบ --- */
+.admin-wrapper { min-height: calc(100vh - 200px); }
+.d-flex-center { display: flex; align-items: center; justify-content: center; padding: 32px; }
+#login-gate .card { max-width: 450px; width: 100%; }
+.admin-section {
+    background: var(--card-background);
+    padding: 24px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+/* === Password Toggle Eye Icon === */
+.position-relative .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--light-text-color);
+    transition: color var(--transition-speed);
+    z-index: 5;
+}
+.toggle-password:hover {
+    color: var(--dora-blue);
+}
+
+/* --- 6.1 Admin Product Form (Modernized) --- */
+.modern-form-card {
+    background-color: transparent;
+    padding: 2rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+}
+
+.product-form-sticker {
+    position: absolute;
+    top: -40px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
+    background-image: url('https://lh3.googleusercontent.com/d/1lCktO2fzuMWRzUuJBx9XZSAM9q7Lq4YB');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: rotate(10deg);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.modern-form-layout {
+    display: flex;
+    gap: 2rem;
+}
+
+.form-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.image-dropzone {
+    position: relative;
+    border: 2px dashed var(--dora-blue);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    background-color: #f0f8ff80;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.image-dropzone:hover {
+    background-color: #e0f0ff;
+    border-color: var(--dora-blue-dark);
+}
+
+.image-dropzone-input {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 70%); /* Subtle shine from top-left */
-    transform: scale(0);
     opacity: 0;
-    transition: transform var(--transition-speed-slow) var(--transition-timing), opacity var(--transition-speed-slow) var(--transition-timing);
-    z-index: -1;
+    cursor: pointer;
 }
 
-.btn:hover::before {
-    transform: scale(2);
-    opacity: 1;
+.image-dropzone-prompt {
+    color: var(--dora-blue-dark);
+    pointer-events: none; /* So the click goes to the input */
+    transition: opacity 0.3s ease;
 }
 
-.btn:active {
-    transform: translateY(2px) scale(0.98); /* More noticeable press effect */
-    box-shadow: var(--shadow-xs); /* Smaller shadow when pressed */
-    transition-duration: var(--transition-speed-fast); /* Faster press animation */
+.image-dropzone-prompt i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: var(--white-color);
-    background-image: linear-gradient(to right, var(--primary-gradient-start), var(--primary-gradient-end));
-    background-size: 200% auto; /* For gradient animation */
+/* Hide prompt when there are files */
+.image-dropzone.has-files .image-dropzone-prompt {
+    opacity: 0;
 }
 
-.btn-primary:hover {
-    background-position: right center; /* Move gradient on hover */
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
-    box-shadow: var(--shadow-md); /* Slightly more prominent shadow on hover */
-    transform: translateY(-3px); /* Slightly more pronounced lift effect */
-}
-
-/* Form controls refinement and states */
-.form-control {
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color); /* Explicit border */
-    padding: var(--spacing-sm) var(--spacing-md);
-    box-shadow: var(--shadow-inset); /* Inset shadow for depth */
-    transition: border-color var(--transition-speed-fast) var(--transition-timing), box-shadow var(--transition-speed-fast) var(--transition-timing);
-    background-color: var(--card-background);
-    color: var(--text-color);
-}
-
-.form-control::placeholder {
-    color: var(--placeholder-color);
-    opacity: 1; /* Ensure placeholder is visible */
-}
-
-.form-control:focus {
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 0.25rem var(--primary-glow), var(--shadow-inset); /* More prominent glow on focus */
-    background-color: var(--white-color);
-}
-
-/* --- 4. Admin Panel Specific Styles (Enhance appearance for professional look) --- */
-.admin-wrapper {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.admin-content {
-    flex-grow: 1; /* Allow content to fill space */
-    padding: var(--spacing-xl) 0;
-}
-
-.admin-section {
-    background-color: var(--card-background);
-    padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg); /* More prominent shadow for admin sections */
-    margin-bottom: var(--spacing-xxl); /* More space between sections */
-    position: relative;
-    overflow: hidden; /* For any internal overflow */
-}
-
-.admin-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 10px; /* Top accent bar */
-    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
-    border-top-left-radius: var(--border-radius-lg);
-    border-top-right-radius: var(--border-radius-lg);
-}
-
-.admin-section h4 {
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: var(--spacing-lg);
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: var(--spacing-sm);
-    font-size: 1.6rem;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.admin-section h4 i {
-    color: var(--primary-light);
-    font-size: 1.3rem;
-}
-
-/* Login Gate */
-#login-gate {
-    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
-    min-height: 100vh; /* Full viewport height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
-
-#login-gate .card {
-    background-color: var(--card-background);
+/* Adjust preview container for the dropzone */
+#imagePreview {
     border: none;
-    border-radius: var(--border-radius-xl); /* More rounded login card */
-    box-shadow: var(--shadow-xl); /* Very prominent shadow for login card */
-    padding: var(--spacing-xxl); /* More padding for login card */
-    max-width: 450px; /* Slightly wider */
+    min-height: auto;
+    padding: 0;
     width: 100%;
-    z-index: 1; /* Ensure card is above background pattern */
-    transform: scale(0.95); /* Initial slightly smaller scale */
-    animation: card-entry 0.6s var(--transition-timing-bounce) forwards; /* Bouncy entry animation */
-}
-
-@keyframes card-entry {
-    to { transform: scale(1); }
-}
-
-#login-gate .card-title {
-    color: var(--primary-color);
-    font-weight: 700;
-    margin-bottom: var(--spacing-lg);
-    font-size: 2rem;
-    text-align: center;
-}
-
-/* Admin Product Table */
-#admin-product-list {
-    overflow-x: auto; /* Enable horizontal scroll for table on small screens */
-}
-
-#admin-product-list table {
-    width: 100%;
-    border-collapse: collapse; 
-    border-spacing: 0; 
-    min-width: 800px; /* Ensure table doesn't shrink too much */
-}
-
-#admin-product-list th,
-#admin-product-list td {
-    padding: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
-    text-align: left;
-    white-space: nowrap; 
-}
-
-#admin-product-list th {
-    background-color: var(--primary-soft-bg);
-    color: var(--primary-dark);
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-    z-index: 1; /* Keep header visible on scroll if table is scrollable */
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.03em;
-}
-
-#admin-product-list tbody tr:hover {
-    background-color: var(--primary-soft-bg) !important; 
-}
-
-/* === NEW: Admin Action Buttons === */
-.action-btn-group {
-    display: flex;
-    gap: var(--spacing-sm);
-    justify-content: flex-start;
-}
-.btn-action {
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-md);
-    border: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    line-height: 1;
-    transition: all 0.2s ease;
-}
-.btn-action i {
-    margin-right: var(--spacing-xs);
-}
-.btn-action.btn-edit {
-    background-color: var(--warning-color);
-    color: var(--text-color);
-}
-.btn-action.btn-edit:hover {
-    background-color: var(--warning-dark);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-.btn-action.btn-delete {
-    background-color: var(--danger-color);
-    color: var(--white-color);
-}
-.btn-action.btn-delete:hover {
-    background-color: var(--danger-dark);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+    background-color: transparent;
+    position: absolute; /* Place it over the prompt */
 }
 
-/* Admin Form Section */
-.img-preview-container {
-    border: 2px dashed var(--border-color); /* Thicker dashed border */
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-sm);
-    min-height: 120px; /* Slightly taller preview area */
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-sm);
-    background-color: var(--background-color);
-    transition: border-color var(--transition-speed) var(--transition-timing);
-}
-
-.img-preview-wrapper {
-    position: relative;
-}
-
-/* === FIX: Visible Image Remove Button === */
+.img-preview-wrapper { position: relative; }
 .remove-img-btn {
     position: absolute;
-    top: -10px;
-    right: -10px;
-    background-color: var(--danger-color);
-    color: var(--white-color);
-    border: 2px solid var(--card-background); /* White border for contrast */
-    border-radius: var(--border-radius-full);
-    width: 28px; 
-    height: 28px;
-    font-size: 1rem;
-    font-weight: bold;
+    top: -5px; right: -5px;
+    width: 24px; height: 24px;
+    background: var(--dora-red);
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+    box-shadow: var(--shadow-sm);
+    z-index: 5;
+}
+
+
+/* --- 7. ระบบแจ้งเตือน (Custom Modal) --- */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 158, 227, 0.6);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: var(--shadow-md);
-    transition: all var(--transition-speed-fast) var(--transition-timing);
-    z-index: 10; /* Ensure button is on top */
+    z-index: 1999;
+    transition: opacity var(--transition-speed) ease-in-out;
 }
+.custom-modal-overlay.d-none { display: none !important; }
 
-.remove-img-btn:hover {
-    background-color: var(--danger-dark);
-    transform: scale(1.15) rotate(10deg);
+.custom-modal-content {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-lg);
+    width: 90%;
+    max-width: 450px;
+    padding: 24px;
+}
+.custom-modal-header {
+    padding: 16px;
+    color: var(--white-color);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    margin: -24px -24px 16px -24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.custom-modal-header.success { background-color: var(--success-color); }
+.custom-modal-header.error { background-color: var(--danger-color); }
+.custom-modal-header.warning { background-color: var(--warning-color); color: var(--text-color); }
+.custom-modal-header.info { background-color: var(--info-color); }
+.custom-modal-close { background: none; border: none; font-size: 1.5rem; color: var(--white-color); opacity: 0.8; }
+.custom-modal-footer { margin-top: 24px; display: flex; gap: 16px; justify-content: flex-end; }
+
+/* --- 8. ระบบแจ้งเตือนแบบ Toast (อัปเกรด) --- */
+#toast-container {
+    position: fixed;
+    top: 80px; /* ระยะห่างจาก Navbar */
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none; /* Allow clicks to pass through container */
 }
 
-/* --- 8. Responsive Adjustments (Detailed breakpoints) --- */
+.toast-notification {
+    width: 320px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-left: 5px solid var(--info-color);
+    animation: toast-fade-in 0.5s var(--transition-timing-bounce);
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: auto; /* Re-enable clicks on the toast itself */
+}
 
-/* Medium devices (tablets, 768px and up) */
+.toast-notification.hiding {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.toast-icon {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.toast-content p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.toast-close-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--light-text-color);
+    cursor: pointer;
+}
+
+/* Toast Types */
+.toast-notification.success { border-left-color: var(--success-color); }
+.toast-notification.success .toast-icon { color: var(--success-color); }
+.toast-notification.error { border-left-color: var(--danger-color); }
+.toast-notification.error .toast-icon { color: var(--danger-color); }
+.toast-notification.warning { border-left-color: var(--warning-color); }
+.toast-notification.warning .toast-icon { color: var(--warning-color); }
+
+@keyframes toast-fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* =====================================================
+--- 9. Responsive Adjustments (ปรับปรุงสำหรับมือถือ) ---
+=====================================================
+*/
+
+/* หน้าจอขนาดกลาง (แท็บเล็ต) */
 @media (max-width: 991.98px) {
-    /* Responsive styles for admin table */
-    #admin-product-list table {
-        min-width: 100%;
+    .hero-section h1 { font-size: 3rem; }
+    .main-content-frame { padding: 16px; }
+    #doraemon-sticker {
+        right: 15px;
+        width: 140px;
+        height: 140px;
+    }
+    /* Modern Form Responsive */
+    .modern-form-layout {
+        flex-direction: column;
+    }
+    .product-form-sticker {
+        width: 120px;
+        height: 120px;
+        top: -30px;
+        right: -20px;
     }
 }
 
-/* Small devices (landscape phones, 576px and up) */
+/* หน้าจอขนาดเล็ก (มือถือแนวนอน) */
 @media (max-width: 767.98px) {
-    /* === NEW: Responsive Admin Table to Card View === */
-    #admin-product-list table, 
-    #admin-product-list thead, 
-    #admin-product-list tbody, 
-    #admin-product-list th, 
-    #admin-product-list td, 
-    #admin-product-list tr {
-        display: block;
+    .hero-section h1 { font-size: 2.5rem; }
+    #doraemon-sticker {
+        right: 10px;
+        width: 120px;
+        height: 120px;
+    }
+    #back-to-top {
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+    }
+    .product-card::after {
+        width: 50px;
+        height: 50px;
+        bottom: 50px;
+        right: -10px;
+    }
+    /* แก้ไข: ทำให้รายการสินค้าแสดง 2 คอลัมน์บนจอขนาดเล็ก */
+    #product-list-container {
+        --bs-gutter-x: 1rem;
+        --bs-gutter-y: 1rem;
+    }
+}
+
+/* หน้าจอขนาดเล็กมาก (มือถือแนวตั้ง) */
+@media (max-width: 575.98px) {
+    body { font-size: 14px; }
+    .hero-section { padding: 40px 0; }
+    .hero-section h1 { font-size: 2rem; }
+    #hero-doraemon-img { width: 150px; }
+
+    /* แก้ไข: ทำให้รายการสินค้าแสดง 1 คอลัมน์บนจอมือถือ */
+    #product-list-container.row-cols-2 {
+        grid-template-columns: repeat(1, 1fr) !important;
+    }
+    .main-content-frame { padding: 10px; }
+    
+    /* แก้ไข: ซ่อนรูปโดราเอมอนที่ footer บนมือถือ */
+    .footer-doraemon {
+        display: none;
+    }
+    footer {
+        padding-top: 20px;
     }
 
-    #admin-product-list thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
+    /* แก้ไข: ทำให้ปุ่มในฟอร์มและ Modal แสดงเต็มความกว้าง */
+    .d-flex.justify-content-end,
+    .modal-footer {
+        flex-direction: column;
+        gap: 10px !important;
+    }
+    .d-flex.justify-content-end .btn,
+    .modal-footer .btn {
+        width: 100%;
+        margin: 0 !important;
     }
 
-    #admin-product-list tr {
-        margin-bottom: var(--spacing-lg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius-lg);
-        box-shadow: var(--shadow-md);
-        overflow: hidden;
-    }
-
-    #admin-product-list td {
-        border: none;
-        border-bottom: 1px solid var(--border-color);
-        position: relative;
-        padding-left: 50%;
-        text-align: right;
-        white-space: normal;
-    }
-
-    #admin-product-list td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: var(--spacing-sm);
-        width: 45%;
-        padding-right: var(--spacing-sm);
-        white-space: nowrap;
-        text-align: left;
-        font-weight: 600;
-        color: var(--primary-color);
-    }
-
-    #admin-product-list td:last-child {
-        border-bottom: 0;
-    }
-
-    .action-btn-group {
-        justify-content: flex-end;
-    }
-    .btn-action span {
-        display: none; /* Hide text on mobile */
-    }
-    .btn-action i {
-        margin-right: 0;
-    }
-    #admin-product-list td[data-label="รูป"] {
-        display: flex;
-        justify-content: flex-end;
+    /* แก้ไข: ปรับ Toast Notification สำหรับมือถือ */
+    #toast-container {
+        right: 0;
+        left: 0;
+        top: 65px;
         align-items: center;
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .toast-notification {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    /* Modern Form Sticker on mobile */
+    .product-form-sticker {
+        width: 90px;
+        height: 90px;
+        top: -20px;
+        right: -15px;
+    }
+    .modern-form-card {
+        padding: 1.5rem;
     }
 }
