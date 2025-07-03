@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 10.2 (Mobile Responsive Fix)
+ * Version: 10.3 (Modern Admin Form)
  * Description: The ultimate, production-quality stylesheet with professional UI/UX and full mobile responsiveness.
 */
 
@@ -317,29 +317,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
 }
-.img-preview-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px;
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius-md);
-    min-height: 110px;
-}
-.img-preview-wrapper { position: relative; }
-.remove-img-btn {
-    position: absolute;
-    top: -5px; right: -5px;
-    width: 24px; height: 24px;
-    background: var(--dora-red);
-    color: white;
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; line-height: 1;
-    box-shadow: var(--shadow-sm);
-}
 /* === Password Toggle Eye Icon === */
 .position-relative .toggle-password {
     position: absolute;
@@ -353,6 +330,114 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 }
 .toggle-password:hover {
     color: var(--dora-blue);
+}
+
+/* --- 6.1 Admin Product Form (Modernized) --- */
+.modern-form-card {
+    background-color: transparent;
+    padding: 2rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+}
+
+.product-form-sticker {
+    position: absolute;
+    top: -40px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
+    background-image: url('https://lh3.googleusercontent.com/d/1lCktO2fzuMWRzUuJBx9XZSAM9q7Lq4YB');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: rotate(10deg);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.modern-form-layout {
+    display: flex;
+    gap: 2rem;
+}
+
+.form-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.image-dropzone {
+    position: relative;
+    border: 2px dashed var(--dora-blue);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    background-color: #f0f8ff80;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.image-dropzone:hover {
+    background-color: #e0f0ff;
+    border-color: var(--dora-blue-dark);
+}
+
+.image-dropzone-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.image-dropzone-prompt {
+    color: var(--dora-blue-dark);
+    pointer-events: none; /* So the click goes to the input */
+    transition: opacity 0.3s ease;
+}
+
+.image-dropzone-prompt i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Hide prompt when there are files */
+.image-dropzone.has-files .image-dropzone-prompt {
+    opacity: 0;
+}
+
+/* Adjust preview container for the dropzone */
+#imagePreview {
+    border: none;
+    min-height: auto;
+    padding: 0;
+    width: 100%;
+    justify-content: center;
+    background-color: transparent;
+    position: absolute; /* Place it over the prompt */
+}
+
+.img-preview-wrapper { position: relative; }
+.remove-img-btn {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 24px; height: 24px;
+    background: var(--dora-red);
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+    box-shadow: var(--shadow-sm);
+    z-index: 5;
 }
 
 
@@ -481,6 +566,16 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         width: 140px;
         height: 140px;
     }
+    /* Modern Form Responsive */
+    .modern-form-layout {
+        flex-direction: column;
+    }
+    .product-form-sticker {
+        width: 120px;
+        height: 120px;
+        top: -30px;
+        right: -20px;
+    }
 }
 
 /* หน้าจอขนาดเล็ก (มือถือแนวนอน) */
@@ -532,12 +627,12 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     }
 
     /* แก้ไข: ทำให้ปุ่มในฟอร์มและ Modal แสดงเต็มความกว้าง */
-    #product-form .d-flex,
+    .d-flex.justify-content-end,
     .modal-footer {
         flex-direction: column;
         gap: 10px !important;
     }
-    #product-form .d-flex .btn,
+    .d-flex.justify-content-end .btn,
     .modal-footer .btn {
         width: 100%;
         margin: 0 !important;
@@ -556,5 +651,16 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     .toast-notification {
         width: 100%;
         max-width: 400px;
+    }
+
+    /* Modern Form Sticker on mobile */
+    .product-form-sticker {
+        width: 90px;
+        height: 90px;
+        top: -20px;
+        right: -15px;
+    }
+    .modern-form-card {
+        padding: 1.5rem;
     }
 }
