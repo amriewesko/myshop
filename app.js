@@ -59,6 +59,28 @@ function initScrollWidgets() {
     });
 }
 
+function initPasswordToggles() {
+    const toggleIcons = document.querySelectorAll('.toggle-password');
+    toggleIcons.forEach(icon => {
+        // Ensure we don't add duplicate listeners
+        if (icon.dataset.listenerAttached) return;
+
+        icon.addEventListener('click', () => {
+            const passwordInput = icon.previousElementSibling;
+            if (passwordInput && passwordInput.tagName === 'INPUT') {
+                // Toggle the type
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle the icon
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            }
+        });
+        icon.dataset.listenerAttached = 'true';
+    });
+}
+
 // ==========================================================
 // =================== API & DATA HANDLING ==================
 // ==========================================================
@@ -239,6 +261,9 @@ function setupAdminEventListeners() {
 
     // Change Password Modal
     getEl('submit-change-password-btn')?.addEventListener('click', handleChangePassword);
+    
+    // Initialize password toggles
+    initPasswordToggles();
 }
 
 // ==========================================================
