@@ -65,25 +65,61 @@
         <main id="admin-panel" class="container my-5 admin-content d-none">
             <h1 class="text-center mb-5 text-primary">แผงควบคุมผู้ดูแลระบบ</h1>
 
-            <!-- Product Management Section -->
+            <!-- Product Management Section (Modernized) -->
             <section id="product-management-section" class="admin-section mb-5 animate__animated animate__fadeInUp">
                 <h4 class="mb-4"><i class="fas fa-box-seam me-2"></i>จัดการสินค้า</h4>
-                <form id="product-form" class="mb-4">
-                    <h5 id="form-title" class="mb-3 text-primary">เพิ่มสินค้าใหม่</h5>
-                    <input type="hidden" id="product-id">
-                    <div class="row g-3">
-                        <div class="col-md-6"><label for="name" class="form-label">ชื่อสินค้า <span class="text-danger">*</span></label><input type="text" class="form-control" id="name" required></div>
-                        <div class="col-md-6"><label for="category" class="form-label">หมวดหมู่ <span class="text-danger">*</span></label><input type="text" class="form-control" id="category" required></div>
-                        <div class="col-md-6"><label for="price" class="form-label">ราคา (บาท) <span class="text-danger">*</span></label><input type="number" class="form-control" id="price" step="0.01" min="0" required></div>
-                        <div class="col-md-6"><label for="shopeeLink" class="form-label">ลิงก์ Shopee</label><input type="url" class="form-control" id="shopeeLink"></div>
-                        <div class="col-12"><label for="imageFileInput" class="form-label">รูปภาพสินค้า</label><input type="file" class="form-control" id="imageFileInput" accept="image/*" multiple></div>
-                        <div class="col-12"><p class="form-label mb-2">รูปภาพที่เลือก:</p><div id="imagePreview" class="img-preview-container"><p class="text-muted m-auto" style="font-size: 0.9rem;">ไม่มีรูปภาพ</p></div></div>
-                    </div>
-                    <div class="d-flex justify-content-end mt-4">
-                        <button type="button" id="clear-product-form-btn" class="btn btn-secondary me-2"><i class="fas fa-redo-alt me-2"></i>ล้างฟอร์ม</button>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>บันทึกสินค้า</button>
-                    </div>
-                </form>
+                
+                <div class="position-relative">
+                    <div class="product-form-sticker"></div> <!-- Sticker -->
+                    <form id="product-form" class="mb-4 modern-form-card">
+                        <h5 id="form-title" class="mb-4 text-primary">เพิ่มสินค้าใหม่</h5>
+                        <input type="hidden" id="product-id">
+
+                        <div class="modern-form-layout">
+                            <!-- Left Column: Fields -->
+                            <div class="form-col">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">ชื่อสินค้า <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">หมวดหมู่ <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="category" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">ราคา (บาท) <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="price" step="0.01" min="0" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="shopeeLink" class="form-label">ลิงก์ Shopee</label>
+                                    <input type="url" class="form-control" id="shopeeLink">
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Image Upload -->
+                            <div class="form-col">
+                                <label class="form-label">รูปภาพสินค้า</label>
+                                <div id="image-dropzone" class="image-dropzone">
+                                    <div class="image-dropzone-prompt">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>ลากและวางไฟล์ที่นี่<br>หรือคลิกเพื่อเลือกไฟล์</p>
+                                    </div>
+                                    <div id="imagePreview" class="img-preview-container">
+                                        <!-- Previews will be rendered here by JS -->
+                                    </div>
+                                    <input type="file" id="imageFileInput" accept="image/*" multiple class="image-dropzone-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" id="clear-product-form-btn" class="btn btn-secondary me-2"><i class="fas fa-redo-alt me-2"></i>ล้างฟอร์ม</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>บันทึกสินค้า</button>
+                        </div>
+                    </form>
+                </div>
+
                 <h5 class="mb-3 text-primary"><i class="fas fa-list me-2"></i>รายการสินค้าทั้งหมด</h5>
                 <div class="input-group mb-3"><input type="text" class="form-control" id="admin-search-input" placeholder="ค้นหาสินค้า..."><span class="input-group-text"><i class="fas fa-search"></i></span></div>
                 <div id="admin-product-list" class="table-responsive"></div>
