@@ -258,7 +258,11 @@ function setupAdminEventListeners() {
     
     // Image Uploader Events
     const dropzone = getEl('image-dropzone');
-    if (dropzone) {
+    const previewContainer = getEl('imagePreview');
+
+    if (dropzone && previewContainer) {
+        // Handle clicks for upload
+        dropzone.addEventListener('click', () => getEl('imageFileInput').click());
         dropzone.addEventListener('dragenter', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
         dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
         dropzone.addEventListener('dragleave', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
@@ -269,9 +273,9 @@ function setupAdminEventListeners() {
         });
         getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
 
-        // BUG FIX: Use event delegation for the remove button
-        dropzone.addEventListener('click', (e) => {
-            if (e.target.classList.contains('dz-remove-btn') || e.target.closest('.dz-remove-btn')) {
+        // Handle click for delete button inside the preview container
+        previewContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('dz-remove-btn-new')) {
                 e.preventDefault();
                 e.stopPropagation();
                 clearImageState();
@@ -417,16 +421,13 @@ function clearProductForm() {
     renderImagePreviews();
 }
 
-// BUG FIX: Rewrote the editProduct function to handle state correctly
 function editProduct(id) {
     const product = allProducts.find(p => String(p.id) === String(id));
     if (!product) return;
 
-    // 1. Reset form and clear all image state
     getEl('product-form').reset();
     clearImageState();
 
-    // 2. Populate form fields
     getEl('product-id').value = product.id;
     getEl('name').value = product.name;
     getEl('category').value = product.category;
@@ -435,16 +436,13 @@ function editProduct(id) {
     getEl('form-title').textContent = `แก้ไขสินค้า`;
     getEl('save-btn-text').textContent = 'บันทึกการแก้ไข';
 
-    // 3. Set the existing image URL state
     const url = String(product.image_url || '').split(',')[0].trim();
     if (url) {
         existingImageUrl = url;
     }
 
-    // 4. Render the preview with the new state
     renderImagePreviews();
 
-    // 5. Scroll to the form
     getEl('product-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -488,34 +486,34 @@ function clearImageState() {
 }
 
 function renderImagePreviews() {
-    const container = getEl('imagePreview');
+    const previewContainer = getEl('imagePreview');
     const dropzone = getEl('image-dropzone');
-    if (!container || !dropzone) return;
+    if (!previewContainer || !dropzone) return;
 
-    container.innerHTML = '';
     let imageToRender = null;
-    let imageName = '';
-
     if (selectedFileBase64) {
         imageToRender = `data:image/jpeg;base64,${selectedFileBase64}`;
-        imageName = selectedFileName;
     } else if (existingImageUrl) {
         imageToRender = existingImageUrl;
-        imageName = existingImageUrl.split('/').pop().split('?')[0];
     }
 
     if (imageToRender) {
-        dropzone.classList.add('has-files');
-        const wrapper = document.createElement('div');
-        wrapper.className = 'dz-preview-item';
-        wrapper.innerHTML = `
-            <img src="${imageToRender}" alt="Preview">
-            <div class="file-name" title="${imageName}">${imageName}</div>
-            <button type="button" class="dz-remove-btn">&times;</button>
+        // Show preview, hide dropzone
+        show(previewContainer);
+        hide(dropzone);
+        previewContainer.innerHTML = `
+            <div class="dz-preview-item">
+                <img src="${imageToRender}" alt="Preview">
+                <button type="button" class="dz-remove-btn-new">
+                    <i class="fas fa-trash"></i> ลบรูปภาพ
+                </button>
+            </div>
         `;
-        container.appendChild(wrapper);
     } else {
-        dropzone.classList.remove('has-files');
+        // Hide preview, show dropzone
+        hide(previewContainer);
+        show(dropzone);
+        previewContainer.innerHTML = '';
     }
 }
 
