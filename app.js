@@ -268,6 +268,16 @@ function setupAdminEventListeners() {
             handleImageFileChange({ target: { files: e.dataTransfer.files } });
         });
         getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
+
+        // BUG FIX: Use event delegation for the remove button
+        dropzone.addEventListener('click', (e) => {
+            if (e.target.classList.contains('dz-remove-btn') || e.target.closest('.dz-remove-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                clearImageState();
+                renderImagePreviews();
+            }
+        });
     }
 
     // Change Password Modal
@@ -404,7 +414,7 @@ function clearProductForm() {
     getEl('form-title').textContent = 'เพิ่มสินค้าใหม่';
     getEl('save-btn-text').textContent = 'บันทึก';
     clearImageState();
-    renderImagePreviews(); // Update UI to show empty state
+    renderImagePreviews();
 }
 
 // BUG FIX: Rewrote the editProduct function to handle state correctly
@@ -412,7 +422,7 @@ function editProduct(id) {
     const product = allProducts.find(p => String(p.id) === String(id));
     if (!product) return;
 
-    // 1. Manually reset form and clear image state
+    // 1. Reset form and clear all image state
     getEl('product-form').reset();
     clearImageState();
 
@@ -427,7 +437,9 @@ function editProduct(id) {
 
     // 3. Set the existing image URL state
     const url = String(product.image_url || '').split(',')[0].trim();
-    existingImageUrl = url ? url : null;
+    if (url) {
+        existingImageUrl = url;
+    }
 
     // 4. Render the preview with the new state
     renderImagePreviews();
@@ -456,7 +468,7 @@ function handleImageFileChange(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    clearImageState(); // Clear previous state to ensure only one image is handled
+    clearImageState(); 
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -489,7 +501,7 @@ function renderImagePreviews() {
         imageName = selectedFileName;
     } else if (existingImageUrl) {
         imageToRender = existingImageUrl;
-        imageName = existingImageUrl.split('/').pop().split('?')[0]; // Clean URL for display
+        imageName = existingImageUrl.split('/').pop().split('?')[0];
     }
 
     if (imageToRender) {
@@ -502,15 +514,6 @@ function renderImagePreviews() {
             <button type="button" class="dz-remove-btn">&times;</button>
         `;
         container.appendChild(wrapper);
-
-        // BUG FIX: Add listener to the newly created button
-        container.querySelector('.dz-remove-btn').addEventListener('click', (e) => {
-            e.preventDefault(); // Stop any default button action
-            e.stopPropagation(); // Stop click from bubbling to the dropzone
-            clearImageState();
-            renderImagePreviews(); // Re-render to show the empty state
-        });
-
     } else {
         dropzone.classList.remove('has-files');
     }
