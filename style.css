@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 11.2 (Final Button Fix)
+ * Version: 11.3 (Reverted Uploader UI)
  * Description: The ultimate, production-quality stylesheet with professional UI/UX and full mobile responsiveness.
 */
 
@@ -490,65 +490,48 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 }
 
 
-/* === Revamped Image Uploader (Final Fix) === */
-.image-dropzone-revamped {
+/* === Reverted Image Uploader UI === */
+.image-dropzone-reverted {
     position: relative;
     border: 2px dashed var(--border-color);
     border-radius: var(--border-radius-md);
     background-color: #f8f9fa;
     transition: all var(--transition-speed) ease;
     padding: 1rem;
-    min-height: 200px;
-    cursor: pointer;
-}
-.image-dropzone-revamped.dragover {
-    border-color: var(--dora-blue);
-    background-color: #eef5fa;
-}
-.image-dropzone-revamped .dz-input {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    opacity: 0;
-    cursor: pointer;
-}
-.image-dropzone-revamped .dz-message {
+    min-height: 220px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: var(--light-text-color);
-    pointer-events: none; /* Message shouldn't be clickable */
 }
-.image-dropzone-revamped .dz-message i {
+.image-dropzone-reverted.dragover {
+    border-color: var(--dora-blue);
+    background-color: #eef5fa;
+}
+.image-dropzone-reverted:not(.has-preview) {
+    cursor: pointer;
+}
+.dz-message-reverted {
+    color: var(--light-text-color);
+    pointer-events: none;
+}
+.dz-message-reverted i {
     font-size: 2.5rem;
     color: var(--dora-blue);
     margin-bottom: 0.5rem;
 }
-
-.dz-preview-container {
-    padding: 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    background-color: #f8f9fa;
-    text-align: center;
-}
-.dz-preview-item {
-    display: inline-block;
-    vertical-align: top;
-    text-align: center;
+.dz-preview-reverted {
     animation: zoomIn 0.3s ease;
 }
-.dz-preview-item img {
+.dz-preview-reverted img {
     max-width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 0.75rem;
+    max-height: 150px;
+    object-fit: contain;
+    border-radius: var(--border-radius-md);
+    margin-bottom: 1rem;
     border: 1px solid var(--border-color);
 }
-.dz-remove-btn-new { /* New class for the button */
+.dz-remove-btn-reverted {
     background-color: var(--dora-red);
     color: var(--white-color);
     border: none;
@@ -559,11 +542,11 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     cursor: pointer;
     transition: all 0.2s ease;
 }
-.dz-remove-btn-new:hover {
+.dz-remove-btn-reverted:hover {
     background-color: var(--dora-red-dark);
     box-shadow: var(--shadow-sm);
 }
-.dz-remove-btn-new i {
+.dz-remove-btn-reverted i {
     margin-right: 6px;
 }
 
