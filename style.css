@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 11.4 (Mobile Admin Responsive Overhaul)
+ * Version: 11.6 (Final Layout Adjustment)
  * Description: The ultimate, production-quality stylesheet with professional UI/UX and full mobile responsiveness.
 */
 
@@ -155,7 +155,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
     border-radius: var(--border-radius-lg);
     background-color: var(--card-background);
     box-shadow: var(--shadow-md);
-    border: 2px solid transparent; /* เตรียมพื้นที่สำหรับ border ตอน hover */
+    border: 2px solid transparent;
     transition: all var(--transition-speed) var(--transition-timing);
     overflow: hidden;
     height: 100%;
@@ -163,9 +163,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
 }
 
 .product-card:hover {
-    transform: translateY(-8px); /* ขยับขึ้นเล็กน้อย */
-    border-color: rgba(0, 158, 227, 0.5); /* แสดงขอบสีฟ้าอ่อนๆ */
-    box-shadow: 0 12px 28px rgba(0, 158, 227, 0.2), 0 8px 10px rgba(0, 158, 227, 0.1); /* เอฟเฟกต์ Glow สีฟ้า */
+    transform: translateY(-8px);
+    border-color: rgba(0, 158, 227, 0.5);
+    box-shadow: 0 12px 28px rgba(0, 158, 227, 0.2), 0 8px 10px rgba(0, 158, 227, 0.1);
 }
 
 .product-card img {
@@ -182,11 +182,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
 .product-card::after {
     content: '';
     position: absolute;
-    bottom: 55px; /* ปรับตำแหน่งให้อยู่ใกล้ปุ่ม */
-    right: -15px; /* ยื่นออกมาจากขอบขวาเล็กน้อย */
+    bottom: 55px;
+    right: -15px;
     width: 70px;
     height: 70px;
-    background-image: url('https://lh3.googleusercontent.com/d/1u8SpHoiFABHhFEGOJntUa_ZLmHrDDriF'); /* รูปท่าตกใจ */
+    background-image: url('https://lh3.googleusercontent.com/d/1u8SpHoiFABHhFEGOJntUa_ZLmHrDDriF');
     background-size: contain;
     background-repeat: no-repeat;
     z-index: 10;
@@ -219,7 +219,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--dora-blue-dark); }
 footer {
     background-color: var(--dora-blue);
     color: rgba(255, 255, 255, 0.9);
-    padding-top: 60px; /* Make space for doraemon */
+    padding-top: 60px;
     padding-bottom: 20px;
     margin-top: 64px;
     position: relative;
@@ -308,7 +308,7 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 
 /* --- 6. หน้าผู้ดูแลระบบ (Revamped) --- */
 .admin-body {
-    background-color: #eef5fa; /* A slightly different, calmer blue background */
+    background-color: #eef5fa;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -320,16 +320,14 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     flex-direction: column;
 }
 
-/* BUG FIX: Login centering */
 #login-gate.d-flex-center {
-    flex-grow: 1; /* Make the login section take up available space */
+    flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
 }
 
-/* === Login Card (Revamped) === */
 .login-card {
     width: 100%;
     max-width: 420px;
@@ -589,7 +587,7 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 .admin-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 8px; /* Creates space between rows */
+    border-spacing: 0 8px;
 }
 .admin-table thead th {
     background-color: #f8f9fa;
@@ -606,8 +604,8 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     background-color: var(--card-background);
     box-shadow: var(--shadow-sm);
     transition: all 0.2s ease;
-    border-radius: var(--border-radius-md); /* For Safari */
-    overflow: hidden; /* For Safari */
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
 }
 .admin-table tbody tr:hover {
     transform: translateY(-3px);
@@ -618,8 +616,8 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 .admin-table tbody td {
     padding: 15px;
     vertical-align: middle;
-    border: none; /* Remove default borders */
-    border-top: 1px solid var(--border-color); /* Add top border */
+    border: none;
+    border-top: 1px solid var(--border-color);
 }
 .admin-table tbody tr td:first-child {
     border-top-left-radius: var(--border-radius-md);
@@ -629,7 +627,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     border-top-right-radius: var(--border-radius-md);
     border-bottom-right-radius: var(--border-radius-md);
 }
-/* Remove top border for the first row */
 .admin-table tbody tr:first-child td {
     border-top: none;
 }
@@ -717,13 +714,13 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 /* --- 8. ระบบแจ้งเตือนแบบ Toast (อัปเกรด) --- */
 #toast-container {
     position: fixed;
-    top: 80px; /* ระยะห่างจาก Navbar */
+    top: 80px;
     right: 20px;
     z-index: 2000;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    pointer-events: none; /* Allow clicks to pass through container */
+    pointer-events: none;
 }
 
 .toast-notification {
@@ -739,7 +736,7 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     opacity: 1;
     transform: translateX(0);
     transition: opacity 0.3s ease, transform 0.3s ease;
-    pointer-events: auto; /* Re-enable clicks on the toast itself */
+    pointer-events: auto;
 }
 
 .toast-notification.hiding {
@@ -791,17 +788,9 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 =====================================================
 */
 
-@media (max-width: 991.98px) {
-    /* สลับลำดับฟอร์มกับรายการสินค้าในหน้า Admin */
-    #products-tab-pane .row {
-        display: flex;
-        flex-direction: column-reverse;
-    }
-}
-
-
 /* หน้าจอขนาดกลาง (แท็บเล็ต) */
 @media (max-width: 991.98px) {
+    /* โค้ดส่วนนี้ไม่จำเป็นแล้ว เพราะเราจัดโครงสร้างใน HTML ใหม่ */
     .hero-section h1 { font-size: 3rem; }
     .main-content-frame { padding: 16px; }
     #doraemon-sticker {
@@ -831,7 +820,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         bottom: 50px;
         right: -10px;
     }
-    /* แก้ไข: ทำให้รายการสินค้าแสดง 2 คอลัมน์บนจอขนาดเล็ก */
     #product-list-container {
         --bs-gutter-x: 1rem;
         --bs-gutter-y: 1rem;
@@ -849,7 +837,7 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         margin-bottom: 1rem;
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius-md);
-        padding: 0.5rem;
+        padding: 1rem;
     }
     .admin-table td {
         display: flex;
@@ -866,11 +854,18 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         font-weight: 600;
         color: var(--text-color);
         margin-right: 1rem;
+        text-align: left;
     }
     .admin-table .action-btns {
         justify-content: flex-end;
+        flex-grow: 1;
     }
-
+    .admin-table td[data-label="การกระทำ"]::before {
+        align-self: center;
+    }
+    .admin-table td[data-label="รูป"] {
+        padding-bottom: 1rem;
+    }
 }
 
 /* หน้าจอขนาดเล็กมาก (มือถือแนวตั้ง) */
@@ -880,13 +875,11 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     .hero-section h1 { font-size: 2rem; }
     #hero-doraemon-img { width: 150px; }
 
-    /* แก้ไข: ทำให้รายการสินค้าแสดง 1 คอลัมน์บนจอมือถือ */
     #product-list-container.row-cols-2 {
         grid-template-columns: repeat(1, 1fr) !important;
     }
     .main-content-frame { padding: 10px; }
     
-    /* แก้ไข: ซ่อนรูปโดราเอมอนที่ footer บนมือถือ */
     .footer-doraemon {
         display: none;
     }
@@ -894,7 +887,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         padding-top: 20px;
     }
 
-    /* แก้ไข: ทำให้ปุ่มในฟอร์มและ Modal แสดงเต็มความกว้าง */
     .d-flex.justify-content-end,
     .modal-footer {
         flex-direction: column;
@@ -906,7 +898,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
         margin: 0 !important;
     }
 
-    /* แก้ไข: ปรับ Toast Notification สำหรับมือถือ */
     #toast-container {
         right: 0;
         left: 0;
