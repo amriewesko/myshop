@@ -1,6 +1,6 @@
 /*
  * MyShop - Definitive Doraemon Edition Stylesheet (with Custom Images)
- * Version: 11.1 (Bug Fixes & Polish)
+ * Version: 11.2 (Final Button Fix)
  * Description: The ultimate, production-quality stylesheet with professional UI/UX and full mobile responsiveness.
 */
 
@@ -490,7 +490,7 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
 }
 
 
-/* === Revamped Image Uploader === */
+/* === Revamped Image Uploader (Final Fix) === */
 .image-dropzone-revamped {
     position: relative;
     border: 2px dashed var(--border-color);
@@ -499,6 +499,7 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     transition: all var(--transition-speed) ease;
     padding: 1rem;
     min-height: 200px;
+    cursor: pointer;
 }
 .image-dropzone-revamped.dragover {
     border-color: var(--dora-blue);
@@ -510,7 +511,6 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     width: 100%; height: 100%;
     opacity: 0;
     cursor: pointer;
-    z-index: 3;
 }
 .image-dropzone-revamped .dz-message {
     display: flex;
@@ -519,71 +519,52 @@ footer .social-icons a:hover { color: var(--dora-yellow); }
     justify-content: center;
     text-align: center;
     color: var(--light-text-color);
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    padding: 1rem;
-    transition: opacity 0.3s ease;
-    z-index: 1;
+    pointer-events: none; /* Message shouldn't be clickable */
 }
 .image-dropzone-revamped .dz-message i {
     font-size: 2.5rem;
     color: var(--dora-blue);
     margin-bottom: 0.5rem;
 }
-.image-dropzone-revamped.has-files .dz-message {
-    opacity: 0;
-    pointer-events: none;
-}
+
 .dz-preview-container {
-    position: relative;
-    z-index: 2;
-    display: flex; /* Changed for single item */
-    justify-content: center;
-    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: #f8f9fa;
+    text-align: center;
 }
 .dz-preview-item {
-    position: relative;
-    background-color: var(--card-background);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-    padding: 0.5rem;
+    display: inline-block;
+    vertical-align: top;
     text-align: center;
     animation: zoomIn 0.3s ease;
-    width: 150px; /* Fixed width for single item */
 }
 .dz-preview-item img {
-    width: 100%;
-    height: 120px;
+    max-width: 100%;
+    height: 150px;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border-color);
 }
-.dz-preview-item .file-name {
-    font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--text-color);
-}
-.dz-remove-btn {
-    position: absolute;
-    top: -8px; right: -8px;
-    width: 22px; height: 22px;
-    background: var(--dora-red);
-    color: white;
-    border: 2px solid white;
-    border-radius: 50%;
+.dz-remove-btn-new { /* New class for the button */
+    background-color: var(--dora-red);
+    color: var(--white-color);
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; line-height: 1;
-    box-shadow: var(--shadow-sm);
     transition: all 0.2s ease;
 }
-.dz-remove-btn:hover {
-    transform: scale(1.1);
+.dz-remove-btn-new:hover {
     background-color: var(--dora-red-dark);
+    box-shadow: var(--shadow-sm);
+}
+.dz-remove-btn-new i {
+    margin-right: 6px;
 }
 
 @keyframes zoomIn {
