@@ -258,15 +258,11 @@ function setupAdminEventListeners() {
     
     // Price input validation
     getEl('price')?.addEventListener('keydown', (e) => {
-        // Allow: backspace, delete, tab, escape, enter, dot, and numbers on keypad
         if ([46, 8, 9, 27, 13, 110, 190].includes(e.keyCode) ||
-             // Allow: Ctrl+A, Command+A
             (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-             // Allow: home, end, left, right, down, up
             (e.keyCode >= 35 && e.keyCode <= 40)) {
-                 return; // Let it happen
+                 return;
         }
-        // Ensure that it is a number and stop the keypress
         if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
             e.preventDefault();
         }
@@ -276,11 +272,9 @@ function setupAdminEventListeners() {
     const dropzone = getEl('image-dropzone');
     if (dropzone) {
         dropzone.addEventListener('click', (e) => {
-            // If the click is on the remove button, do nothing here.
             if (e.target.closest('.dz-remove-btn-reverted')) {
                 return;
             }
-            // Otherwise, trigger the file input.
             getEl('imageFileInput').click();
         });
 
@@ -294,7 +288,6 @@ function setupAdminEventListeners() {
         });
         getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
 
-        // Add a separate, more specific listener for the delete button.
         dropzone.addEventListener('click', function(e) {
             if (e.target.closest('.dz-remove-btn-reverted')) {
                 e.preventDefault();
@@ -313,15 +306,12 @@ function setupAdminEventListeners() {
 // =================== ADMIN: DASHBOARD (NEW) ===============
 // ==========================================================
 function updateDashboardStats() {
-    if (!getEl('stat-total-products')) return; // Exit if not on admin page
-    // Total Products
+    if (!getEl('stat-total-products')) return;
     getEl('stat-total-products').textContent = allProducts.length;
 
-    // Total Categories
     const categories = new Set(allProducts.map(p => p.category).filter(Boolean));
     getEl('stat-total-categories').textContent = categories.size;
 
-    // Current User
     getEl('stat-current-user').textContent = currentUser.username;
 }
 
@@ -330,14 +320,14 @@ function updateDashboardStats() {
 // =================== ADMIN: PRODUCT MGMT ==================
 // ==========================================================
 async function loadAdminProducts() {
-    const checkTokenResult = await sendData('secureGetUsers'); // Simple token validation call
+    const checkTokenResult = await sendData('secureGetUsers');
     if (checkTokenResult.success) { 
         const productResult = await fetch(`${APPS_SCRIPT_URL}?action=getProducts`);
         const products = await productResult.json();
         if (products.success) {
             allProducts = products.data;
             renderAdminProducts(allProducts);
-            updateDashboardStats(); // Update dashboard after products are loaded
+            updateDashboardStats();
         }
     }
 }
@@ -357,25 +347,25 @@ function renderAdminProducts(products, searchTerm = '') {
 
     const tableHtml = `
         <table class="admin-table">
-            <thead><tr><th>รูป</th><th>ชื่อสินค้า</th><th>ราคา</th><th class="text-end">การกระทำ</th></tr></thead>
+            <thead><tr><th>การกระทำ</th><th>รูป</th><th>ชื่อสินค้า</th><th>ราคา</th></tr></thead>
             <tbody>
                 ${filteredProducts.map(p => {
                     const imageUrls = String(p.image_url || '').split(',');
                     const firstImg = imageUrls[0]?.trim() || 'https://placehold.co/50x50/cccccc/333333?text=NoImg';
                     return `
                         <tr>
-                            <td><img src="${firstImg}" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover; border-radius: 8px;"></td>
-                            <td>
-                                <div class="product-name">${p.name}</div>
-                                <small class="text-muted">ID: ${p.id}</small>
-                            </td>
-                            <td class="product-price">฿${parseFloat(p.price).toFixed(2)}</td>
-                            <td class="text-end">
+                            <td data-label="การกระทำ" class="text-end">
                                 <div class="action-btns">
                                     <button class="btn-action edit" onclick="editProduct('${p.id}')" title="แก้ไข"><i class="fas fa-edit"></i></button>
                                     <button class="btn-action delete" onclick="deleteProduct('${p.id}')" title="ลบ"><i class="fas fa-trash"></i></button>
                                 </div>
                             </td>
+                            <td data-label="รูป"><img src="${firstImg}" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover; border-radius: 8px;"></td>
+                            <td data-label="ชื่อสินค้า">
+                                <div class="product-name">${p.name}</div>
+                                <small class="text-muted">ID: ${p.id}</small>
+                            </td>
+                            <td data-label="ราคา" class="product-price">฿${parseFloat(p.price).toFixed(2)}</td>
                         </tr>`;
                 }).join('') || '<tr><td colspan="4" class="text-center p-4">ไม่พบสินค้า</td></tr>'}
             </tbody>
