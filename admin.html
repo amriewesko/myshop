@@ -159,16 +159,21 @@
                                     <!-- Revamped Image Uploader (Single File) -->
                                     <div class="mb-3">
                                         <label class="form-label">รูปภาพสินค้า</label>
-                                        <div id="image-dropzone" class="image-dropzone-revamped">
-                                            <div class="dz-message">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                <p><strong>ลากและวางไฟล์ที่นี่</strong><br>หรือคลิกเพื่อเลือกไฟล์</p>
-                                                <small class="text-muted">อัปโหลดได้เพียง 1 รูปภาพ</small>
-                                            </div>
-                                            <div id="imagePreview" class="dz-preview-container">
+                                        <!-- Container for both dropzone and preview -->
+                                        <div id="image-upload-container">
+                                            <!-- Preview Area (will be shown when there's an image) -->
+                                            <div id="imagePreview" class="dz-preview-container d-none">
                                                 <!-- Preview will be rendered here by JS -->
                                             </div>
-                                            <input type="file" id="imageFileInput" accept="image/*" class="dz-input">
+                                            <!-- Dropzone Area (will be shown when there's no image) -->
+                                            <div id="image-dropzone" class="image-dropzone-revamped">
+                                                <div class="dz-message">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <p><strong>ลากและวางไฟล์ที่นี่</strong><br>หรือคลิกเพื่อเลือกไฟล์</p>
+                                                    <small class="text-muted">อัปโหลดได้เพียง 1 รูปภาพ</small>
+                                                </div>
+                                                <input type="file" id="imageFileInput" accept="image/*" class="dz-input">
+                                            </div>
                                         </div>
                                     </div>
 
