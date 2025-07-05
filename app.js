@@ -256,13 +256,34 @@ function setupAdminEventListeners() {
     getEl('clear-product-form-btn')?.addEventListener('click', clearProductForm);
     getEl('admin-search-input')?.addEventListener('input', (e) => renderAdminProducts(allProducts, e.target.value));
     
+    // Price input validation
+    getEl('price')?.addEventListener('keydown', (e) => {
+        // Allow: backspace, delete, tab, escape, enter, dot, and numbers on keypad
+        if ([46, 8, 9, 27, 13, 110, 190].includes(e.keyCode) ||
+             // Allow: Ctrl+A, Command+A
+            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+             // Allow: home, end, left, right, down, up
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+                 return; // Let it happen
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+
     // Image Uploader Events
     const dropzone = getEl('image-dropzone');
-    const previewContainer = getEl('imagePreview');
+    if (dropzone) {
+        dropzone.addEventListener('click', (e) => {
+            // If the click is on the remove button, do nothing here.
+            if (e.target.closest('.dz-remove-btn-reverted')) {
+                return;
+            }
+            // Otherwise, trigger the file input.
+            getEl('imageFileInput').click();
+        });
 
-    if (dropzone && previewContainer) {
-        // Handle clicks for upload
-        dropzone.addEventListener('click', () => getEl('imageFileInput').click());
         dropzone.addEventListener('dragenter', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
         dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
         dropzone.addEventListener('dragleave', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
@@ -273,9 +294,9 @@ function setupAdminEventListeners() {
         });
         getEl('imageFileInput')?.addEventListener('change', handleImageFileChange);
 
-        // Handle click for delete button inside the preview container
-        previewContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('dz-remove-btn-new')) {
+        // Add a separate, more specific listener for the delete button.
+        dropzone.addEventListener('click', function(e) {
+            if (e.target.closest('.dz-remove-btn-reverted')) {
                 e.preventDefault();
                 e.stopPropagation();
                 clearImageState();
@@ -486,9 +507,8 @@ function clearImageState() {
 }
 
 function renderImagePreviews() {
-    const previewContainer = getEl('imagePreview');
     const dropzone = getEl('image-dropzone');
-    if (!previewContainer || !dropzone) return;
+    if (!dropzone) return;
 
     let imageToRender = null;
     if (selectedFileBase64) {
@@ -498,22 +518,24 @@ function renderImagePreviews() {
     }
 
     if (imageToRender) {
-        // Show preview, hide dropzone
-        show(previewContainer);
-        hide(dropzone);
-        previewContainer.innerHTML = `
-            <div class="dz-preview-item">
+        dropzone.classList.add('has-preview');
+        dropzone.innerHTML = `
+            <div class="dz-preview-reverted">
                 <img src="${imageToRender}" alt="Preview">
-                <button type="button" class="dz-remove-btn-new">
+                <button type="button" class="dz-remove-btn-reverted">
                     <i class="fas fa-trash"></i> ลบรูปภาพ
                 </button>
             </div>
         `;
     } else {
-        // Hide preview, show dropzone
-        hide(previewContainer);
-        show(dropzone);
-        previewContainer.innerHTML = '';
+        dropzone.classList.remove('has-preview');
+        dropzone.innerHTML = `
+            <div class="dz-message-reverted">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><strong>ลากและวางไฟล์ที่นี่</strong><br>หรือคลิกเพื่อเลือกไฟล์</p>
+                <small class="text-muted">อัปโหลดได้เพียง 1 รูปภาพ</small>
+            </div>
+        `;
     }
 }
 
